@@ -20,7 +20,6 @@ const Login = () => {
             const response = await api.post('/login', { email, password });
             console.log('Login successful:', response.data);
             toggleLogin();
-            navigate(-1); // Go back to the previous page
         } catch (err) {
             setIsLoggedIn(false);
             setError('Login failed. Please check your credentials and try again.');
@@ -29,8 +28,9 @@ const Login = () => {
 
     return (
         <div>
-            {isLoggedIn ? ( // Conditional rendering based on login status
-                <h2>You are logged in</h2>
+            {isLoggedIn ? ( 
+                // navigate to the page from which called
+                navigate(-1)
             ) : (
         <div>
             <h2 className='loginheader'>Login</h2>

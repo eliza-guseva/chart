@@ -12,7 +12,7 @@ const Profile = () => {
     }, [isLoggedIn]);
 
     return (
-            <ul>
+            <ul className="LoginLogout">
             {isLoggedIn ? (
                 <li onClick={toggleLogin}>
                     <Link to="/" className="NavLink">Log Out</Link>
@@ -31,9 +31,10 @@ const Nav = () => {
         <nav >
         <div  className="navbar">
             <ul>
-                <li>Home</li>
-                <li>About</li>
-                <li>Contact</li>
+                <li><Link to ="/" className="NavLink">Home</Link></li>
+                <li>
+                     <Link to="/dashboard" className="NavLink">Dashboard</Link>
+                </li>
             </ul>
             <Profile />
         </div>

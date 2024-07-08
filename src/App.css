@@ -1,7 +1,7 @@
 
 
 .App {
-  background-color: #282c34;
+  background-color: #2a3035;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -11,25 +11,20 @@
   color: white;
 }
 .loginform {
-    background-color: #282c34;
     text-align: right;
     padding-right: 80px;
     
 }
 
 .loginheader {
-    background-color: #282c34;
     text-align: center;
     color: white;
     font-size: 50px;
 }
 
 .navbar {
-    background-color: #282c34;
     display: flex;
     justify-content: space-between;
-    flex-direction: row;
-
 }
 
 .navbar ul {
@@ -42,7 +37,18 @@
     padding: 0 1em;
 }
 
-.navLink {
-    color: white;
+.NavLink {
+    color: rgb(197, 196, 196);
     text-decoration: none;
+    text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00de, 0 0 20px #ff00de;
+}
+
+.NavLink:hover {
+    color: #ffffff;
+    text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00de, 0 0 20px #ff00de, 0 0 30px #ff00de;
+}
+
+.LoginLogout {
+    display: flex;
+    justify-self: right;
 }
