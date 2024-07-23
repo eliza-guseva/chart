@@ -25,30 +25,38 @@
 .navbar {
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }
 
 .navbar ul {
     display: flex;
     list-style: none;
     padding: 1em;
+    flex-grow: 1;
+    justify-content: space-evenly;
 }
 
 .navbar ul li {
     padding: 0 1em;
+    flex-grow: 1;
+    text-align: center;
+    flex: 1;
 }
 
 .NavLink {
-    color: rgb(197, 196, 196);
+    color: rgb(255, 255, 255);
     text-decoration: none;
-    text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00de, 0 0 20px #ff00de;
+    text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 10px #feedfd, 0 0 15px #fbbaf2;
 }
 
 .NavLink:hover {
     color: #ffffff;
-    text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00de, 0 0 20px #ff00de, 0 0 30px #ff00de;
+    text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00de, 0 0 20px #ff00de;
 }
 
-.LoginLogout {
+
+
+.LoginLogout li {
     display: flex;
-    justify-self: right;
+    justify-content: right;
 }

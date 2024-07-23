@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import { LoginContext } from './context/LoginContext';
+import { LoginContext } from '../context/LoginContext';
 import { Login } from './Login';
 
 const Dashboard = () => {
@@ -12,7 +12,7 @@ const Dashboard = () => {
             </div>
             ) : (
             <div>
-                <p>You must be logged in to contact us.</p>
+                <p>You must be logged to see your Garmin graphs.</p>
                 <Login />
             </div>
             )}

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from "react";
-import { LoginContext } from "./context/LoginContext";
+import { LoginContext } from "../context/LoginContext";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
@@ -28,16 +28,19 @@ const Profile = () => {
 
 const Nav = () => {
     return (
-        <nav >
-        <div  className="navbar">
+        <nav className="navbar">
             <ul>
-                <li><Link to ="/" className="NavLink">Home</Link></li>
+                <li>
+                    <Link to ="/" className="NavLink">Home</Link>
+                    </li>
                 <li>
                      <Link to="/dashboard" className="NavLink">Dashboard</Link>
                 </li>
+                <li>
+                    <Link to="/contact" className="NavLink">Contact</Link>
+                </li>
             </ul>
             <Profile />
-        </div>
         </nav>
     );
 }
