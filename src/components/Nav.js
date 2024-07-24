@@ -2,8 +2,84 @@ import React, {useContext, useEffect, useState} from "react";
 import { LoginContext } from "../context/LoginContext";
 import { Link } from "react-router-dom";
 
-const Profile = () => {
+
+function closeMenu(event, isOpen, toggleDropdown) {
+    if (isOpen) {
+        toggleDropdown();
+    }
+}
+
+function closeMenuAndLogout(event, isOpen, toggleDropdown, toggleLogin) {
+    toggleLogin();
+    closeMenu(event, isOpen, toggleDropdown);
+    
+}
+
+function genLink(to, name, isOpen, toggleDropdown) {
+    return (
+        <Link to={to} className="NavLink" onClick={(event) => closeMenu(event, isOpen, toggleDropdown)}>
+            {name}
+        </Link>
+
+    )
+
+}
+
+
+
+
+const NavMenu = ({ isOpen, toggleDropdown }) => {
+    return ( <li className="nav top element" >
+        <img className="menu icon" onClick={toggleDropdown}
+        src="/menu.png" alt="Navigation Menu"/>
+        <ul className={`nav menu ${isOpen ? 'show' : ''}`}>
+        <li>
+            {genLink("/", "Home", isOpen, toggleDropdown)}
+        </li>
+        <li>
+            {genLink("/contact", "Contact", isOpen, toggleDropdown)}
+        </li>
+        </ul>
+    </li>)}
+
+const UserMenu = ({ isOpen, toggleDropdown }) => {
     const {isLoggedIn, toggleLogin} = useContext(LoginContext);
+
+    return (
+    <li className="nav top element">
+        <img className="user icon" onClick={toggleDropdown}
+            src="/user.png" 
+            alt="User Menu"
+        />
+    {isLoggedIn ? (
+        <ul className={`nav menu ${isOpen ? 'show' : ''}`} >
+            <li>
+                {genLink("/dashboard", "Dashboard", isOpen, toggleDropdown)}
+            </li>
+            <li>
+                <Link to="/" className="NavLink" 
+                onClick={(event) => closeMenuAndLogout(event, isOpen, toggleDropdown, toggleLogin)}
+                >Log Out</Link>
+            </li>
+            </ul>
+        ) : (
+            <ul className={`nav menu ${isOpen ? 'show' : ''}`}>
+            <li>
+                {genLink("/login", "Login", isOpen, toggleDropdown)}
+            </li>
+            </ul>
+        )}
+    </li>)
+}
+
+
+const Menus = () => {
+    const {isLoggedIn, toggleLogin} = useContext(LoginContext);
+    const [openMenu, setOpenMenu] = useState(null);
+
+    const toggleDropdown = (menu) => {
+        setOpenMenu(openMenu === menu ? null : menu);
+    };
 
     // Debugging: Log isLoggedIn value
     useEffect(() => {
@@ -13,61 +89,11 @@ const Profile = () => {
     return (
         <div className="navigation">
             <ul className="nav menu">
-                <li className="nav top element">
-                    <img className="menu icon"
-                    src="/menu.png" alt="Navigation Menu"/>
-                    <ul className="nav menu">
-                    <li>
-                        <Link to="/" className="NavLink">Home</Link>
-                    </li>
-                    <li>
-                    <Link to="/contact" className="NavLink">Contact</Link>
-                    </li>
-                    </ul>
-                </li>
-                
-                <li className="nav top element"><img className="user icon"
-                    src="/user.png" 
-                    alt="User Menu"
-                />
-                {isLoggedIn ? (
-                    <ul className="user menu">
-                        <li onClick>
-                            <Link to="/dashboard" className="NavLink">Dashboard</Link>
-                        </li>
-                        <li onClick>
-                            <Link to="/" className="NavLink">Log Out</Link>
-                        </li>
-                        </ul>
-                    ) : (
-                        <ul className="user menu">
-                        <li>
-                            <Link to="/login" className="NavLink">Log In</Link>
-                        </li>
-                        </ul>
-                    )}
-                </li>
+            <NavMenu isOpen={openMenu === 'nav'} toggleDropdown={() => toggleDropdown('nav')} />
+            <UserMenu isOpen={openMenu === 'user'} toggleDropdown={() => toggleDropdown('user')} />
             </ul>
         </div>
     )
-
-    
-    
-
-
-    // return (
-    //         <ul className="LoginLogout">
-    //         {isLoggedIn ? (
-    //             <li onClick={toggleLogin}>
-    //                 <Link to="/" className="NavLink">Log Out</Link>
-    //             </li>
-    //         ) : (
-    //             <li>
-    //                 <Link to="/login" className="NavLink">Log In</Link>
-    //             </li>
-    //         )}
-    //         </ul>
-    // );
 }
 
 const Logo = () => {
@@ -83,20 +109,13 @@ const Logo = () => {
     );
 }
 
-const NavBar = () => {
-    return (
-        <nav className="navbar">
-            <Profile />
-        </nav>
-    );
-}
 
 const Nav = () => {
     return (
         <div className="header container">
             <Logo />
             <div><p className="header call">See your data</p></div>
-            <NavBar />
+            <Menus />
         </div>
 )};
 

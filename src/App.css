@@ -20,9 +20,10 @@
 /* HEADER */
 .header.container {
     display: grid;
+    width: 100%;
     grid-template-columns: 3fr 5fr 1fr;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+    margin-left: 4em;
+    margin-right: 2em;
 }
 .logo.simbolic {
     font-family: 'Warnes', cursive;
@@ -74,7 +75,6 @@
             top: 100%; /* Position the ul below the li */
             display: block;
             padding: 0;
-            transition: opacity 0.2s, visibility 0.2s;
             list-style-type: none;
             /* dropdown element */
             li {
@@ -97,12 +97,46 @@
                     a {
                       color: #ffffff;
                       text-decoration: none;
-                      text-shadow: 0 0 1px #fff, 0 0 2px #ececec, 0 0 4px #d3d3d3;
+                      text-shadow: 0 0 1px #fff, 0 0 2px #fff5dd, 0 0 3px #fcdfba;
                     }
                   }
                 }
                   
                 }
         }
+        /* Show class for click event */
+        .show {
+            visibility: visible;
+                background: #545B62;
+                opacity: 1;
+                box-shadow: 0px 3px 5px 2px #EBECF1;
+                li {
+
+                  a {
+                    color: #ffffff;
+                    text-decoration: none;
+                  }
+                  &:hover {
+                    a {
+                      color: #ffffff;
+                      text-decoration: none;
+                      text-shadow: 0 0 1px #fff, 0 0 2px #fff5dd, 0 0 3px #fcdfba;
+                    }
+                  }
+                }
+        }
     }
     }
+
+.dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: 1;
+    }
+
+
+
