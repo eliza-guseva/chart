@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Warnes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nixie+One&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.App {
+    @apply 
+    min-h-screen 
+    flex flex-col items-center justify-start 
+    text-[calc(10px+2vmin)] text-white font-nixie font-bold 
+    bg-darkbckg
+  }
+
+.btn {
+    @apply 
+    py-1 px-4
+    mt-1 mb-1
+    rounded-md
+    shadow-lg
+    border-2
+    focus:outline-none
+    focus:ring-2
+    focus:ring-blue-500
+    focus:ring-opacity-50
+    transition
+    duration-300
+    ease-in-out
+}
+
+.btnstd {
+    @apply
+    bg-darkbtn hover:bg-darkbtnhover
+    hover:shadow-2xl
+    text-white font-bold
+    border-darkbtnhover
+}
+
+.btnboring {
+    @apply
+    bg-white hover:bg-gray-200
+    text-black font-bold
+}
+
+button {
+    @apply btn;
+  }
+
+.inpt {
+    @apply
+    my-2
+}
+  
+  
+  /* HOME */
+  
+  /* HEADER */
+  .header.container {
+      display: grid;
+      width: 100%;
+      grid-template-columns: 2fr 5fr 1fr;
+      margin-left: 4em;
+      margin-right: 2em;
+  }
+  .logo.simbolic {
+      font-family: 'Warnes', cursive;
+      font-size: 1em;
+      color: white;
+      text-shadow: 0 0 1px #fff, 0 0 2px #ececec, 0 0 4px #d3d3d3;
+  }
+  .logo.charts {
+      font-family: 'Nixie One', cursive;
+      font-size: 2.5em;
+      color: white;
+      font-weight: bolder;
+      text-shadow: 0 0 1px #fff;
+  }
+  
+  .icon {
+      width: 40px;
+      height: 40px;
+  }
+  
+  .navigation {
+      position: absolute;
+      display: flex;
+      top: 2em;
+      right: 1em;
+  
+  }
+  
+  .nav.menu {
+      position : relative;
+      display: flex;
+      flex: 1 1 auto;
+      margin: 0;
+      padding: 0 20px;
+      list-style-type: none;
+      /* top level element */
+      li { 
+          position: relative;
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          /* dropdown */
+          ul {
+              visibility: hidden;
+              opacity: 0;
+              position: absolute; /* Position the ul absolutely */
+              right: 0; /* Align ul to the right edge of li */
+              top: 100%; /* Position the ul below the li */
+              display: block;
+              padding: 0;
+              list-style-type: none;
+              /* dropdown element */
+              li {
+                  line-height: 1.7;
+                }
+              }
+              &:hover {
+                ul {
+                  visibility: visible;
+                  background: #545B62;
+                  opacity: 1;
+                  box-shadow: 0px 3px 5px 2px #EBECF1;
+                  li {
+  
+                    a {
+                      color: #ffffff;
+                      text-decoration: none;
+                    }
+                    &:hover {
+                      a {
+                        color: #ffffff;
+                        text-decoration: none;
+                        text-shadow: 0 0 1px #fff, 0 0 2px #fff5dd, 0 0 3px #fcdfba;
+                      }
+                    }
+                  }
+                    
+                  }
+          }
+          /* Show class for click event */
+          .show {
+              visibility: visible;
+                  background: #545B62;
+                  opacity: 1;
+                  box-shadow: 0px 3px 5px 2px #EBECF1;
+                  li {
+  
+                    a {
+                      color: #ffffff;
+                      text-decoration: none;
+                    }
+                    &:hover {
+                      a {
+                        color: #ffffff;
+                        text-decoration: none;
+                        text-shadow: 0 0 1px #fff, 0 0 2px #fff5dd, 0 0 3px #fcdfba;
+                      }
+                    }
+                  }
+          }
+      }
+      }
+  
+  .dropdown-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: transparent;
+      z-index: 1;
+      }
+  
+  
+  
+  
