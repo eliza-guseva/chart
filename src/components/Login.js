@@ -68,9 +68,9 @@ const Login = () => {
                             {passwordInput(password, setPassword)}
                             {repeatPasswordInput(repeatPassword, setRepeatPassword)}
                             {codeInput(invitationCode, setInvitationCode)}
-                            <button type="submit">Register</button>  
+                            <button className='btn btnstd' type="submit">Register</button>  
                         </form>
-                        <button onClick={() => setIsRegistered(true)}>Already registered?</button>
+                        <button className='btn btnboring' onClick={() => setIsRegistered(true)}>Already registered?</button>
                             <p>{error}</p>
                         </div>
                     )}

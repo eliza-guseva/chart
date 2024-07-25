@@ -592,6 +592,10 @@ video {
   margin-top: 1rem !important;
 }
 
+.text-center{
+  text-align: center;
+}
+
 .App{
   display: flex;
   min-height: 100vh;

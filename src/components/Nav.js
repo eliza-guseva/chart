@@ -114,7 +114,7 @@ const Nav = () => {
     return (
         <div className="header container">
             <Logo />
-            <div><p className="header call">See your data</p></div>
+            <div className="text-center"><p className="header call">See your data</p></div>
             <Menus />
         </div>
 )};
