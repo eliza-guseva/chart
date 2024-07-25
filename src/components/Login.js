@@ -54,10 +54,11 @@ const Login = () => {
                             <h2>Login</h2>
                             {emailInput(email, setEmail)}
                             {passwordInput(password, setPassword)}
-                            <button type="submit">Login</button>
+                            <button className='btn btnstd' type="submit">Login</button>
                             <p>{error}</p>
                         </form>
-                        <button onClick={() => setIsRegistered(false)}>Not registered?</button>
+                        <button className='btn btnboring !mt-4'
+                        onClick={() => setIsRegistered(false)}>Not registered?</button>
                         </div>
                     ) : (
                         <div>

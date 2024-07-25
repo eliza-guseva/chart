@@ -4,7 +4,7 @@ export function emailInput (email, setEmail, title="Email: ") {
     return (
         <div>
             <label htmlFor="email">{title}</label>
-            <input
+            <input className="inpt"
                 type="email"
                 id="email"
                 value={email}
@@ -18,7 +18,7 @@ export function emailInput (email, setEmail, title="Email: ") {
 export function passwordInput (password, setPassword) {
     return (<div>
                     <label htmlFor='password'>Password: </label>
-                    <input
+                    <input className="inpt"
                         type="password"
                         id="password"
                         value={password}
@@ -31,7 +31,7 @@ export function passwordInput (password, setPassword) {
 export function repeatPasswordInput (repeatPassword, setRepeatPassword) {
     return (<div>
                     <label htmlFor='repeatPassword'>Repeat Password: </label>
-                    <input
+                    <input className="inpt"
                         type="password"
                         id="repeatPassword"
                         value={repeatPassword}
@@ -44,7 +44,7 @@ export function repeatPasswordInput (repeatPassword, setRepeatPassword) {
 export function codeInput (code, setCode, title="Invitation Code: ") {
     return (<div>
                     <label htmlFor='code'>{title}</label>
-                    <input
+                    <input className="inpt"
                         type="text"
                         id="code"
                         value={code}

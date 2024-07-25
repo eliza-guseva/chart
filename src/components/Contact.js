@@ -25,7 +25,7 @@ const Contact = () => {
             {emailInput(email, setEmail, "Your Email: ")}
             <div className='formDiv'>
                 <label htmlFor="message">Message*</label>
-                <textarea 
+                <textarea className='my-2'
                     id="message"
                     rows="5"
                     cols="50"
@@ -37,7 +37,7 @@ const Contact = () => {
             </div>
             <div className='formDiv'>
                 <label htmlFor="score">(Optional) What is your overall site experience?  {score} ⭐ </label>
-                <input 
+                <input
                 type="range" 
                 id="score" 
                 name="score"
@@ -47,7 +47,7 @@ const Contact = () => {
                 onChange={(e) => setScore(e.target.value)}
                  />
             </div>
-            <button type="submit">Submit</button>
+            <button className='btn btnstd' type="submit">Submit</button>
         </fieldset>
         </form>
         </div>
