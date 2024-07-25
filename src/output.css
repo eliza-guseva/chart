@@ -592,6 +592,18 @@ video {
   margin-top: 1rem !important;
 }
 
+.flex{
+  display: flex;
+}
+
+.items-center{
+  align-items: center;
+}
+
+.justify-center{
+  justify-content: center;
+}
+
 .text-center{
   text-align: center;
 }
@@ -712,7 +724,7 @@ button:focus{
 .header.container {
   display: grid;
   width: 100%;
-  grid-template-columns: 3fr 5fr 1fr;
+  grid-template-columns: 2fr 5fr 1fr;
   margin-left: 4em;
   margin-right: 2em;
 }

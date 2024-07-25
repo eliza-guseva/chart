@@ -109,12 +109,20 @@ const Logo = () => {
     );
 }
 
+const Slogan = () => {
+    return (
+        <div className="flex items-center justify-center text-center">
+            <p>See your data</p>
+        </div>
+    );
+}
+
 
 const Nav = () => {
     return (
         <div className="header container">
             <Logo />
-            <div className="text-center"><p className="header call">See your data</p></div>
+            <Slogan />
             <Menus />
         </div>
 )};
