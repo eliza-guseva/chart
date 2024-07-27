@@ -1,12 +1,16 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './output.css';
+
 import {Login } from './components/Login';
 import Nav from './components/Nav';
 import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import Contact from './components/Contact';
-import { LoginProvider } from './context/LoginContext';
 import ZipUpload from './components/ZipUpload';
+import TheGraphs from './components/TheGraphs';
+
+import { LoginProvider } from './context/LoginContext';
+
 
 
 
@@ -23,6 +27,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/fileupload" element={<ZipUpload />} />
+          <Route path="/thegraphs" element={<TheGraphs />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </div>

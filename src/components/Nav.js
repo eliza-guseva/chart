@@ -25,9 +25,6 @@ function genLink(to, name, isOpen, toggleDropdown) {
 
 }
 
-
-
-
 const NavMenu = ({ isOpen, toggleDropdown }) => {
     return ( <li className="nav top element" >
         <img className="menu icon" onClick={toggleDropdown}
@@ -35,6 +32,9 @@ const NavMenu = ({ isOpen, toggleDropdown }) => {
         <ul className={`nav menu ${isOpen ? 'show' : ''}`}>
         <li>
             {genLink("/", "Home", isOpen, toggleDropdown)}
+        </li>
+        <li>
+            {genLink("/fileupload", "Parse data", isOpen, toggleDropdown)}
         </li>
         <li>
             {genLink("/contact", "Contact", isOpen, toggleDropdown)}
