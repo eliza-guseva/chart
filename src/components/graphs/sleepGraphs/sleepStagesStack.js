@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { scaleTime, scaleLinear } from '@visx/scale';
-import { LinePath, AreaClosed } from '@visx/shape';
+import { LinePath, AreaClosed, AreaStack } from '@visx/shape';
 import { curveMonotoneX } from '@visx/curve';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { Group } from '@visx/group';
@@ -14,9 +14,10 @@ import { Bounds } from '@visx/brush/lib/types';
 import BaseBrush, { BaseBrushState, UpdateBrush } from '@visx/brush/lib/BaseBrush';
 import { BrushHandleRenderProps } from '@visx/brush/lib/BrushHandle';
 import { Axis } from '@visx/visx';
+import { max } from 'd3-array';
 
 const formatDate = timeFormat('%b %d %Y');
-const WIDTH = 1000;
+const WIDTH = 1200;
 const HEIGHT = 600;
 const MARGIN = { top: 30, right: 30, bottom: 50, left: 50 };
 const CHART_SEPARATION = 30;
@@ -63,6 +64,10 @@ function getIdxFromEnd(array, indexFromEnd) {
 
 function getDate(d) {
   return new Date(d.calendarDate);
+}
+
+function getSafeData(data, attribute) {
+    return (data[attribute] ?? 0) / 3600;
 }
 
 const SleepStagesStack = ({ sleepData }) => {
@@ -121,9 +126,9 @@ const SleepStagesStack = ({ sleepData }) => {
     () =>
       scaleLinear({
         range: [getBrushHeight(HEIGHT, MARGIN), 0],
-        domain: [0, 11],
+        domain: [0, max(sleepData, (d) => d.totalSleepSeconds / 3600)],
       }),
-    []
+    [sleepData]
   );
 
   const initialBrushPosition = useMemo(
@@ -133,11 +138,6 @@ const SleepStagesStack = ({ sleepData }) => {
     }),
     [brushXScale, sleepData, initIdxStart, initIdxEnd]
   );
-
-  // preprocesing data for y axis
-  const prepareYAxisData = (series) => {
-    return yScale(series / 3600) ?? 0;
-  };
 
   // event handlers
   const handleClearClick = () => {
@@ -168,7 +168,7 @@ const SleepStagesStack = ({ sleepData }) => {
     }
   };
 
-  console.log(getBrushHeight(HEIGHT, MARGIN));
+  console.log(HEIGHT, MARGIN);
 
   return (
     <div>
@@ -184,12 +184,10 @@ const SleepStagesStack = ({ sleepData }) => {
         orientation={['diagonal']}
         />
       </defs>
-        
-        <Group>
           <LinePath
             data={selection}
             x={(d) => xScale(getDate(d))}
-            y={(d) => prepareYAxisData(d.remSleepSeconds)}
+            y={(d) => yScale(getSafeData(d, 'remSleepSeconds'))}
             stroke="#000000"
             strokeWidth={2}
             width={WIDTH}
@@ -198,7 +196,7 @@ const SleepStagesStack = ({ sleepData }) => {
           <LinePath
             data={selection}
             x={(d) => xScale(getDate(d))}
-            y={(d) => prepareYAxisData(d.lightSleepSeconds)}
+            y={(d) => yScale(getSafeData(d, 'lightSleepSeconds'))}
             strokeWidth={1}
             stroke="#ff0000"
             curve={curveMonotoneX}
@@ -206,9 +204,15 @@ const SleepStagesStack = ({ sleepData }) => {
           <LinePath
             data={selection}
             x={(d) => xScale(getDate(d))}
-            y={(d) => prepareYAxisData(d.deepSleepSeconds)}
+            y={(d) => yScale(getSafeData(d, 'deepSleepSeconds'))}
             stroke="#007bff"
             strokeWidth={2}
+          />
+          <AreaStack
+            data={selection}
+            keys={['awakeSleepSeconds', 'remSleepSeconds', 'lightSleepSeconds', 'deepSleepSeconds']}
+            x={(d) => xScale(getDate(d))}
+            y={(d) => yScale(getSafeData(d, 'lightSleepSeconds'))}
           />
           <AxisBottom
             top={yMax}
@@ -230,7 +234,6 @@ const SleepStagesStack = ({ sleepData }) => {
               textAnchor: 'end',
             })}
           />
-        </Group>
         <Group top={getBrushTop(HEIGHT, MARGIN) }> {/* Added top positioning for brush chart */}
           <AreaClosed
             data={sleepData}

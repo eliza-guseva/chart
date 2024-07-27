@@ -6,6 +6,7 @@ module.exports = {
         fontFamily: {
             warnes: ['Warnes', 'sans-serif'],
             nixie: ['Nixie One', 'cursive'],
+            dosis: ['Dosis', 'sans-serif'],
           },
         colors: {
             'darkbckg': '#545B62',

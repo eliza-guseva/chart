@@ -19,12 +19,12 @@ function parseJsonFile(file) {
     });
 }
 
-function parseFiles(allFiles, key) {
-    // allFiles[key] is an array of objects with name and data properties
+function parseFiles(selectFiles, key) {
+    // selectFiles[key] is an array of objects with name and data properties
     // they relate to a certain type of data, for example sleep data
     // or endurance score data. 
     return Promise.all(
-        allFiles[key].map((file) => {
+        selectFiles[key].map((file) => {
             return parseJsonFile(file.data);
         })
         // then flatten the array of arrays
@@ -66,19 +66,19 @@ function processSleepData(sleepData) {
 
 const TheGraphs = () => {
     const location = useLocation(); // here our state is stored
-    const { allFiles } = location.state || {}; // Access the passed state
+    const { selectFiles } = location.state || {}; // Access the passed state
     const [sleepData, setSleepData] = useState(null);
 
     useEffect(() => {
         // Process sleep data asynchronously
             const processData = async () => {
-                const data = await parseFiles(allFiles, 'sleep');
+                const data = await parseFiles(selectFiles, 'sleep');
                 const processedData = processSleepData(data);
                 setSleepData(processedData);
             };
 
             processData();
-        }, [allFiles]);
+        }, [selectFiles]);
     return (
         <div>
             <h1>The Graphs</h1>
