@@ -32,7 +32,7 @@ const Login = () => {
             console.log('Login successful:', response.data);
             toggleLogin();
         } catch (err) {
-            setIsLoggedIn(false);
+            //setIsLoggedIn(false);
             setError('Login failed. Please check your credentials and try again.');
         }
     };

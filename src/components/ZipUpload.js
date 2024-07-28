@@ -53,7 +53,7 @@ const SaveToLocalStorage = ({selectFiles}) => {
 
 const LoadingComponent = ({status, error, handleUpload, selectFiles}) => {
     let divclass = "mt-4 ml-4 font-bold"
-    return (<div flex flex-column items-center content-center>
+    return (<div>
             {/* write status at any state */}
             <h1>Upload the zip file data dump Garmin sent you</h1>
             <input className="mt-4" type="file" onChange={handleUpload} />
