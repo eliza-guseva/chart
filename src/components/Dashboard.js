@@ -14,7 +14,9 @@ const Dashboard = () => {
     const [newRow, setNewRow] = useState({ concept: '', definition: '', plusMinus: '' });
 
     useEffect(() => {
-        axios.get('/memories')
+        console.log('Fetching data...');
+        console.log('api base url:', process.env.REACT_APP_API_BASE_URL);
+        api.get('/memories')
           .then(response => {
             setTableData(response.data);
           })
@@ -68,29 +70,41 @@ const Dashboard = () => {
         }
         newTableData[index].plusMinus = value;
         setTableData(newTableData);
-        //axios.put(`http://localhost:5000/api/table/${newTableData[index].id}`, newTableData[index]);
+        api.put(`/memories/${newTableData[index].id}`, newTableData[index]);
     };
 
     const handleAddRow = () => {
         const row = { ...newRow, quality: { positive: 0, negative: 0 }, dateAdded: new Date() };
-        axios.post('/memories', row)
-          .then(response => {
+        api.post('/memories', row)
+        .then(response => {
             setTableData([...tableData, response.data]);
             setNewRow({ concept: '', definition: '', plusMinus: '' });
-          })
-          // on error still show the new row
+        })
+        // on error still show the new row
             .catch(error => {
                 console.error('Error adding row: ', error);
                 setTableData([...tableData, row]);
                 setNewRow({ concept: '', definition: '', plusMinus: '' });
             });
-          ;
-      };
+        ;
+    };
+
+    const handleDeleteRow = (id) => {
+        // delet from database and then update the table
+        api.delete(`/memories/${id}`)
+        .then(response => {
+            setTableData(tableData.filter(row => row.id !== id));
+        })
+        // on error still show the new row
+        .catch(error => {
+            console.error('There was an error deleting the row!', error);
+        });
+    };
 
 
       return (
-        <div className="w-100 2xl:w-4/5 flex flex-col">
-            <div className='m-10 w-100 flex'>
+        <div className="w-100 xl:w-4/5 2xl:w-3/4 flex flex-col">
+            <div className='m-10 w-100 flex flex-col md:flex-row'>
             <input className='text-black m-4'
               type="text"
               placeholder="Concept"
@@ -107,27 +121,33 @@ const Dashboard = () => {
           </div>
           <table>
             <thead>
-              <tr>
+              <tr className='border border-white border-solid'>
                 <th onClick={() => handleSort('concept')}>Concept</th>
-                <th>Definition</th>
-                <th onClick={() => handleSort('quality')}>Quality</th>
-                <th>+/-</th>
-                <th onClick={() => handleSort('dateAdded')}>Date Added</th>
+                <th className='border border-white border-solid'>Definition</th>
+                <th className='w-[4em] text-center border border-white border-solid'
+                onClick={() => handleSort('quality')}>Quality</th>
+                <th className='w-[4em] text-center border border-white border-solid'>+/-</th>
+                <th className='w-[5em] text-center border border-white border-solid' onClick={() => handleSort('dateAdded')}>Date Added</th>
               </tr>
             </thead>
             <tbody>
               {sortedData.map((row, index) => (
-                <tr key={row.id}>
-                  <td>{row.concept}</td>
-                  <td onClick={() => handleDefinitionClick(index)}>
+                <tr key={row.id} className='border border-white border-solid' >
+                    <td className='border border-white border-solid'>
+                        <button className='mr-4 hover:bg-red-500'
+                        onClick={() => handleDeleteRow(row.id)}
+                        >-</button>
+                        {row.concept}
+                        </td>
+                    <td className='border border-white border-solid' onClick={() => handleDefinitionClick(index)}>
                     {row.showDefinition ? row.definition : 'Click to show'}
-                  </td>
-                  <td>{`+${row.quality.positive}/-${row.quality.negative}`}</td>
-                  <td>
+                    </td>
+                    <td className='border border-white border-solid'>{`+${row.quality.positive}/-${row.quality.negative}`}</td>
+                    <td className='border border-white border-solid'>
                     <button onClick={() => handlePlusMinusClick(index, '+')}>+</button>
                     <button onClick={() => handlePlusMinusClick(index, '-')}>-</button>
-                  </td>
-                  <td>{new Date(row.dateAdded).toLocaleDateString()}</td>
+                    </td>
+                    <td className='border border-white border-solid'>{new Date(row.dateAdded).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>
