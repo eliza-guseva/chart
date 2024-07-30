@@ -64,9 +64,8 @@ function processSleepData(sleepData) {
         
 
 
-const TheGraphs = () => {
+const TheGraphs = ({selectFiles}) => {
     const location = useLocation(); // here our state is stored
-    const { selectFiles } = location.state || {}; // Access the passed state
     const [sleepData, setSleepData] = useState(null);
 
     useEffect(() => {
@@ -82,7 +81,6 @@ const TheGraphs = () => {
     return (
         <div>
             <h1>The Graphs</h1>
-            {/* Pass the processed sleepData to SleepGraph */}
             {sleepData && <SleepStagesStack sleepData={sleepData} />}
         </div>
     );

@@ -10,7 +10,7 @@
     @apply 
     min-h-screen 
     flex flex-col items-center justify-start 
-    text-[calc(10px+2vmin)] text-white font-dosis
+    text-[calc(8px+2vmin)] text-white font-dosis
     bg-darkbckg
   }
 
@@ -20,11 +20,6 @@
     mt-1 mb-1
     rounded-md
     shadow-lg
-    border-2
-    focus:outline-none
-    focus:ring-2
-    focus:ring-blue-500
-    focus:ring-opacity-50
     transition
     duration-300
     ease-in-out
@@ -32,16 +27,19 @@
 
 .btnstd {
     @apply
-    bg-darkbtn hover:bg-darkbtnhover
+    bg-btn-grad hover:bg-btn-hover-grad
     hover:shadow-2xl
-    text-white font-bold
-    border-darkbtnhover
+    text-white font-bold text-center
+    border
+    border-white
 }
 
 .btnboring {
     @apply
-    bg-white hover:bg-gray-200
-    text-black font-bold
+    bg-btn-boring-grad hover:bg-btn-hover-grad
+    text-white
+    border
+    border-darkbckg
 }
 
 button {
