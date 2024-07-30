@@ -19,11 +19,24 @@ function getSleepDataFiles(filesObject) {
 }
 
 
-const LoadTheFile = ({status, error, handleUpload, isLoaded}) => {
-    return (<div className={`p-4 transition-transform duration-500 ${isLoaded ? 'scale-0' : 'scale-100'}`}>
+const LoadTheFile = ({status, setStatus, error, handleUpload, isLoaded}) => {
+    return (<div className="p 4">
         <h1 className="font-bold">Upload the zip file data dump Garmin sent you</h1>
-        <input className="mt-4" type="file" onChange={handleUpload} />
-        {error && <div className="text-red-500 mt-2">Error: {error.message}</div>}
+        <input 
+        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        type="file" 
+        onChange={handleUpload} 
+        id = "file-upload"
+        />
+        <label 
+            htmlFor="file-upload" 
+            className="btn bg-btn-grad py-2 px-4 cursor-pointer inline-block text-white"
+        >Browse files</label>
+        {error && 
+        <div className="text-red-500 mt-2">Error: {error.message}
+        {setStatus(StatusEnum.NOT_STARTED)}
+        </div>
+        }
         {status === StatusEnum.LOADING && <div className="mt-4 ml-4 font-bold">Loading...</div>}
     </div>)
 }
@@ -31,7 +44,7 @@ const LoadTheFile = ({status, error, handleUpload, isLoaded}) => {
 
 const LoadAnotherFile = ({ isLoaded, toggleIsLoaded }) => {
     return (
-        <div className={`flex justify-end h-16 mt-4 transition-transform duration-500 ${isLoaded ? 'scale-100' : 'scale-0'}`}>
+        <div className="flex justify-end h-16 mt-4">
             <button className="btn btnboring" onClick={toggleIsLoaded}>
                 {'Load Another File'}
             </button>
@@ -40,7 +53,7 @@ const LoadAnotherFile = ({ isLoaded, toggleIsLoaded }) => {
 };
 
 
-const LoadingComponent = ({status, error, handleUpload, selectFiles}) => {
+const LoadingComponent = ({status, setStatus, error, handleUpload, selectFiles}) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
@@ -66,6 +79,7 @@ const LoadingComponent = ({status, error, handleUpload, selectFiles}) => {
             ) : (
                 <LoadTheFile 
                 status={status} 
+                setStatus={setStatus}
                 error={error} 
                 handleUpload={handleUpload} 
                 isLoaded={isLoaded} />
@@ -79,6 +93,7 @@ const LoadingComponent = ({status, error, handleUpload, selectFiles}) => {
 
 LoadingComponent.propTypes = {
     status: PropTypes.string.isRequired,
+    setStatus: PropTypes.func.isRequired,
     error: PropTypes.object,
     handleUpload: PropTypes.func.isRequired,
     selectFiles: PropTypes.object.isRequired,
@@ -91,6 +106,7 @@ LoadAnotherFile.propTypes = {
 
 LoadTheFile.propTypes = {
     status: PropTypes.string.isRequired,
+    setStatus: PropTypes.func.isRequired,
     error: PropTypes.object,
     handleUpload: PropTypes.func.isRequired,
     isLoaded: PropTypes.bool.isRequired,
@@ -146,7 +162,7 @@ const UnzipNPlot = () => {
             .catch(err => setError(err));
     };
 
-    return LoadingComponent({status, error, handleUpload, selectFiles});
+    return LoadingComponent({status, setStatus, error, handleUpload, selectFiles});
 };
 
 export { UnzipNPlot };
