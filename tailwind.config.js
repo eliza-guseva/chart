@@ -3,6 +3,10 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx,html}"],
   theme: {
     extend: {
+        screens: {
+            '3xl': '1920px', // Define the 3xl breakpoint at 1920px
+            '4xl': '2560px', // Define the 4xl breakpoint at 2560px
+          },
         fontFamily: {
             warnes: ['Warnes', 'sans-serif'],
             nixie: ['Nixie One', 'cursive'],

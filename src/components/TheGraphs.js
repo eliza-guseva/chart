@@ -16,7 +16,7 @@ const TabsEnum = Object.freeze({
 const Tabs = ({setSelectedTab}) => {
 
     return (
-        <div className='w-full grid grid-cols-2 md:grid-cols-4 '>
+        <div className='w-full grid grid-cols-2 md:grid-cols-4 mb-4'>
             <button onClick={() => setSelectedTab(TabsEnum.WELLNESS)}>Wellness</button>
             <button onClick={() => setSelectedTab(TabsEnum.PERFORMANCE)}>Performance</button>
             <button onClick={() => setSelectedTab(TabsEnum.HRV)}>HRV</button>

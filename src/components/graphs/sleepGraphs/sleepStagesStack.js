@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { scaleTime, scaleLinear } from '@visx/scale';
 import { LinePath, AreaClosed, AreaStack } from '@visx/shape';
@@ -13,8 +13,7 @@ import { Brush } from '@visx/brush';
 import { max } from 'd3-array';
 
 const formatDate = timeFormat('%b %d %Y');
-const WIDTH = 1200;
-const HEIGHT = 600;
+const WHRatio = 0.6;
 const MARGIN = { top: 30, right: 30, bottom: 50, left: 50 };
 const CHART_SEPARATION = 30;
 const PATTERN_ID = 'brush_pattern';
@@ -27,6 +26,18 @@ const selectedBrushStyle = {
   stroke: 'white',
 };
 
+function calculateSvgWidth(containerWidth) {
+    const calculatedWidth = containerWidth * 0.8;
+    if (containerWidth < 600) {
+        return containerWidth
+    }
+    return calculatedWidth;
+  }
+
+function calculateSvgHeight(containerWidth) {
+    return calculateSvgWidth(containerWidth) * WHRatio;
+}
+
 function getInnerHeight(height, margin) {
   return height - margin.top - margin.bottom;
 }
@@ -35,9 +46,9 @@ function getBrushHeight(height, margin) {
   return getInnerHeight(height, margin) * 0.2;
 }
 
-function getMainChartBottom(margin) {
-  let innerHeight = getInnerHeight(HEIGHT, MARGIN);
-  let brushHeight = getBrushHeight(HEIGHT, MARGIN);
+function getMainChartBottom(margin, height) {
+  let innerHeight = getInnerHeight(height, MARGIN);
+  let brushHeight = getBrushHeight(height, MARGIN);
   return margin.top + innerHeight - brushHeight - CHART_SEPARATION; 
 }
 
@@ -69,9 +80,38 @@ const SleepStagesStack = ({ sleepData }) => {
   const [selection, setSelection] = useState(
     sleepData.slice(initIdxStart, initIdxEnd)
   );
-  // margins and heights
+  const [svgDimensions, setSvgDimensions] = useState({ width: 600, height: 600 }); // Default to 600px for both width and height
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const newWidth = calculateSvgWidth(containerWidth);
+        const newHeight = calculateSvgHeight(containerWidth);
+
+        // Only update state if the new dimensions are different
+        if (newWidth !== svgDimensions.width || newHeight !== svgDimensions.height) {
+          setSvgDimensions({ width: newWidth, height: newHeight });
+        }
+      }
+    };
+
+    // Initial calculation
+    handleResize();
+
+    // Recalculate on window resize
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [svgDimensions]); // Dependency array includes svgDimensions to avoid unnecessary updates
+
+  const { width: svgWidth, height: svgHeight } = svgDimensions;
+
+
   const yMax = getMainChartBottom(MARGIN);
-  const xMax = getXMax(WIDTH, MARGIN);
+  const xMax = getXMax(svgWidth, MARGIN);
   // add total sleep to sleepData
 
   // preparing brush
@@ -117,7 +157,7 @@ const SleepStagesStack = ({ sleepData }) => {
   const brushYScale = useMemo(
     () =>
       scaleLinear({
-        range: [getBrushHeight(HEIGHT, MARGIN), 0],
+        range: [getBrushHeight(svgHeight, MARGIN), 0],
         domain: [0, max(sleepData, (d) => d.totalSleepSeconds / 3600)],
       }),
     [sleepData]
@@ -132,9 +172,8 @@ const SleepStagesStack = ({ sleepData }) => {
   );
 
   return (
-    <div>
-      <h2>Sleep Graph</h2>
-      <svg width={WIDTH} height={HEIGHT} className="bg-darkbtnhover rounded-lg">
+    <div ref={containerRef} className='place-self-center w-full flex justify-center'>
+      <svg className="bg-darkbtnhover rounded-lg" width={svgWidth} height={svgHeight}>
       <defs>
         <PatternLines
         id={PATTERN_ID}
@@ -151,7 +190,7 @@ const SleepStagesStack = ({ sleepData }) => {
             y={(d) => yScale(getSafeData(d, 'remSleepSeconds'))}
             stroke="#000000"
             strokeWidth={2}
-            width={WIDTH}
+            width={svgWidth}
             yMax={yMax}
           />
           <LinePath
@@ -195,7 +234,7 @@ const SleepStagesStack = ({ sleepData }) => {
               textAnchor: 'end',
             })}
           />
-        <Group top={getBrushTop(HEIGHT, MARGIN) }> {/* Added top positioning for brush chart */}
+        <Group top={getBrushTop(svgHeight, MARGIN) }> {/* Added top positioning for brush chart */}
           <AreaClosed
             data={sleepData}
             x={(d) => brushXScale(getDate(d))}
@@ -206,7 +245,7 @@ const SleepStagesStack = ({ sleepData }) => {
             strokeWidth={1}
           />
           <AxisBottom
-            top={getBrushHeight(HEIGHT, MARGIN)}
+            top={getBrushHeight(svgHeight, MARGIN)}
             scale={brushXScale}
             tickFormat={formatDate}
           />
@@ -228,7 +267,7 @@ const SleepStagesStack = ({ sleepData }) => {
             xScale={brushXScale}
             yScale={brushYScale}
             width={xMax}
-            height={getBrushHeight(HEIGHT, MARGIN)}
+            height={getBrushHeight(svgHeight, MARGIN)}
             initialBrushPosition={initialBrushPosition}
             onChange={onBrushChange}
             selectedBoxStyle={selectedBrushStyle}

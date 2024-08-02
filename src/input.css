@@ -6,6 +6,15 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer utilities {
+    @responsive {
+      .4xl\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  }
+
 .App {
     @apply 
     min-h-screen 
@@ -104,6 +113,15 @@ h1 {
     padding: calc(var(--s)/10 + .05px) calc(var(--s)/10);
     --_p: 100%;
     --_i: 1;
+  }
+
+  .graphdiv {
+    @apply
+    grid
+    gap-24
+    grid-cols-1
+    4xl:grid-cols-2
+    w-full
   }
   
   
