@@ -25,7 +25,7 @@ function getSleepDataFiles(filesObject) {
 
 
 const LoadTheFile = ({status, setStatus, error, handleUpload, isLoaded}) => {
-    return (<div className="p 4">
+    return (<div className="p-4 w-full">
         <h1 className="font-bold">Upload the zip file data dump Garmin sent you</h1>
         <input 
         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -49,7 +49,7 @@ const LoadTheFile = ({status, setStatus, error, handleUpload, isLoaded}) => {
 
 const LoadAnotherFile = ({ isLoaded, toggleIsLoaded }) => {
     return (
-        <div className="flex justify-end h-16 mt-4">
+        <div className="flex justify-end h-16 mt-4 w-full">
             <button className="btn btnboring" onClick={toggleIsLoaded}>
                 {'Load Another File'}
             </button>
@@ -74,10 +74,10 @@ const LoadingComponent = ({status, setStatus, error, handleUpload, selectFiles})
     };
 
     return (
-        <div>
+        <div className="w-full md:w-4/5">
             {/* if is loaded show LoadTheFile if is not loaded show LoadAnotheFile */}
             {isLoaded ? (
-                <div>
+                <div className="w-full">
                 <LoadAnotherFile isLoaded={isLoaded} toggleIsLoaded={toggleIsLoaded} />
                 <TheGraphs selectFiles={selectFiles} />
                 </div>

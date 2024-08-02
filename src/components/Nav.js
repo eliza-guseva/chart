@@ -34,7 +34,7 @@ const NavMenu = ({ isOpen, toggleDropdown }) => {
             {genLink("/", "Home", isOpen, toggleDropdown)}
         </li>
         <li>
-            {genLink("/fileupload", "Parse data", isOpen, toggleDropdown)}
+            {genLink("/thegraphs", "Parse data", isOpen, toggleDropdown)}
         </li>
         <li>
             {genLink("/contact", "Contact", isOpen, toggleDropdown)}

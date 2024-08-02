@@ -26,8 +26,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/fileupload" element={<UnzipNPlot />} />
-          <Route path="/thegraphs" element={<TheGraphs />} />
+          <Route path="/thegraphs" element={<UnzipNPlot />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </div>

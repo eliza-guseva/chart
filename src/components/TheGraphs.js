@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import SleepStagesStack from './graphs/sleepGraphs/sleepStagesStack';
+import Wellness from './graphs/Wellness';
+import Performance from './graphs/Performance';
 import { parseFiles, processSleepData } from './graphs/fileAndDataProcessors';
 
 
@@ -12,11 +13,10 @@ const TabsEnum = Object.freeze({
   });
 
 
-const Tabs = () => {
-    const [selectedTab, setSelectedTab] = useState(TabsEnum.WELLNESS);
+const Tabs = ({setSelectedTab}) => {
 
     return (
-        <div>
+        <div className='w-full grid grid-cols-2 md:grid-cols-4 '>
             <button onClick={() => setSelectedTab(TabsEnum.WELLNESS)}>Wellness</button>
             <button onClick={() => setSelectedTab(TabsEnum.PERFORMANCE)}>Performance</button>
             <button onClick={() => setSelectedTab(TabsEnum.HRV)}>HRV</button>
@@ -28,21 +28,23 @@ const Tabs = () => {
 
 const TheGraphs = ({selectFiles}) => {
     const [sleepData, setSleepData] = useState(null);
+    const [selectedTab, setSelectedTab] = useState(TabsEnum.WELLNESS);
 
     useEffect(() => {
-        // Process sleep data asynchronously
-            const processData = async () => {
-                const data = await parseFiles(selectFiles, 'sleep');
-                const processedData = processSleepData(data);
-                setSleepData(processedData);
-            };
+        const processData = async () => {
+            const data = await parseFiles(selectFiles, 'sleep');
+            const processedData = processSleepData(data);
+            setSleepData(processedData);
+        };
 
             processData();
         }, [selectFiles]);
     return (
-        <div>
-            <Tabs />
-            {sleepData && <SleepStagesStack sleepData={sleepData} />}
+        <div className='w-full'>
+            <Tabs setSelectedTab={setSelectedTab} />
+            {/* conditionally render according to selectedTab */}
+            {selectedTab === TabsEnum.WELLNESS && <Wellness sleepData={sleepData} />}
+            {selectedTab === TabsEnum.PERFORMANCE && <Performance />}
         </div>
     );
 };
@@ -51,5 +53,11 @@ const TheGraphs = ({selectFiles}) => {
 TheGraphs.propTypes = {
     selectFiles: PropTypes.object.isRequired,
 };
+
+
+Tabs.propTypes = {
+    setSelectedTab: PropTypes.func.isRequired,
+};
+
 
 export default TheGraphs;
