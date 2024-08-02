@@ -10,10 +10,6 @@ import { format as d3Format } from 'd3-format';
 import { timeFormat } from 'd3-time-format';
 import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';
-import { Bounds } from '@visx/brush/lib/types';
-import BaseBrush, { BaseBrushState, UpdateBrush } from '@visx/brush/lib/BaseBrush';
-import { BrushHandleRenderProps } from '@visx/brush/lib/BrushHandle';
-import { Axis } from '@visx/visx';
 import { max } from 'd3-array';
 
 const formatDate = timeFormat('%b %d %Y');
@@ -47,10 +43,6 @@ function getMainChartBottom(margin) {
 
 function getXMax(width, margin) {
   return width - margin.left - margin.right;
-}
-
-function getBrushBottom(height, margin) {
-  return height - margin.bottom;
 }
 
 function getBrushTop(height, margin) {
@@ -138,37 +130,6 @@ const SleepStagesStack = ({ sleepData }) => {
     }),
     [brushXScale, sleepData, initIdxStart, initIdxEnd]
   );
-
-  // event handlers
-  const handleClearClick = () => {
-    if (brushRef?.current) {
-      setSelection(sleepData);
-      brushRef.current.reset();
-    }
-  };
-
-  const handleResetClick = () => {
-    if (brushRef?.current) {
-      const updater = (prevBrush) => {
-        const newExtent = brushRef.current.getExtent(
-          initialBrushPosition.start,
-          initialBrushPosition.end
-        );
-
-        const newState = {
-          ...prevBrush,
-          start: { y: newExtent.y0, x: newExtent.x0 },
-          end: { y: newExtent.y1, x: newExtent.x1 },
-          extent: newExtent,
-        };
-
-        return newState;
-      };
-      brushRef.current.updateBrush(updater);
-    }
-  };
-
-  console.log(HEIGHT, MARGIN);
 
   return (
     <div>
