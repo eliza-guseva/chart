@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import JSZip from "jszip";
-import { StatusEnum } from "./Common";
 import TheGraphs from "./TheGraphs";
 import { 
     WELLNESS_HEADER, 
     ENDURANCE_HEADER, 
     SLEEP_TAIL
 } from "../common/common";
+
+const StatusEnum = Object.freeze({
+    NOT_STARTED: 'not_started',
+    LOADING: 'loading',
+    LOADED: 'loaded'
+  });
 
 
 function getEnudranceScoreFiles(filesObject) {
