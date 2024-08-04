@@ -1,8 +1,8 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { scaleTime, scaleLinear } from '@visx/scale';
-import { LinePath, AreaClosed, AreaStack } from '@visx/shape';
-import { curveMonotoneX, curveLinear } from '@visx/curve';
+import {AreaClosed } from '@visx/shape';
+import {curveLinear } from '@visx/curve';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { Group } from '@visx/group';
 import { extent } from 'd3-array';
@@ -11,6 +11,8 @@ import { timeFormat } from 'd3-time-format';
 import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';
 import { max } from 'd3-array';
+import { getDate } from './fileAndDataProcessors';
+import { MyAreaStackVsDate } from '../GraphComponents';
 
 const formatDate = timeFormat('%b %d %Y');
 const WHRatio = 0.6;
@@ -66,39 +68,13 @@ function getIdxFromEnd(array, indexFromEnd) {
   return array.length - indexFromEnd;
 }
 
-function getDate(d) {
-  return new Date(d.calendarDate);
-}
+
 
 const KEYS = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
 const COLORS = ['#007bff', '#ff44cc', '#44aaff', '#ffaa44'];
 const TSH = 'totalSleepHours';
 
 
-const MyAreaStack = ({data, xScale, yScale, keys, colors, ...props}) => {
-    let stack = [];
-    // iterate from the end of the keys array
-    for (let i = keys.length - 1; i >= 0; i--) {
-        console.log(i);
-        stack.push(
-            <AreaClosed
-                className={keys[i]}
-                key={i}
-                data={data}
-                x={(d) => xScale(getDate(d))}
-                // y = sum of all previous keys
-                y={(d) => {
-                    let sum = keys.slice(0, i + 1).reduce((acc, key) => acc + d[key], 0)
-                    return yScale(sum)}
-                }
-                fill={colors[i]}
-                yScale={yScale}
-                xScale={xScale}
-            />
-        );
-}
-return <>{stack}</>;
-};
 
 
 const SleepStagesStack = ({ sleepData }) => {
@@ -212,7 +188,7 @@ const SleepStagesStack = ({ sleepData }) => {
         orientation={['diagonal']}
         />
       </defs>
-      <MyAreaStack
+      <MyAreaStackVsDate
         data={selection}
         xScale={xScale}
         yScale={yScale}

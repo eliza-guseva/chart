@@ -1,7 +1,7 @@
 import { timeParse } from 'd3-time-format';
 
 
-
+// parsing data
 export function parseJsonFile(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -28,6 +28,7 @@ export function parseFiles(selectFiles, key) {
     ).then((data) => [].concat(...data));
 }
 
+// cleaning data
 function cleanData(data, keys) {
     return data.map(item => {
       const cleanedItem = { ...item };
@@ -48,6 +49,11 @@ function secondsToHours(data, keys) {
       });
       return hours;
     });
+  }
+
+// accessor functions
+export function getDate(d) {
+    return new Date(d.calendarDate);
   }
 
 export function processSleepData(sleepData) {
