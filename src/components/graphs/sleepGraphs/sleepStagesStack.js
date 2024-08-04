@@ -70,8 +70,35 @@ function getDate(d) {
   return new Date(d.calendarDate);
 }
 
-const KEYS = ['deepSleepScaled', 'remSleepScaled'];
+const KEYS = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
+const COLORS = ['#007bff', '#ff44cc', '#44aaff', '#ffaa44'];
 const TSH = 'totalSleepHours';
+
+
+const MyAreaStack = ({data, xScale, yScale, keys, colors, ...props}) => {
+    let stack = [];
+    // iterate from the end of the keys array
+    for (let i = keys.length - 1; i >= 0; i--) {
+        console.log(i);
+        stack.push(
+            <AreaClosed
+                className={keys[i]}
+                key={i}
+                data={data}
+                x={(d) => xScale(getDate(d))}
+                // y = sum of all previous keys
+                y={(d) => {
+                    let sum = keys.slice(0, i + 1).reduce((acc, key) => acc + d[key], 0)
+                    return yScale(sum)}
+                }
+                fill={colors[i]}
+                yScale={yScale}
+                xScale={xScale}
+            />
+        );
+}
+return <>{stack}</>;
+};
 
 
 const SleepStagesStack = ({ sleepData }) => {
@@ -171,11 +198,10 @@ const SleepStagesStack = ({ sleepData }) => {
     }),
     [brushXScale, sleepData, initIdxStart, initIdxEnd]
   );
-  console.log(selection[0])
 
   return (
     <div ref={containerRef} className='place-self-center w-full flex justify-center'>
-      <svg className="bg-darkbtnhover rounded-lg" width={svgWidth} height={svgHeight}>
+      <svg className="bg-gentlewhite rounded-lg" width={svgWidth} height={svgHeight}>
       <defs>
         <PatternLines
         id={PATTERN_ID}
@@ -186,47 +212,14 @@ const SleepStagesStack = ({ sleepData }) => {
         orientation={['diagonal']}
         />
       </defs>
-      <AreaClosed
-            data={selection}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(d.remSleepHours + d.deepSleepHours + d.lightSleepHours + d.awakeSleepHours)}
-            yScale={yScale}
-            fill="#ffffff"
-            stroke="#ffffff"
-            strokeWidth={1}
-            curve={curveLinear}
-        />
-        <AreaClosed
-            data={selection}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(d.remSleepHours + d.deepSleepHours + d.lightSleepHours)}
-            yScale={yScale}
-            fill="#00ff00"
-            stroke="#00ff00"
-            strokeWidth={1}
-            curve={curveLinear}
-        />
-        <AreaClosed
-            data={selection}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(d.remSleepHours + d.deepSleepHours)}
-            yScale={yScale}
-            fill="#ff0000"
-            stroke="#ff0000"
-            strokeWidth={1}
-            curve={curveLinear}
-        />
-        <AreaClosed
-            data={selection}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(d.deepSleepHours)}
-            yScale={yScale}
-            fill="#007bff"
-            stroke="#007bff"
-            strokeWidth={1}
-            curve={curveLinear}
-        />
-            
+      <MyAreaStack
+        data={selection}
+        xScale={xScale}
+        yScale={yScale}
+        keys={KEYS}
+        colors={COLORS}
+        curve={curveLinear}
+        />  
           <AxisBottom
             top={yMax}
             scale={xScale}
