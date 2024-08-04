@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { scaleTime, scaleLinear } from '@visx/scale';
 import { LinePath, AreaClosed, AreaStack } from '@visx/shape';
-import { curveMonotoneX } from '@visx/curve';
+import { curveMonotoneX, curveLinear } from '@visx/curve';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { Group } from '@visx/group';
 import { extent } from 'd3-array';
@@ -46,6 +46,7 @@ function getBrushHeight(height, margin) {
   return getInnerHeight(height, margin) * 0.2;
 }
 
+
 function getMainChartBottom(margin, height) {
   let innerHeight = getInnerHeight(height, MARGIN);
   let brushHeight = getBrushHeight(height, MARGIN);
@@ -69,9 +70,9 @@ function getDate(d) {
   return new Date(d.calendarDate);
 }
 
-function getSafeData(data, attribute) {
-    return (data[attribute] ?? 0) / 3600;
-}
+const KEYS = ['deepSleepScaled', 'remSleepScaled'];
+const TSH = 'totalSleepHours';
+
 
 const SleepStagesStack = ({ sleepData }) => {
   const initIdxStart = getIdxFromEnd(sleepData, 60);
@@ -110,7 +111,7 @@ const SleepStagesStack = ({ sleepData }) => {
   const { width: svgWidth, height: svgHeight } = svgDimensions;
 
 
-  const yMax = getMainChartBottom(MARGIN);
+  const yMax = getMainChartBottom(MARGIN, svgHeight);
   const xMax = getXMax(svgWidth, MARGIN);
   // add total sleep to sleepData
 
@@ -120,7 +121,7 @@ const SleepStagesStack = ({ sleepData }) => {
     const { x0, x1, y0, y1 } = domain;
     const dataCopy = sleepData.filter((d) => {
       const x = getDate(d);
-      const y = d.totalSleepSeconds / 3600;
+      const y = d[TSH];
       return x > x0 && x < x1 && y > y0 && y < y1;
     });
     setSelection(dataCopy);
@@ -139,10 +140,10 @@ const SleepStagesStack = ({ sleepData }) => {
     () =>
       scaleLinear({
         range: [yMax, MARGIN.top],
-        domain: [0, 11],
+        domain: [0, max(selection, (d) => d[TSH])],
         nice: true,
       }),
-    [yMax]
+    [yMax, selection]
   );
 
   const brushXScale = useMemo(
@@ -158,9 +159,9 @@ const SleepStagesStack = ({ sleepData }) => {
     () =>
       scaleLinear({
         range: [getBrushHeight(svgHeight, MARGIN), 0],
-        domain: [0, max(sleepData, (d) => d.totalSleepSeconds / 3600)],
+        domain: [0, max(sleepData, (d) => d[TSH])],
       }),
-    [sleepData]
+    [sleepData, svgHeight]
   );
 
   const initialBrushPosition = useMemo(
@@ -170,6 +171,7 @@ const SleepStagesStack = ({ sleepData }) => {
     }),
     [brushXScale, sleepData, initIdxStart, initIdxEnd]
   );
+  console.log(selection[0])
 
   return (
     <div ref={containerRef} className='place-self-center w-full flex justify-center'>
@@ -184,36 +186,47 @@ const SleepStagesStack = ({ sleepData }) => {
         orientation={['diagonal']}
         />
       </defs>
-          <LinePath
+      <AreaClosed
             data={selection}
             x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(getSafeData(d, 'remSleepSeconds'))}
-            stroke="#000000"
-            strokeWidth={2}
-            width={svgWidth}
-            yMax={yMax}
-          />
-          <LinePath
-            data={selection}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(getSafeData(d, 'lightSleepSeconds'))}
+            y={(d) => yScale(d.remSleepHours + d.deepSleepHours + d.lightSleepHours + d.awakeSleepHours)}
+            yScale={yScale}
+            fill="#ffffff"
+            stroke="#ffffff"
             strokeWidth={1}
+            curve={curveLinear}
+        />
+        <AreaClosed
+            data={selection}
+            x={(d) => xScale(getDate(d))}
+            y={(d) => yScale(d.remSleepHours + d.deepSleepHours + d.lightSleepHours)}
+            yScale={yScale}
+            fill="#00ff00"
+            stroke="#00ff00"
+            strokeWidth={1}
+            curve={curveLinear}
+        />
+        <AreaClosed
+            data={selection}
+            x={(d) => xScale(getDate(d))}
+            y={(d) => yScale(d.remSleepHours + d.deepSleepHours)}
+            yScale={yScale}
+            fill="#ff0000"
             stroke="#ff0000"
-            curve={curveMonotoneX}
-          />
-          <LinePath
+            strokeWidth={1}
+            curve={curveLinear}
+        />
+        <AreaClosed
             data={selection}
             x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(getSafeData(d, 'deepSleepSeconds'))}
+            y={(d) => yScale(d.deepSleepHours)}
+            yScale={yScale}
+            fill="#007bff"
             stroke="#007bff"
-            strokeWidth={2}
-          />
-          <AreaStack
-            data={selection}
-            keys={['awakeSleepSeconds', 'remSleepSeconds', 'lightSleepSeconds', 'deepSleepSeconds']}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(getSafeData(d, 'lightSleepSeconds'))}
-          />
+            strokeWidth={1}
+            curve={curveLinear}
+        />
+            
           <AxisBottom
             top={yMax}
             scale={xScale}
@@ -238,7 +251,7 @@ const SleepStagesStack = ({ sleepData }) => {
           <AreaClosed
             data={sleepData}
             x={(d) => brushXScale(getDate(d))}
-            y={(d) => brushYScale(d.totalSleepSeconds / 3600)}
+            y={(d) => brushYScale(d[TSH])}
             yScale={brushYScale}
             fill="#ffddff"
             stroke={`url(#${GRADIENT_ID})`}

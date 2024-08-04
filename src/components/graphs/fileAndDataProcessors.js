@@ -28,6 +28,28 @@ export function parseFiles(selectFiles, key) {
     ).then((data) => [].concat(...data));
 }
 
+function cleanData(data, keys) {
+    return data.map(item => {
+      const cleanedItem = { ...item };
+      keys.forEach(key => {
+        if (isNaN(cleanedItem[key])) {
+          cleanedItem[key] = 0;
+        }
+      });
+      return cleanedItem;
+    });
+  };
+
+function secondsToHours(data, keys) {
+    return data.map(item => {
+      const hours = { ...item };
+      keys.forEach(key => {
+        hours[key] = hours[key] / 3600;
+      });
+      return hours;
+    });
+  }
+
 export function processSleepData(sleepData) {
     // filter element array objects with key sleepStartTimestampGMT null
     sleepData = sleepData.filter(
@@ -54,6 +76,27 @@ export function processSleepData(sleepData) {
             + (element.remSleepSeconds ?? 0)
             + (element.awakeSleepSeconds ?? 0)
             + (element.unmeasurableSeconds ?? 0);
+            return element;
+        });
+    // clean data
+    const keys = [
+        'awakeSleepSeconds', 
+        'remSleepSeconds', 
+        'lightSleepSeconds', 
+        'deepSleepSeconds', 
+        'totalSleepSeconds'
+    ];
+    sleepData = cleanData(sleepData, keys);
+    // convert seconds to hours
+    sleepData = secondsToHours(sleepData, keys);
+    // rename keys from seconds to hours
+    sleepData = sleepData.map(
+        (element) => {
+            element.awakeSleepHours = element.awakeSleepSeconds;
+            element.remSleepHours = element.remSleepSeconds;
+            element.lightSleepHours = element.lightSleepSeconds;
+            element.deepSleepHours = element.deepSleepSeconds;
+            element.totalSleepHours = element.totalSleepSeconds;
             return element;
         });
     return sleepData;

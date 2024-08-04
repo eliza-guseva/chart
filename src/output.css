@@ -622,6 +622,10 @@ video {
   margin-top: 1rem !important;
 }
 
+.mb-4{
+  margin-bottom: 1rem;
+}
+
 .ml-4{
   margin-left: 1rem;
 }
@@ -636,10 +640,6 @@ video {
 
 .mt-4{
   margin-top: 1rem;
-}
-
-.mb-4{
-  margin-bottom: 1rem;
 }
 
 .inline-block{
@@ -676,10 +676,6 @@ video {
 
 .w-full{
   width: 100%;
-}
-
-.w-80{
-  width: 20rem;
 }
 
 .cursor-pointer{
