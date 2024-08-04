@@ -1,32 +1,33 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { scaleTime, scaleLinear } from '@visx/scale';
-import {AreaClosed } from '@visx/shape';
 import {curveLinear } from '@visx/curve';
 import { AxisBottom, AxisLeft } from '@visx/axis';
-import { Group } from '@visx/group';
 import { extent } from 'd3-array';
 import { format as d3Format } from 'd3-format';
-import { timeFormat } from 'd3-time-format';
-import { PatternLines } from '@visx/pattern';
-import { Brush } from '@visx/brush';
 import { max } from 'd3-array';
-import { getDate } from './fileAndDataProcessors';
-import { MyAreaStackVsDate } from '../GraphComponents';
+import { getDate } from '../fileAndDataProcessors';
+import { 
+    MyAreaStackVsDate, 
+    BrushSubGraph, 
+    getInnerHeight,
+    getBrushHeight,
+    getXMax,
+    formatDate
+} from '../GraphComponents';
 
-const formatDate = timeFormat('%b %d %Y');
 const WHRatio = 0.6;
-const MARGIN = { top: 30, right: 30, bottom: 50, left: 50 };
+const MARGIN = { top: 30, right: 30, bottom: 30, left: 50 };
 const CHART_SEPARATION = 30;
-const PATTERN_ID = 'brush_pattern';
-const GRADIENT_ID = 'brush_gradient';
-export const accentColor = '#f6acc8';
-export const background = '#584153';
-export const background2 = '#af8baf';
-const selectedBrushStyle = {
-  fill: `url(#${PATTERN_ID})`,
-  stroke: 'white',
-};
+
+const brushStyle = {
+    fillColor: "#ffddff",
+    accentColor: "#f6acc8",
+    selectedBoxStyle: {
+        fill: 'url(#brush_pattern)',
+        stroke: '#ffffff',
+    },
+}
 
 function calculateSvgWidth(containerWidth) {
     const calculatedWidth = containerWidth * 0.8;
@@ -40,41 +41,21 @@ function calculateSvgHeight(containerWidth) {
     return calculateSvgWidth(containerWidth) * WHRatio;
 }
 
-function getInnerHeight(height, margin) {
-  return height - margin.top - margin.bottom;
-}
-
-function getBrushHeight(height, margin) {
-  return getInnerHeight(height, margin) * 0.2;
-}
-
-
 function getMainChartBottom(margin, height) {
   let innerHeight = getInnerHeight(height, MARGIN);
   let brushHeight = getBrushHeight(height, MARGIN);
   return margin.top + innerHeight - brushHeight - CHART_SEPARATION; 
 }
 
-function getXMax(width, margin) {
-  return width - margin.left - margin.right;
-}
-
-function getBrushTop(height, margin) {
-  let brushHeight = getBrushHeight(height, margin);
-  return height - margin.bottom - brushHeight ;
-}
 
 function getIdxFromEnd(array, indexFromEnd) {
   return array.length - indexFromEnd;
 }
 
 
-
 const KEYS = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
 const COLORS = ['#007bff', '#ff44cc', '#44aaff', '#ffaa44'];
 const TSH = 'totalSleepHours';
-
-
 
 
 const SleepStagesStack = ({ sleepData }) => {
@@ -176,18 +157,10 @@ const SleepStagesStack = ({ sleepData }) => {
   );
 
   return (
-    <div ref={containerRef} className='place-self-center w-full flex justify-center'>
+    <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center'>
+        <h1 className='text-4xl font-bold'>Sleep Stages</h1>
       <svg className="bg-gentlewhite rounded-lg" width={svgWidth} height={svgHeight}>
-      <defs>
-        <PatternLines
-        id={PATTERN_ID}
-        height={8}
-        width={8}
-        stroke={accentColor}
-        strokeWidth={1}
-        orientation={['diagonal']}
-        />
-      </defs>
+      
       <MyAreaStackVsDate
         data={selection}
         xScale={xScale}
@@ -216,47 +189,18 @@ const SleepStagesStack = ({ sleepData }) => {
               textAnchor: 'end',
             })}
           />
-        <Group top={getBrushTop(svgHeight, MARGIN) }> {/* Added top positioning for brush chart */}
-          <AreaClosed
-            data={sleepData}
-            x={(d) => brushXScale(getDate(d))}
-            y={(d) => brushYScale(d[TSH])}
-            yScale={brushYScale}
-            fill="#ffddff"
-            stroke={`url(#${GRADIENT_ID})`}
-            strokeWidth={1}
-          />
-          <AxisBottom
-            top={getBrushHeight(svgHeight, MARGIN)}
-            scale={brushXScale}
-            tickFormat={formatDate}
-          />
-          <AxisLeft
-            left={MARGIN.left}
-            scale={brushYScale}
-            hideTicks
-            tickFormat={() => ''}
-          />
-          <PatternLines
-            id={PATTERN_ID}
-            height={8}
-            width={8}
-            stroke={accentColor}
-            strokeWidth={1}
-            orientation={['diagonal']}
-          />
-          <Brush
-            xScale={brushXScale}
-            yScale={brushYScale}
-            width={xMax}
-            height={getBrushHeight(svgHeight, MARGIN)}
+        <BrushSubGraph
+            allData={sleepData}
+            brushColumn={TSH}
+            brushXScale={brushXScale}
+            brushYScale={brushYScale}
+            svgDimensions={svgDimensions}
+            margin={MARGIN}
+            onBrushChange={onBrushChange}
             initialBrushPosition={initialBrushPosition}
-            onChange={onBrushChange}
-            selectedBoxStyle={selectedBrushStyle}
-            ref={brushRef}
-            useWindowMoveEvents
-          />
-        </Group>
+            brushRef={brushRef}
+            brushStyle={brushStyle}
+        />
       </svg>
     </div>
   );
