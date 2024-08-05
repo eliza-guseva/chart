@@ -2,13 +2,12 @@ import React, { useRef, useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { scaleTime, scaleLinear } from '@visx/scale';
 import {curveStepAfter } from '@visx/curve';
-import {AxisLeft } from '@visx/axis';
 import { extent } from 'd3-array';
-import { format as d3Format } from 'd3-format';
 import { max } from 'd3-array';
 import { getDate } from '../fileAndDataProcessors';
 import { 
     MyAreaStackVsDate, 
+    StandardAxisLeft,
     BrushSubGraph, 
     getInnerHeight,
     getBrushHeight,
@@ -189,26 +188,20 @@ const SleepStagesStack = ({ sleepData }) => {
       <svg className="bg-gentlewhite rounded-lg" width={svgWidth} height={svgHeight}>
       
       <MyAreaStackVsDate
-        data={selection}
-        xScale={xScale}
-        yScale={yScale}
-        yMax={yMax}
-        keys={KEYS}
-        colors={COLORS}
-        curve={curveStepAfter}
+            data={selection}
+            xScale={xScale}
+            yScale={yScale}
+            yMax={yMax}
+            keys={KEYS}
+            colors={COLORS}
+            curve={curveStepAfter}
         />  
-          <AxisLeft
-            left={margin.left}
-            scale={yScale}
-            stroke='#ffffff'
-            tickStroke='#ffffff'
-            tickFormat={d3Format('.0f')}
-            tickLabelProps={() => ({
-              fill: '#fff',
-              fontSize: '0.8em',
-              textAnchor: 'end',
-            })}
-          />
+        <StandardAxisLeft
+            label='Hours'
+            yScale={yScale}
+            margin={margin}
+            svgDimensions={svgDimensions}
+        />
         <BrushSubGraph
             allData={sleepData}
             brushColumn={TSH}

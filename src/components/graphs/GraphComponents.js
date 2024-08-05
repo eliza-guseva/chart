@@ -5,18 +5,19 @@ import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { timeFormat } from 'd3-time-format';
+import { format as d3Format } from 'd3-format';
 import { timeDay } from 'd3-time';
 import { getDate } from './fileAndDataProcessors';
 
 // function
 export function getMargin(width) {
     if (width < 600) {
-        return { top: 30, right: 0, bottom: 30, left: 20 };
+        return { top: 30, right: -30, bottom: 30, left: 40 };
     }
     else if (width < 1200) {
-        return { top: 40, right: 30, bottom: 30, left: 30 };
+        return { top: 40, right: 0, bottom: 30, left: 60 };
     }
-    return { top: 60, right: 40, bottom: 60, left: 40 };
+    return { top: 60, right: 0, bottom: 60, left: 60 };
 }
 
 
@@ -33,13 +34,6 @@ export function getXMax(width, margin) {
 export function getBrushHeight(height, margin) {
     return getInnerHeight(height, margin) * 0.2;
 
-}
-
-function getFontSize(svgWidth, isBig) {
-    if (isBig) {
-        return Math.max(svgWidth / 40, 14);
-    }
-    return Math.max(svgWidth / 60, 12);
 }
 
 // time format
@@ -75,7 +69,7 @@ export const StandardAxisBottom = ({
     xScale,
     pointFreq = 'day',
 }) => {
-    let tickFreq = getTicksFrequencies(data, 'day');
+    let tickFreq = getTicksFrequencies(data, pointFreq);
     let tickVal = tickFreq === 0 ? null : tickFreq;
     
     return (<AxisBottom
@@ -96,6 +90,34 @@ export const StandardAxisBottom = ({
 };
 
 
+export const StandardAxisLeft = ({
+    label,
+    yScale,
+    margin,
+    svgDimensions
+}) => {
+    return (<AxisLeft
+        left={margin.left}
+        scale={yScale}
+        stroke='#fff'
+        tickStroke='#fff'
+        tickFormat={d3Format('.0f')}
+        tickLabelProps={() => ({
+          fill: '#fff',
+          fontSize: '0.8em',
+          textAnchor: 'end',
+        })}
+        label={label}
+        labelProps={{
+            fill: '#fff',
+            fontSize: '1em',
+            textAnchor: 'middle',
+            dx: (svgDimensions.width < 600) ? '1.5em' : '0.5em',
+        }}
+      />);
+};
+
+
 
 // AreaStack component
 export const MyAreaStackVsDate = ({
@@ -107,7 +129,6 @@ export const MyAreaStackVsDate = ({
     colors, 
     ...props}) => {
     let stack = [];
-    let xMax = getXMax(xScale.range()[1], getMargin(xScale.range()[1]));
     // iterate from the end of the keys array
     for (let i = keys.length - 1; i >= 0; i--) {
         console.log(i);
