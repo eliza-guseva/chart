@@ -9,11 +9,17 @@ import {
     MyAreaStackVsDate, 
     StandardAxisLeft,
     BrushSubGraph, 
-    getInnerHeight,
-    getBrushHeight,
-    getXMax,
-    getMargin,
 } from '../GraphComponents';
+
+import { 
+    getBrushHeight, 
+    getXMax, 
+    getMargin,
+    calculateSvgWidth,
+    calculateSvgHeight,
+    getMainChartBottom,
+    getIdxFromEnd,
+} from '../graphHelpers';
 
 const brushStyle = {
     fillColor: "#ffddff",
@@ -22,48 +28,6 @@ const brushStyle = {
         fill: 'url(#brush_pattern)',
         stroke: '#ffffff',
     },
-}
-
-function calculateSvgWidth(containerWidth) {
-    if (containerWidth < 600) {
-        return containerWidth;
-    }
-    else if (containerWidth < 1200) {
-        return containerWidth * 0.9;
-    }
-    return containerWidth * 0.8;
-  }
-
-function calculateWHRatio(containerWidth) {
-    if (containerWidth < 600) {
-        return 0.9;
-    }
-    return 0.65;
-}
-
-function calculateSvgHeight(containerWidth) {
-    return calculateSvgWidth(containerWidth) * calculateWHRatio(containerWidth);
-}
-
-function getMainChartBottom(margin, height, width) {
-    let chart_separation;
-    if (width < 600) {
-        chart_separation = 60;
-    }
-    else if (width < 1200) {
-        chart_separation = 90;
-    }
-    else {
-        chart_separation = 90;
-    }
-    let innerHeight = getInnerHeight(height, margin);
-    let brushHeight = getBrushHeight(height, margin);
-    return margin.top + innerHeight - brushHeight - chart_separation; 
-}
-
-
-function getIdxFromEnd(array, indexFromEnd) {
-  return array.length - indexFromEnd;
 }
 
 

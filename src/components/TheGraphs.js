@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Wellness from './graphs/Wellness';
 import Performance from './graphs/Performance';
-import { parseFiles, processSleepData } from './graphs/fileAndDataProcessors';
+import { parseFiles, processSleepData, processEnduranceData } from './graphs/fileAndDataProcessors';
 
 
 const TabsEnum = Object.freeze({
@@ -26,8 +26,11 @@ const Tabs = ({setSelectedTab}) => {
 }
 
 
+
+
 const TheGraphs = ({selectFiles}) => {
     const [sleepData, setSleepData] = useState(null);
+    const [performanceData, setPerformanceData] = useState(null);
     const [selectedTab, setSelectedTab] = useState(TabsEnum.WELLNESS);
 
     useEffect(() => {
@@ -37,8 +40,19 @@ const TheGraphs = ({selectFiles}) => {
             setSleepData(processedData);
         };
 
-            processData();
+        processData();
         }, [selectFiles]);
+
+    useEffect(() => {
+        const processData = async () => {
+            const data = await parseFiles(selectFiles, 'endurance');
+            setPerformanceData(processEnduranceData(data));
+        };
+
+        processData();
+    }, [selectFiles]);
+
+
     return (
         <div className='w-full'>
             <Tabs setSelectedTab={setSelectedTab} />

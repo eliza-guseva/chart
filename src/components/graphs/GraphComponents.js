@@ -4,65 +4,17 @@ import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';
 import { AxisBottom, AxisLeft } from '@visx/axis';
-import { timeFormat } from 'd3-time-format';
 import { format as d3Format } from 'd3-format';
-import { timeDay } from 'd3-time';
 import { getDate } from './fileAndDataProcessors';
+import { 
+    getTicksFrequencies, 
+    formatDateYear,
+    getBrushHeight,
+    getXMax,
+    formatMonthYear,
+} from './graphHelpers';
 
 // function
-export function getMargin(width) {
-    if (width < 600) {
-        return { top: 30, right: -30, bottom: 30, left: 40 };
-    }
-    else if (width < 1200) {
-        return { top: 40, right: 0, bottom: 30, left: 60 };
-    }
-    return { top: 60, right: 0, bottom: 60, left: 60 };
-}
-
-
-export function getInnerHeight(height, margin) {
-    return height - margin.top - margin.bottom;
-}
-
-export function getXMax(width, margin) {
-    return width - margin.left - margin.right;
-}
-
-
-
-export function getBrushHeight(height, margin) {
-    return getInnerHeight(height, margin) * 0.15;
-
-}
-
-// time format
-export const formatDate = timeFormat('%b %d');
-export const formatDateYear = timeFormat('%b %d, %y');
-export const formatYear = timeFormat('%Y');
-export const formatMonth = timeFormat('%b');
-export const formatMonthYear = timeFormat('%b %Y');
-
-// get ticks frequescies
-function getTicksFrequencies(data, pointFreq) {
-    let multiplier;
-    if (pointFreq  === 'day') {
-        multiplier = 1;
-    }
-    else if (pointFreq === 'week') {
-        multiplier = 7;
-    }
-    else if (pointFreq === 'month') {
-        multiplier = 30;
-    }
-    else {
-        multiplier = 365;
-    }
-    if (data.length <= 8) {
-        return timeDay.every(1 * multiplier);
-    }
-    return 0
-}
 
 export const StandardAxisBottom = ({
     data,
