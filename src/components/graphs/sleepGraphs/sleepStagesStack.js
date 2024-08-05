@@ -4,7 +4,7 @@ import { scaleTime, scaleLinear } from '@visx/scale';
 import {curveStepAfter } from '@visx/curve';
 import { extent } from 'd3-array';
 import { max } from 'd3-array';
-import { getDate } from '../fileAndDataProcessors';
+import { getDate, aggregateData, getAvg } from '../fileAndDataProcessors';
 import { 
     MyAreaStackVsDate, 
     StandardAxisLeft,
@@ -73,11 +73,14 @@ const TSH = 'totalSleepHours';
 
 
 const SleepStagesStack = ({ sleepData }) => {
-    const initIdxStart = getIdxFromEnd(sleepData, 60);
-    const initIdxEnd = getIdxFromEnd(sleepData, 1);
+    const weeklyData = aggregateData(sleepData, 'week', [...KEYS, TSH], getAvg);
+    const monthlyData = aggregateData(sleepData, 'month', [...KEYS, TSH], getAvg);
+    const [aggregatedData, setAggregatedData] = useState(sleepData);
+    const initIdxStart = getIdxFromEnd(aggregatedData, 30);
+    const initIdxEnd = getIdxFromEnd(aggregatedData, 1);
     const brushRef = useRef(null);
     const [selection, setSelection] = useState(
-    sleepData.slice(initIdxStart, initIdxEnd)
+    aggregatedData.slice(initIdxStart, initIdxEnd)
     );
     const [svgDimensions, setSvgDimensions] = useState(
         { 
@@ -127,94 +130,101 @@ const SleepStagesStack = ({ sleepData }) => {
     const onBrushChange = (domain) => {
     if (!domain) return;
     const { x0, x1, y0, y1 } = domain;
-    const dataCopy = sleepData.filter((d) => {
+
+    const dataCopy = aggregatedData.filter((d) => {
         const x = getDate(d);
         const y = d[TSH];
         return x > x0 && x < x1 && y > y0 && y < y1;
     });
+    
+    console.log(dataCopy);
     setSelection(dataCopy);
     };
 
-  // scales
-  const xScale = useMemo(
+    // scales
+    const xScale = useMemo(
     () =>
-      scaleTime({
+        scaleTime({
         range: [margin.left, xMax],
         domain: extent(selection, getDate),
-      }),
+        }),
     [xMax, selection, margin]
-  );
-  const yScale = useMemo(
+    );
+    const yScale = useMemo(
     () =>
-      scaleLinear({
+        scaleLinear({
         range: [yMax, margin.top],
         domain: [0, max(selection, (d) => d[TSH])],
         nice: true,
-      }),
+        }),
     [yMax, selection, margin]
-  );
+    );
 
-  const brushXScale = useMemo(
+    const brushXScale = useMemo(
     () =>
-      scaleTime({
+        scaleTime({
         range: [margin.left, xMax],
         domain: extent(sleepData, getDate),
-      }),
+        }),
     [xMax, sleepData, margin]
-  );
+    );
 
-  const brushYScale = useMemo(
+    const brushYScale = useMemo(
     () =>
-      scaleLinear({
+        scaleLinear({
         range: [getBrushHeight(svgHeight, margin), 0],
         domain: [0, max(sleepData, (d) => d[TSH])],
-      }),
+        }),
     [sleepData, svgHeight, margin]
-  );
+    );
 
-  const initialBrushPosition = useMemo(
+    const initialBrushPosition = useMemo(
     () => ({
-      start: { x: brushXScale(getDate(sleepData[initIdxStart])) },
-      end: { x: brushXScale(getDate(sleepData[initIdxEnd])) },
+        start: { x: brushXScale(getDate(sleepData[initIdxStart])) },
+        end: { x: brushXScale(getDate(sleepData[initIdxEnd])) },
     }),
     [brushXScale, sleepData, initIdxStart, initIdxEnd]
-  );
-
-  console.log(getDate(sleepData[initIdxStart]));
+    );
 
   return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center'>
         <h1 className='md:text-4xl font-bold text-2xl'>Sleep Stages</h1>
-      <svg className="bg-gentlewhite rounded-lg" width={svgWidth} height={svgHeight}>
-      
-      <MyAreaStackVsDate
-            data={selection}
-            xScale={xScale}
-            yScale={yScale}
-            yMax={yMax}
-            keys={KEYS}
-            colors={COLORS}
-            curve={curveStepAfter}
-        />  
-        <StandardAxisLeft
-            label='Hours'
-            yScale={yScale}
-            margin={margin}
-            svgDimensions={svgDimensions}
-        />
-        <BrushSubGraph
-            allData={sleepData}
-            brushColumn={TSH}
-            brushXScale={brushXScale}
-            brushYScale={brushYScale}
-            svgDimensions={svgDimensions}
-            margin={margin}
-            onBrushChange={onBrushChange}
-            initialBrushPosition={initialBrushPosition}
-            brushRef={brushRef}
-            brushStyle={brushStyle}
-        />
-      </svg>
+        <div>
+            <div>
+                <button className='btn-boring' onClick={() => setAggregatedData(sleepData)}>Daily</button>
+                <button className='btn-boring' onClick={() => setAggregatedData(weeklyData)}>Weekly</button>
+                <button className='btn-boring' onClick={() => setAggregatedData(monthlyData)}>Monthly</button>
+            </div>
+            <svg className="bg-gentlewhite rounded-lg" width={svgWidth} height={svgHeight}>
+                <MyAreaStackVsDate
+                    data={selection}
+                    xScale={xScale}
+                    yScale={yScale}
+                    yMax={yMax}
+                    keys={KEYS}
+                    colors={COLORS}
+                    curve={curveStepAfter}
+                />  
+                <StandardAxisLeft
+                    label='Hours'
+                    yScale={yScale}
+                    margin={margin}
+                    svgDimensions={svgDimensions}
+                />
+                <BrushSubGraph
+                    allData={sleepData}
+                    brushColumn={TSH}
+                    brushXScale={brushXScale}
+                    brushYScale={brushYScale}
+                    svgDimensions={svgDimensions}
+                    margin={margin}
+                    onBrushChange={onBrushChange}
+                    initialBrushPosition={initialBrushPosition}
+                    brushRef={brushRef}
+                    brushStyle={brushStyle}
+                />
+            </svg>
+        </div>
     </div>
   );
 };

@@ -131,7 +131,6 @@ export const MyAreaStackVsDate = ({
     let stack = [];
     // iterate from the end of the keys array
     for (let i = keys.length - 1; i >= 0; i--) {
-        console.log(i);
         stack.push(
             <AreaClosed
                 className={keys[i]}
@@ -150,8 +149,6 @@ export const MyAreaStackVsDate = ({
             />
         );
 }
-console.log(data);
-console.log(getTicksFrequencies(data, 'day'))
 return <>
         {stack}
         <StandardAxisBottom

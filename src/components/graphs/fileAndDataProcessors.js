@@ -1,4 +1,6 @@
 import { timeParse } from 'd3-time-format';
+import { timeFormat } from 'd3-time-format';
+import moment from 'moment';
 
 
 // parsing data
@@ -56,6 +58,11 @@ export function getDate(d) {
     return new Date(d.calendarDate);
   }
 
+export function getAvg(data, key) {
+    return data.reduce((acc, d) => acc + d[key], 0) / data.length;
+    }
+
+
 export function processSleepData(sleepData) {
     // filter element array objects with key sleepStartTimestampGMT null
     sleepData = sleepData.filter(
@@ -106,4 +113,62 @@ export function processSleepData(sleepData) {
             return element;
         });
     return sleepData;
+    }
+
+    export function aggregateData(data, frequency, keys, aggFn) {
+        // Helper function to parse date and adjust based on frequency
+        function getAdjustedDate(date, frequency) {
+            const parseDate = timeParse('%Y-%m-%d');
+            const formatDate = timeFormat('%Y-%m-%d');
+            const parsedDate = moment(date);
+            let adjustedDate;
+    
+            switch (frequency) {
+                case 'day':
+                    adjustedDate = parsedDate;
+                    break;
+                case 'week':
+                    adjustedDate = parsedDate.startOf('isoWeek');
+                    break;
+                case 'month':
+                    adjustedDate = parsedDate.startOf('month');
+                    break;
+                case 'year':
+                    adjustedDate = parsedDate.startOf('year');
+                    break;
+                default:
+                    adjustedDate = parsedDate;
+                    break;
+            }
+    
+            // Format the adjusted date to a string and then parse it back to a D3 date object
+            const formattedDate = formatDate(adjustedDate.toDate());
+            return parseDate(formattedDate);
+        }
+    
+        // Group data based on adjusted date
+        const groupedData = data.reduce((acc, obj) => {
+            const adjustedDate = getAdjustedDate(obj.calendarDate, frequency);
+            const adjustedDateStr = adjustedDate.toISOString(); // Convert date object to ISO string for unique key
+    
+            if (!acc[adjustedDateStr]) {
+                acc[adjustedDateStr] = [];
+            }
+            acc[adjustedDateStr].push(obj);
+            return acc;
+        }, {});
+    
+        // Aggregate data for each group
+        const aggregatedData = Object.keys(groupedData).map((key) => {
+            const group = groupedData[key];
+            const aggregatedObj = {
+                calendarDate: new Date(key), // Convert ISO string back to Date object
+            };
+            keys.forEach((k) => {
+                aggregatedObj[k] = aggFn(group, k);
+            });
+            return aggregatedObj;
+        });
+    
+        return aggregatedData;
     }
