@@ -5,9 +5,21 @@ import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { timeFormat } from 'd3-time-format';
+import { timeDay } from 'd3-time';
 import { getDate } from './fileAndDataProcessors';
 
 // function
+export function getMargin(width) {
+    if (width < 600) {
+        return { top: 30, right: 0, bottom: 30, left: 20 };
+    }
+    else if (width < 1200) {
+        return { top: 40, right: 30, bottom: 30, left: 30 };
+    }
+    return { top: 60, right: 40, bottom: 60, left: 40 };
+}
+
+
 export function getInnerHeight(height, margin) {
     return height - margin.top - margin.bottom;
 }
@@ -16,17 +28,86 @@ export function getXMax(width, margin) {
     return width - margin.left - margin.right;
 }
 
+
+
 export function getBrushHeight(height, margin) {
     return getInnerHeight(height, margin) * 0.2;
 
 }
 
-export const formatDate = timeFormat('%b %d %Y');
+function getFontSize(svgWidth, isBig) {
+    if (isBig) {
+        return Math.max(svgWidth / 40, 14);
+    }
+    return Math.max(svgWidth / 60, 12);
+}
+
+// time format
+export const formatDate = timeFormat('%b %d');
+export const formatYear = timeFormat('%Y');
+export const formatMonth = timeFormat('%b');
+export const formatMonthYear = timeFormat('%b %Y');
+
+// get ticks frequescies
+function getTicksFrequencies(data, pointFreq) {
+    let multiplier;
+    if (pointFreq  === 'day') {
+        multiplier = 1;
+    }
+    else if (pointFreq === 'week') {
+        multiplier = 7;
+    }
+    else if (pointFreq === 'month') {
+        multiplier = 30;
+    }
+    else {
+        multiplier = 365;
+    }
+    if (data.length <= 8) {
+        return timeDay.every(1 * multiplier);
+    }
+    return 0
+}
+
+export const StandardAxisBottom = ({
+    data,
+    yMax,
+    xScale,
+    pointFreq = 'day',
+}) => {
+    let tickFreq = getTicksFrequencies(data, 'day');
+    let tickVal = tickFreq === 0 ? null : tickFreq;
+    
+    return (<AxisBottom
+        top={yMax}
+        scale={xScale}
+        stroke='#fff'
+        tickValues={xScale.ticks(tickVal)}
+        tickStroke='#fff'
+        tickFormat={formatDate}
+        tickLabelProps={() => ({
+            fill: '#fff',
+            textAnchor: 'end',
+            dy: '-0.2em',
+            fontSize: '0.8em',
+            angle: 270
+        })}
+      />);
+};
+
 
 
 // AreaStack component
-export const MyAreaStackVsDate = ({data, xScale, yScale, keys, colors, ...props}) => {
+export const MyAreaStackVsDate = ({
+    data, 
+    xScale, 
+    yScale,
+    yMax,
+    keys, 
+    colors, 
+    ...props}) => {
     let stack = [];
+    let xMax = getXMax(xScale.range()[1], getMargin(xScale.range()[1]));
     // iterate from the end of the keys array
     for (let i = keys.length - 1; i >= 0; i--) {
         console.log(i);
@@ -48,7 +129,16 @@ export const MyAreaStackVsDate = ({data, xScale, yScale, keys, colors, ...props}
             />
         );
 }
-return <>{stack}</>;
+console.log(data);
+console.log(getTicksFrequencies(data, 'day'))
+return <>
+        {stack}
+        <StandardAxisBottom
+            data={data}
+            yMax={yMax}
+            xScale={xScale}
+        />
+    </>;
 };
 
 // brush component
@@ -96,11 +186,21 @@ export const BrushSubGraph = (
             <AxisBottom
                 top={getBrushHeight(svgHeight, margin)}
                 scale={brushXScale}
-                tickFormat={formatDate}
+                tickFormat={formatMonthYear}
+                stroke='#ffffff'
+                tickStroke='#ffffff'
+                tickLabelProps={() =>({
+                    fill: '#fff',
+                    fontSize: '0.7em',
+                    angle: 0,
+                    dy: '0.1em',
+                    textAnchor: 'middle'
+                })}
             />
             <AxisLeft
                 left={margin.left}
                 scale={brushYScale}
+                stroke='#ffffff'
                 hideTicks
                 tickFormat={() => ''}
             />

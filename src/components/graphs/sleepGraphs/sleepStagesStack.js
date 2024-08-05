@@ -1,8 +1,8 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { scaleTime, scaleLinear } from '@visx/scale';
-import {curveLinear } from '@visx/curve';
-import { AxisBottom, AxisLeft } from '@visx/axis';
+import {curveStepAfter } from '@visx/curve';
+import {AxisLeft } from '@visx/axis';
 import { extent } from 'd3-array';
 import { format as d3Format } from 'd3-format';
 import { max } from 'd3-array';
@@ -13,12 +13,8 @@ import {
     getInnerHeight,
     getBrushHeight,
     getXMax,
-    formatDate
+    getMargin,
 } from '../GraphComponents';
-
-const WHRatio = 0.6;
-const MARGIN = { top: 30, right: 30, bottom: 30, left: 50 };
-const CHART_SEPARATION = 30;
 
 const brushStyle = {
     fillColor: "#ffddff",
@@ -30,21 +26,40 @@ const brushStyle = {
 }
 
 function calculateSvgWidth(containerWidth) {
-    const calculatedWidth = containerWidth * 0.8;
     if (containerWidth < 600) {
-        return containerWidth
+        return containerWidth;
     }
-    return calculatedWidth;
+    else if (containerWidth < 1200) {
+        return containerWidth * 0.9;
+    }
+    return containerWidth * 0.8;
   }
 
-function calculateSvgHeight(containerWidth) {
-    return calculateSvgWidth(containerWidth) * WHRatio;
+function calculateWHRatio(containerWidth) {
+    if (containerWidth < 600) {
+        return 0.9;
+    }
+    return 0.65;
 }
 
-function getMainChartBottom(margin, height) {
-  let innerHeight = getInnerHeight(height, MARGIN);
-  let brushHeight = getBrushHeight(height, MARGIN);
-  return margin.top + innerHeight - brushHeight - CHART_SEPARATION; 
+function calculateSvgHeight(containerWidth) {
+    return calculateSvgWidth(containerWidth) * calculateWHRatio(containerWidth);
+}
+
+function getMainChartBottom(margin, height, width) {
+    let chart_separation;
+    if (width < 600) {
+        chart_separation = 50;
+    }
+    else if (width < 1200) {
+        chart_separation = 60;
+    }
+    else {
+        chart_separation = 70;
+    }
+    let innerHeight = getInnerHeight(height, margin);
+    let brushHeight = getBrushHeight(height, margin);
+    return margin.top + innerHeight - brushHeight - chart_separation; 
 }
 
 
@@ -59,93 +74,103 @@ const TSH = 'totalSleepHours';
 
 
 const SleepStagesStack = ({ sleepData }) => {
-  const initIdxStart = getIdxFromEnd(sleepData, 60);
-  const initIdxEnd = getIdxFromEnd(sleepData, 1);
-  const brushRef = useRef(null);
-  const [selection, setSelection] = useState(
+    const initIdxStart = getIdxFromEnd(sleepData, 60);
+    const initIdxEnd = getIdxFromEnd(sleepData, 1);
+    const brushRef = useRef(null);
+    const [selection, setSelection] = useState(
     sleepData.slice(initIdxStart, initIdxEnd)
-  );
-  const [svgDimensions, setSvgDimensions] = useState({ width: 600, height: 600 }); // Default to 600px for both width and height
-  const containerRef = useRef(null);
+    );
+    const [svgDimensions, setSvgDimensions] = useState(
+        { 
+            width: 600, 
+            height: 600,
+            margin: getMargin(600),
+        });
+    const containerRef = useRef(null);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const newWidth = calculateSvgWidth(containerWidth);
-        const newHeight = calculateSvgHeight(containerWidth);
+    useEffect(() => {
+        const handleResize = () => {
+            if (containerRef.current) {
+            const containerWidth = containerRef.current.offsetWidth;
+            const newWidth = calculateSvgWidth(containerWidth);
+            const newHeight = calculateSvgHeight(containerWidth);
 
-        // Only update state if the new dimensions are different
-        if (newWidth !== svgDimensions.width || newHeight !== svgDimensions.height) {
-          setSvgDimensions({ width: newWidth, height: newHeight });
-        }
-      }
-    };
+            // Only update state if the new dimensions are different
+            if (newWidth !== svgDimensions.width || newHeight !== svgDimensions.height) {
+                setSvgDimensions({ 
+                    width: newWidth, 
+                    height: newHeight,
+                    margin: getMargin(newWidth),
+                });
+            }
+            }
+        };
 
-    // Initial calculation
-    handleResize();
+        // Initial calculation
+        handleResize();
 
-    // Recalculate on window resize
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [svgDimensions]); // Dependency array includes svgDimensions to avoid unnecessary updates
+        // Recalculate on window resize
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [svgDimensions]); // Dependency array includes svgDimensions to avoid unnecessary updates
 
-  const { width: svgWidth, height: svgHeight } = svgDimensions;
+    const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
+    // adjust font size based on svgWidth
+    
 
 
-  const yMax = getMainChartBottom(MARGIN, svgHeight);
-  const xMax = getXMax(svgWidth, MARGIN);
-  // add total sleep to sleepData
+    const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
+    const xMax = getXMax(svgWidth, margin);
 
-  // preparing brush
-  const onBrushChange = (domain) => {
+    // preparing brush
+    const onBrushChange = (domain) => {
     if (!domain) return;
     const { x0, x1, y0, y1 } = domain;
     const dataCopy = sleepData.filter((d) => {
-      const x = getDate(d);
-      const y = d[TSH];
-      return x > x0 && x < x1 && y > y0 && y < y1;
+        const x = getDate(d);
+        const y = d[TSH];
+        return x > x0 && x < x1 && y > y0 && y < y1;
     });
     setSelection(dataCopy);
-  };
+    };
 
   // scales
   const xScale = useMemo(
     () =>
       scaleTime({
-        range: [MARGIN.left, xMax],
+        range: [margin.left, xMax],
         domain: extent(selection, getDate),
       }),
-    [xMax, selection]
+    [xMax, selection, margin]
   );
   const yScale = useMemo(
     () =>
       scaleLinear({
-        range: [yMax, MARGIN.top],
+        range: [yMax, margin.top],
         domain: [0, max(selection, (d) => d[TSH])],
         nice: true,
       }),
-    [yMax, selection]
+    [yMax, selection, margin]
   );
 
   const brushXScale = useMemo(
     () =>
       scaleTime({
-        range: [MARGIN.left, xMax],
+        range: [margin.left, xMax],
         domain: extent(sleepData, getDate),
       }),
-    [xMax, sleepData]
+    [xMax, sleepData, margin]
   );
 
   const brushYScale = useMemo(
     () =>
       scaleLinear({
-        range: [getBrushHeight(svgHeight, MARGIN), 0],
+        range: [getBrushHeight(svgHeight, margin), 0],
         domain: [0, max(sleepData, (d) => d[TSH])],
       }),
-    [sleepData, svgHeight]
+    [sleepData, svgHeight, margin]
   );
 
   const initialBrushPosition = useMemo(
@@ -156,36 +181,31 @@ const SleepStagesStack = ({ sleepData }) => {
     [brushXScale, sleepData, initIdxStart, initIdxEnd]
   );
 
+  console.log(getDate(sleepData[initIdxStart]));
+
   return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center'>
-        <h1 className='text-4xl font-bold'>Sleep Stages</h1>
+        <h1 className='md:text-4xl font-bold text-2xl'>Sleep Stages</h1>
       <svg className="bg-gentlewhite rounded-lg" width={svgWidth} height={svgHeight}>
       
       <MyAreaStackVsDate
         data={selection}
         xScale={xScale}
         yScale={yScale}
+        yMax={yMax}
         keys={KEYS}
         colors={COLORS}
-        curve={curveLinear}
+        curve={curveStepAfter}
         />  
-          <AxisBottom
-            top={yMax}
-            scale={xScale}
-            tickFormat={formatDate}
-            tickLabelProps={() => ({
-              fill: '#000000',
-              fontSize: 14,
-              textAnchor: 'middle',
-            })}
-          />
           <AxisLeft
-            left={MARGIN.left}
+            left={margin.left}
             scale={yScale}
+            stroke='#ffffff'
+            tickStroke='#ffffff'
             tickFormat={d3Format('.0f')}
             tickLabelProps={() => ({
-              fill: '#000000',
-              fontSize: 14,
+              fill: '#fff',
+              fontSize: '0.8em',
               textAnchor: 'end',
             })}
           />
@@ -195,7 +215,7 @@ const SleepStagesStack = ({ sleepData }) => {
             brushXScale={brushXScale}
             brushYScale={brushYScale}
             svgDimensions={svgDimensions}
-            margin={MARGIN}
+            margin={margin}
             onBrushChange={onBrushChange}
             initialBrushPosition={initialBrushPosition}
             brushRef={brushRef}

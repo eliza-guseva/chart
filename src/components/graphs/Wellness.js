@@ -7,7 +7,7 @@ const Wellness = ({sleepData}) => {
     return (
         <div className='graphdiv'>
             {sleepData && <SleepStagesStack sleepData={sleepData} />}
-            {sleepData && <SleepStagesStack sleepData={sleepData} />}
+            {/* {sleepData && <SleepStagesStack sleepData={sleepData} />} */}
         </div>
     );
 };
