@@ -32,12 +32,13 @@ export function getXMax(width, margin) {
 
 
 export function getBrushHeight(height, margin) {
-    return getInnerHeight(height, margin) * 0.2;
+    return getInnerHeight(height, margin) * 0.15;
 
 }
 
 // time format
 export const formatDate = timeFormat('%b %d');
+export const formatDateYear = timeFormat('%b %d, %y');
 export const formatYear = timeFormat('%Y');
 export const formatMonth = timeFormat('%b');
 export const formatMonthYear = timeFormat('%b %Y');
@@ -78,7 +79,7 @@ export const StandardAxisBottom = ({
         stroke='#fff'
         tickValues={xScale.ticks(tickVal)}
         tickStroke='#fff'
-        tickFormat={formatDate}
+        tickFormat={formatDateYear}
         tickLabelProps={() => ({
             fill: '#fff',
             textAnchor: 'end',
@@ -239,7 +240,7 @@ export const BrushSubGraph = (
                 onChange={onBrushChange}
                 selectedBoxStyle={brushStyle.selectedBoxStyle}
                 ref={brushRef}
-                useWindowMoveEvents
+                useWindowMoveEvents={true}
             />
         </Group>
     );

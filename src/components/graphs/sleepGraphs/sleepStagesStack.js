@@ -48,13 +48,13 @@ function calculateSvgHeight(containerWidth) {
 function getMainChartBottom(margin, height, width) {
     let chart_separation;
     if (width < 600) {
-        chart_separation = 50;
-    }
-    else if (width < 1200) {
         chart_separation = 60;
     }
+    else if (width < 1200) {
+        chart_separation = 90;
+    }
     else {
-        chart_separation = 70;
+        chart_separation = 90;
     }
     let innerHeight = getInnerHeight(height, margin);
     let brushHeight = getBrushHeight(height, margin);
@@ -76,12 +76,22 @@ const SleepStagesStack = ({ sleepData }) => {
     const weeklyData = aggregateData(sleepData, 'week', [...KEYS, TSH], getAvg);
     const monthlyData = aggregateData(sleepData, 'month', [...KEYS, TSH], getAvg);
     const [aggregatedData, setAggregatedData] = useState(sleepData);
-    const initIdxStart = getIdxFromEnd(aggregatedData, 30);
+    const [aggrLevel, setAggrLevel] = useState('daily');
+    const initIdxStart = getIdxFromEnd(aggregatedData, 60);
     const initIdxEnd = getIdxFromEnd(aggregatedData, 1);
     const brushRef = useRef(null);
     const [selection, setSelection] = useState(
-    aggregatedData.slice(initIdxStart, initIdxEnd)
+        aggregatedData.slice(initIdxStart, initIdxEnd)
     );
+    const [selectionDomain, setSelectionDomain] = useState(
+        {
+            x0: getDate(aggregatedData[initIdxStart]),
+            x1: getDate(aggregatedData[initIdxEnd]),
+            y0: 0,
+            y1: max(aggregatedData, (d) => d[TSH]),
+        }
+
+    )
     const [svgDimensions, setSvgDimensions] = useState(
         { 
             width: 600, 
@@ -120,25 +130,36 @@ const SleepStagesStack = ({ sleepData }) => {
 
     const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
     // adjust font size based on svgWidth
-    
-
 
     const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
     const xMax = getXMax(svgWidth, margin);
 
     // preparing brush
     const onBrushChange = (domain) => {
-    if (!domain) return;
-    const { x0, x1, y0, y1 } = domain;
+        if (!domain) return;
+        const { x0, x1, y0, y1 } = domain;
+        setSelectionDomain(domain);
+        let selectionData;
+        switch (aggrLevel) {
+            case 'daily':
+                selectionData = sleepData;
+                break;
+            case 'weekly':
+                selectionData = weeklyData;
+                break;
+            case 'monthly':
+                selectionData = monthlyData;
+                break;
+            default:
+                selectionData = sleepData;
+        }
 
-    const dataCopy = aggregatedData.filter((d) => {
-        const x = getDate(d);
-        const y = d[TSH];
-        return x > x0 && x < x1 && y > y0 && y < y1;
-    });
-    
-    console.log(dataCopy);
-    setSelection(dataCopy);
+        const dataCopy = selectionData.filter((d) => {
+            const x = getDate(d);
+            const y = d[TSH];
+            return x > x0 && x < x1 && y > y0 && y < y1;
+        });
+        setSelection(dataCopy);
     };
 
     // scales
@@ -180,20 +201,43 @@ const SleepStagesStack = ({ sleepData }) => {
 
     const initialBrushPosition = useMemo(
     () => ({
-        start: { x: brushXScale(getDate(sleepData[initIdxStart])) },
-        end: { x: brushXScale(getDate(sleepData[initIdxEnd])) },
+        start: { x: brushXScale(getDate(aggregatedData[initIdxStart])) },
+        end: { x: brushXScale(getDate(aggregatedData[initIdxEnd])) },
     }),
-    [brushXScale, sleepData, initIdxStart, initIdxEnd]
+    [brushXScale, aggregatedData, initIdxStart, initIdxEnd]
     );
+
+    const onChooseAggrLevel = (aggrLevel) => {
+        setAggrLevel(aggrLevel);
+    }
+
+    useEffect(() => {
+        // use appropriate selection data based on aggrLevel
+        onBrushChange(selectionDomain)
+
+    }, [aggrLevel]);
+
 
   return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center'>
         <h1 className='md:text-4xl font-bold text-2xl'>Sleep Stages</h1>
         <div>
             <div>
-                <button className='btn-boring' onClick={() => setAggregatedData(sleepData)}>Daily</button>
-                <button className='btn-boring' onClick={() => setAggregatedData(weeklyData)}>Weekly</button>
-                <button className='btn-boring' onClick={() => setAggregatedData(monthlyData)}>Monthly</button>
+                <button 
+                    className='btn-std' 
+                    onClick={() => onChooseAggrLevel('daily')}
+                    >Daily
+                </button>
+                <button 
+                    className='btn-std' 
+                    onClick={() => onChooseAggrLevel('weekly')}
+                    >Weekly
+                </button>
+                <button 
+                    className='btn-std' 
+                    onClick={() => onChooseAggrLevel('monthly')}
+                    >Monthly
+                </button>
             </div>
             <svg className="bg-gentlewhite rounded-lg" width={svgWidth} height={svgHeight}>
                 <MyAreaStackVsDate
