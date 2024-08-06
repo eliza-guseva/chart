@@ -68,7 +68,7 @@ const EnduranceMainGraph = ({
             y={margin.top} 
             width={xMax - 2 * margin.left} 
             height={yMax - margin.top} 
-            fill="#767d84"/>
+            fill="#767d8488"/>
         <GridRows
             left={margin.left}
             scale={yScale}
@@ -86,7 +86,7 @@ const EnduranceMainGraph = ({
                         x={(d) => xScale(getDate(d))}
                         y={(d) => yScale(d.overallScore)}
                         stroke={getEnduranceBandColor(segmentData[0].overallScore)}
-                        strokeWidth={8}
+                        strokeWidth={7}
                         curve={curveLinear}
                         xScale={xScale}
                         yScale={yScale}

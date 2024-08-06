@@ -9,8 +9,10 @@ module.exports = {
           },
         fontFamily: {
             warnes: ['Warnes', 'sans-serif'],
-            nixie: ['Nixie One', 'cursive'],
+            nixie: ['Nixie One', 'sans-serif'],
             dosis: ['Dosis', 'sans-serif'],
+            mmd: ['Orbitron', 'monospace'],
+            general: ['Barlow Condensed', 'sans-serif'],
           },
         colors: {
             'darkbckg': '#020a1d',//'#545B62',
@@ -29,7 +31,7 @@ module.exports = {
             'btn-light-grad': 'linear-gradient(0deg, #404c5b, #606c7b)',
             'btn-dark-grad': 'linear-gradient(0deg, #1e1e1e, #3e3e3e)',
             'bckgtile': "url(/public/tile.png)",
-            'bgoval': 'linear-gradient(0deg, #0e0e0e 2%, #ffffff00 60%), radial-gradient(120% 290% at 54% 12%, #434a53, #0b0d0c 50%)',
+            'bgoval': 'linear-gradient(0deg, #0e0e0e 0%, #ffffff00 60%), radial-gradient(120% 290% at 54% 12%, #434a53, #0b0d0c 50%)',
           }
     },
   },

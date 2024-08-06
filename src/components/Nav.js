@@ -100,7 +100,7 @@ const Logo = () => {
     return (
         <div className="header logo">
             <div>
-                <h3 className="header logo simbolic">Simbolic</h3>
+                <h3 className="header logo simbolic">Extra</h3>
             </div>
             <div>
                 <h2 className="header logo charts"> Charts</h2>
@@ -111,8 +111,8 @@ const Logo = () => {
 
 const Slogan = () => {
     return (
-        <div className="flex items-center justify-center text-center">
-            <p>See your data</p>
+        <div className="flex items-center justify-center font-mmd gap-4">
+            <div>SEE</div><div>·</div><div>YOUR</div><div>·</div><div>DATA</div>
         </div>
     );
 }
@@ -120,7 +120,7 @@ const Slogan = () => {
 
 const Nav = () => {
     return (
-        <div className="header container">
+        <div className="header container w-full md:w-4/5">
             <Logo />
             <Slogan />
             <Menus />
