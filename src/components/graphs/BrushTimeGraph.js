@@ -182,24 +182,31 @@ const BrushTimeGraph = ({
 
     }, [aggrLevel]);
 
+    let style = {
+        display: 'flex',
+        justifyContent: 'right',
+        marginRight: svgWidth - xMax + 'px',
+        marginBottom: '-30px',
+    };
+    console.log(svgWidth - xMax - margin.left)
 
-  return (
+    return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <h1 className='md:text-4xl md:mb-4 font-bold text-2xl mb-2'>{graphTitle}</h1>
         <div>
-        <div className='flex justify-end bg-dark'>
+        <div style={style}>
                 <button 
-                    className='btnboring mb-2' 
+                    className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}
                     onClick={() => onChooseAggrLevel('daily')}
                     >Daily
                 </button>
                 <button 
-                    className='btnboring mb-2' 
+                    className={aggrLevel === 'weekly' ? 'btnaggrselect' : 'btnaggr'}
                     onClick={() => onChooseAggrLevel('weekly')}
                     >Weekly
                 </button>
                 <button 
-                    className='btnboring mb-2' 
+                    className={aggrLevel === 'monthly' ? 'btnaggrselect' : 'btnaggr'}
                     onClick={() => onChooseAggrLevel('monthly')}
                     >Monthly
                 </button>
@@ -225,7 +232,7 @@ const BrushTimeGraph = ({
             </svg>
         </div>
     </div>
-  );
+    );
 };
 
 export default BrushTimeGraph;

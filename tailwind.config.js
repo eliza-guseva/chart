@@ -16,12 +16,18 @@ module.exports = {
             'darkbckg': '#020a1d',//'#545B62',
             'darkbtn': '#9aa7b4',
             'darkbtnhover': '#82a87f',
-            'gentlewhite': '#f8f9fa11'
+            'gentlewhite': '#f8f9fa11',
+            'mediumwhite': '#f8f9fa33',
+            'darkwhite': '#f8f9fa88',
+            'accent': '#c38975'
         },
         backgroundImage: {
             'btn-grad': 'linear-gradient(30deg, #9aa7b4, #707c8b)',
             'btn-hover-grad': 'linear-gradient(30deg, #82a87f, #5f7d5f)',
-            'btn-boring-grad': 'linear-gradient(30deg, #545B62, #707c8b)',
+            'btn-boring-grad': 'linear-gradient(30deg, #2e2e2e, #404c5b)',
+            'btn-accent-grad': 'linear-gradient(30deg, #a36b4d, #c38975)',
+            'btn-light-grad': 'linear-gradient(0deg, #404c5b, #606c7b)',
+            'btn-dark-grad': 'linear-gradient(0deg, #1e1e1e, #3e3e3e)',
             'bckgtile': "url(/public/tile.png)",
           }
     },

@@ -20,7 +20,7 @@
     min-h-screen 
     flex flex-col items-center justify-start 
     text-[calc(8px+2vmin)] text-white font-dosis
-    bg-bckgtile
+    bg-btn-dark-grad
   }
 
 .bg-tile {
@@ -41,6 +41,7 @@ background-size: auto;
 
 .btnstd {
     @apply
+    btn
     bg-btn-grad hover:bg-btn-hover-grad
     hover:shadow-2xl
     text-white font-bold text-center
@@ -50,10 +51,27 @@ background-size: auto;
 
 .btnboring {
     @apply
+    btn
     bg-btn-boring-grad hover:bg-btn-hover-grad
     text-white
     border
     border-darkbckg
+}
+
+.btnaggrselect {
+    @apply
+    rounded-none
+    bg-mediumwhite
+    text-white
+    py-0 px-2
+}
+
+.btnaggr {
+    @apply
+    rounded-none
+    bg-gentlewhite
+    text-white
+    py-0 px-2
 }
 
 button {

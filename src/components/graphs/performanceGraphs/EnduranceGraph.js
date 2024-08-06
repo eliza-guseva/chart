@@ -66,16 +66,15 @@ const EnduranceMainGraph = ({
         <rect 
             x={margin.left} 
             y={margin.top} 
-            width={xMax - 2 * margin.left - margin.right} 
+            width={xMax - 2 * margin.left} 
             height={yMax - margin.top} 
             fill="#767d84"/>
         <GridRows
             left={margin.left}
             scale={yScale}
             width={xMax - 2 * margin.left}
-            strokeDasharray="1,3"
             stroke='#fff'
-            strokeOpacity={1}
+            strokeOpacity={0.2}
             pointerEvents="none"
           />
         {selection.slice(1).map((d, i) => {
