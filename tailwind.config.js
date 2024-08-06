@@ -13,7 +13,7 @@ module.exports = {
             dosis: ['Dosis', 'sans-serif'],
           },
         colors: {
-            'darkbckg': '#545B62',
+            'darkbckg': '#020a1d',//'#545B62',
             'darkbtn': '#9aa7b4',
             'darkbtnhover': '#82a87f',
             'gentlewhite': '#f8f9fa11'
@@ -21,7 +21,8 @@ module.exports = {
         backgroundImage: {
             'btn-grad': 'linear-gradient(30deg, #9aa7b4, #707c8b)',
             'btn-hover-grad': 'linear-gradient(30deg, #82a87f, #5f7d5f)',
-            'btn-boring-grad': 'linear-gradient(30deg, #545B62, #707c8b)'
+            'btn-boring-grad': 'linear-gradient(30deg, #545B62, #707c8b)',
+            'bckgtile': "url(/public/tile.png)",
           }
     },
   },
