@@ -29,7 +29,7 @@ module.exports = {
             'btn-light-grad': 'linear-gradient(0deg, #404c5b, #606c7b)',
             'btn-dark-grad': 'linear-gradient(0deg, #1e1e1e, #3e3e3e)',
             'bckgtile': "url(/public/tile.png)",
-            'bgoval': 'radial-gradient(120% 290% at 54% 12%, #434a53, #0b0d0c 60%)',
+            'bgoval': 'linear-gradient(0deg, #0e0e0e 2%, #ffffff00 60%), radial-gradient(120% 290% at 54% 12%, #434a53, #0b0d0c 50%)',
           }
     },
   },
