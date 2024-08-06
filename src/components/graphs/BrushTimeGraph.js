@@ -186,7 +186,7 @@ const BrushTimeGraph = ({
         display: 'flex',
         justifyContent: 'right',
         marginRight: svgWidth - xMax + 'px',
-        marginBottom: '-30px',
+        marginBottom: '-33px',
     };
     console.log(svgWidth - xMax - margin.left)
 

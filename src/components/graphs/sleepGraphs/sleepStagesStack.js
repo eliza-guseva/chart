@@ -48,7 +48,7 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             y={margin.top} 
             width={xMax - 2 * margin.left - margin.right} 
             height={yMax - margin.top} 
-            fill="#767d88"/>
+            fill="#767d8888"/>
         <GridRows
             left={margin.left}
             scale={yScale}
