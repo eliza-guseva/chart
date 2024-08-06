@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
-import {curveMonotoneY, curveLinear} from '@visx/curve';
-import {LinePath} from '@visx/shape';
+import {curveLinear} from '@visx/curve';
+import { LinearGradient } from '@visx/gradient';
+import {LinePath, AreaClosed} from '@visx/shape';
+import { GridRows } from '@visx/grid';
 import BrushTimeGraph from '../BrushTimeGraph';
 import { getDate } from '../fileAndDataProcessors';
 import { getMainChartBottom } from '../graphHelpers';
@@ -26,12 +28,20 @@ const colors = ['#fff'];
 const brushKey = 'overallScore';
 
 const enduranceBands = [
-    {score: 4699, color: '#ff0000'},
+    {score: 4699, color: '#dd2222'},
     {score: 5199, color: '#f56e07'},
     {score: 5699, color: '#ffae00'},
 ]
 
+function getEnduranceBandColor(score) {
+    for (let band of enduranceBands) {
+        if (score < band.score) {
+            return band.color;
+        }
+    }
 
+    return '#fff';
+}
 
 const EnduranceMainGraph = ({ 
     selection, 
@@ -40,6 +50,7 @@ const EnduranceMainGraph = ({
     ...props}) => {
     const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
     const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
+    const xMax = svgWidth - margin.right;
     const yLabel = 'Endurance score';
     const yScale = useMemo(
         () =>
@@ -50,14 +61,39 @@ const EnduranceMainGraph = ({
             }),
         [yMax, selection, margin]
     );
-    return (<><LinePath 
-        data={selection} 
-        x={d => xScale(getDate(d))}
-        y={d => yScale(d.overallScore)} 
-        stroke={colors[0]}
-        strokeWidth={5}
-        curve={curveLinear} 
-        />
+    return (<>
+        <LinearGradient id="area-gradient" from="#7f888e" to="#545b62" />
+        <rect 
+            x={margin.left} 
+            y={margin.top} 
+            width={xMax - 2 * margin.left - margin.right} 
+            height={yMax - margin.top} 
+            fill="#767d84"/>
+        <GridRows
+            left={margin.left}
+            scale={yScale}
+            width={xMax - 2 * margin.left}
+            strokeDasharray="1,3"
+            stroke='#fff'
+            strokeOpacity={1}
+            pointerEvents="none"
+          />
+        {selection.slice(1).map((d, i) => {
+                const segmentData = [selection[i], selection[i + 1]];
+                return (
+                    <LinePath
+                        key={`line-segment-${i}`}
+                        data={segmentData}
+                        x={(d) => xScale(getDate(d))}
+                        y={(d) => yScale(d.overallScore)}
+                        stroke={getEnduranceBandColor(segmentData[0].overallScore)}
+                        strokeWidth={8}
+                        curve={curveLinear}
+                        xScale={xScale}
+                        yScale={yScale}
+                    />
+                );
+            })}
         <StandardAxisLeft
             label={yLabel}
             yScale={yScale}

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {curveStepAfter} from '@visx/curve';
 import { scaleLinear } from '@visx/scale';
+import { GridRows } from '@visx/grid';
 import { max } from 'd3-array';
 import { useMemo } from 'react';
 import BrushTimeGraph from '../BrushTimeGraph';
@@ -23,13 +24,14 @@ const brushStyle = {
 
 
 const keys = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
-const colors = ['#007bff', '#ff44cc', '#44aaff', '#ffaa44'];
+const colors = ['#007bff', '#ff44cc', '#44aaff', '#ccbbee'];
 const brushKey = 'totalSleepHours';
 
 
 const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
     const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
     const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
+    const xMax = svgWidth - margin.right;
     const yLabel = 'Hours';
     const yScale = useMemo(
         () =>
@@ -41,6 +43,20 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
         [yMax, selection, margin]
     );
     return (<>
+        <rect 
+            x={margin.left} 
+            y={margin.top} 
+            width={xMax - 2 * margin.left - margin.right} 
+            height={yMax - margin.top} 
+            fill="#767d88"/>
+        <GridRows
+            left={margin.left}
+            scale={yScale}
+            width={xMax - 2 * margin.left}
+            stroke='#fff'
+            strokeOpacity={0.2}
+            pointerEvents="none"
+          />
         {MyAreaStackVsDate({
             data: selection,
             xScale,

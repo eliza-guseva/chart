@@ -187,7 +187,7 @@ const BrushTimeGraph = ({
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <h1 className='md:text-4xl md:mb-4 font-bold text-2xl mb-2'>{graphTitle}</h1>
         <div>
-        <div className='flex justify-end bg-gentlewhite'>
+        <div className='flex justify-end bg-dark'>
                 <button 
                     className='btnboring mb-2' 
                     onClick={() => onChooseAggrLevel('daily')}
@@ -204,7 +204,7 @@ const BrushTimeGraph = ({
                     >Monthly
                 </button>
             </div>
-            <svg className="bg-gentlewhite rounded-lg" width={svgWidth} height={svgHeight}>
+            <svg className="bg-dark rounded-lg" width={svgWidth} height={svgHeight}>
                 {mainGraphComponent({
                     selection,
                     svgDimensions,
