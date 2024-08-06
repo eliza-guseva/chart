@@ -24,7 +24,7 @@ export function calculateWHRatio(containerWidth) {
     if (containerWidth < 600) {
         return 0.9;
     }
-    return 0.65;
+    return 0.6;
 }
 
 export function calculateSvgHeight(containerWidth) {
@@ -33,12 +33,12 @@ export function calculateSvgHeight(containerWidth) {
 
 export function getMargin(width, left_factor=1.0) {
     if (width < 600) {
-        return { top: 30, right: -30, bottom: 30, left: left_factor * 40 };
+        return { top: 20, right: -30, bottom: 30, left: left_factor * 40 };
     }
     else if (width < 1200) {
-        return { top: 40, right: 0, bottom: 30, left: left_factor * 60 };
+        return { top: 30, right: 0, bottom: 30, left: left_factor * 60 };
     }
-    return { top: 60, right: 0, bottom: 60, left: left_factor *  60 };
+    return { top: 50, right: 0, bottom: 60, left: left_factor *  60 };
 }
 
 

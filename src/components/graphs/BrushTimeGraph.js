@@ -184,22 +184,22 @@ const BrushTimeGraph = ({
 
 
   return (
-    <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center'>
-        <h1 className='md:text-4xl font-bold text-2xl'>{graphTitle}</h1>
+    <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
+        <h1 className='md:text-4xl md:mb-4 font-bold text-2xl mb-2'>{graphTitle}</h1>
         <div>
-            <div>
+        <div className='flex justify-end bg-gentlewhite'>
                 <button 
-                    className='btn-std' 
+                    className='btnboring mb-2' 
                     onClick={() => onChooseAggrLevel('daily')}
                     >Daily
                 </button>
                 <button 
-                    className='btn-std' 
+                    className='btnboring mb-2' 
                     onClick={() => onChooseAggrLevel('weekly')}
                     >Weekly
                 </button>
                 <button 
-                    className='btn-std' 
+                    className='btnboring mb-2' 
                     onClick={() => onChooseAggrLevel('monthly')}
                     >Monthly
                 </button>
