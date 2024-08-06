@@ -20,8 +20,11 @@
     min-h-screen 
     flex flex-col items-center justify-start 
     text-[calc(8px+2vmin)] text-white font-dosis
-    bg-btn-dark-grad
+    bg-bgoval
+    z-0
+    relative
   }
+  
 
 .bg-tile {
 background-repeat: repeat;
