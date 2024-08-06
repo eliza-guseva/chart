@@ -58,7 +58,7 @@ const TheGraphs = ({selectFiles}) => {
             <Tabs setSelectedTab={setSelectedTab} />
             {/* conditionally render according to selectedTab */}
             {selectedTab === TabsEnum.WELLNESS && <Wellness sleepData={sleepData} />}
-            {selectedTab === TabsEnum.PERFORMANCE && <Performance />}
+            {selectedTab === TabsEnum.PERFORMANCE && <Performance performanceData={performanceData} />}
         </div>
     );
 };

@@ -47,7 +47,8 @@ export const StandardAxisLeft = ({
     label,
     yScale,
     margin,
-    svgDimensions
+    svgDimensions,
+    dx
 }) => {
     return (<AxisLeft
         left={margin.left}
@@ -65,7 +66,7 @@ export const StandardAxisLeft = ({
             fill: '#fff',
             fontSize: '1em',
             textAnchor: 'middle',
-            dx: (svgDimensions.width < 600) ? '1.5em' : '0.5em',
+            dx: dx,
         }}
       />);
 };

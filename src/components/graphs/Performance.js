@@ -1,9 +1,11 @@
+import React from 'react';
+import EnduranceGraph from './performanceGraphs/EnduranceGraph';
 
-
-const Performance = () => {
+const Performance = ({performanceData}) => {
     return (
         <div>
             Performance
+            <EnduranceGraph enduranceData={performanceData} />
         </div>
     );
 }
