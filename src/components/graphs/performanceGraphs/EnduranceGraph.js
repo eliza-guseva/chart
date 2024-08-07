@@ -30,7 +30,10 @@ const brushKey = 'overallScore';
 const enduranceBands = [
     {score: 4699, color: '#c43535'},
     {score: 5199, color: '#eb7531'},
-    {score: 5699, color: '#ffae00'},
+    {score: 5699, color: '#f59807'},
+    {score: 6299, color: '#04a90f'},
+    {score: 6799, color: '#1d4bea'},
+    {score: 7299, color: '#8d4bea'},
 ]
 
 function getEnduranceBandColor(score) {
@@ -40,7 +43,7 @@ function getEnduranceBandColor(score) {
         }
     }
 
-    return '#fff';
+    return '#ed4bea';
 }
 
 const EnduranceMainGraph = ({ 
@@ -112,6 +115,7 @@ const EnduranceMainGraph = ({
 
 
 const EnduranceGraph = ({ enduranceData }) => {
+    
     return (
         <BrushTimeGraph
             dailyData={enduranceData}

@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Wellness from './graphs/Wellness';
 import Performance from './graphs/Performance';
+import Activities from './graphs/Activities';
 import { parseFiles, processSleepData, processEnduranceData } from './graphs/fileAndDataProcessors';
+
 
 
 const TabsEnum = Object.freeze({
@@ -59,6 +61,8 @@ const TheGraphs = ({selectFiles}) => {
             {/* conditionally render according to selectedTab */}
             {selectedTab === TabsEnum.WELLNESS && <Wellness sleepData={sleepData} />}
             {selectedTab === TabsEnum.PERFORMANCE && <Performance performanceData={performanceData} />}
+            {selectedTab === TabsEnum.HRV && <div>HRV</div>}
+            {selectedTab === TabsEnum.ACTIVITIES && <Activities />}
         </div>
     );
 };
