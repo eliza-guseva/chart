@@ -25,9 +25,10 @@ module.exports = {
         },
         backgroundImage: {
             'btn-grad': 'linear-gradient(30deg, #9aa7b4, #707c8b)',
-            'btn-hover-grad': 'linear-gradient(30deg, #82a87f, #5f7d5f)',
-            'btn-boring-grad': 'linear-gradient(30deg, #2e2e2e, #404c5b)',
-            'btn-accent-grad': 'linear-gradient(30deg, #a36b4d, #c38975)',
+            'btn-hover-grad': 'linear-gradient(90deg, #687682, #283642)',
+            'btn-boring-grad': 'linear-gradient(90deg, #283642, #111517)',
+            'btn-boring-rev-grad': 'linear-gradient(90deg, #111517, #283642)',
+            'btn-accent-grad': 'linear-gradient(90deg, #a36b4d, #c38975)',
             'btn-light-grad': 'linear-gradient(0deg, #404c5b, #606c7b)',
             'btn-dark-grad': 'linear-gradient(0deg, #1e1e1e, #3e3e3e)',
             'bckgtile': "url(/public/tile.png)",

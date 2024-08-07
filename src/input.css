@@ -31,7 +31,7 @@ background-size: auto;
 
 .btn {
     @apply 
-    py-1 px-4
+    py-1 px-3
     mt-1 mb-1
     rounded-md
     shadow-lg
@@ -46,8 +46,6 @@ background-size: auto;
     bg-btn-grad hover:bg-btn-hover-grad
     hover:shadow-2xl
     text-white font-bold text-center
-    border
-    border-white
 }
 
 .btnboring {
@@ -55,8 +53,6 @@ background-size: auto;
     btn
     bg-btn-boring-grad hover:bg-btn-hover-grad
     text-white
-    border
-    border-darkbckg
 }
 
 .btnaggrselect {
@@ -200,7 +196,7 @@ h1 {
               top: 100%; /* Position the ul below the li */
               display: block;
               padding: 0;
-              width: 150px;
+              width: 200px;
               list-style-type: none;
               /* dropdown element */
               li {

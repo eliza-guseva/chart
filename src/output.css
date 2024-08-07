@@ -593,14 +593,6 @@ video {
   }
 }
 
-.absolute{
-  position: absolute;
-}
-
-.inset-0{
-  inset: 0px;
-}
-
 .m-10{
   margin: 2.5rem;
 }
@@ -642,6 +634,14 @@ video {
   margin-top: 1rem;
 }
 
+.mt-10{
+  margin-top: 2.5rem;
+}
+
+.mt-20{
+  margin-top: 5rem;
+}
+
 .inline-block{
   display: inline-block;
 }
@@ -658,12 +658,16 @@ video {
   display: grid;
 }
 
-.h-16{
-  height: 4rem;
+.hidden{
+  display: none;
 }
 
-.h-full{
-  height: 100%;
+.h-12{
+  height: 3rem;
+}
+
+.w-1{
+  width: 0.25rem;
 }
 
 .w-\[4em\]{
@@ -735,8 +739,8 @@ video {
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
-.bg-btn-grad{
-  background-image: linear-gradient(30deg, #9aa7b4, #707c8b);
+.bg-btn-boring-rev-grad{
+  background-image: linear-gradient(90deg, #111517, #283642);
 }
 
 .p-4{
@@ -774,9 +778,24 @@ video {
   line-height: 2rem;
 }
 
-.text-7xl{
-  font-size: 4.5rem;
+.text-6xl{
+  font-size: 3.75rem;
   line-height: 1;
+}
+
+.text-lg{
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-4xl{
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.text-3xl{
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .font-bold{
@@ -849,8 +868,8 @@ video {
   border-radius: 0.375rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -862,9 +881,6 @@ video {
 }
 
 .btnstd{
-  border-width: 1px;
-  --tw-border-opacity: 1;
-  border-color: rgb(255 255 255 / var(--tw-border-opacity));
   background-image: linear-gradient(30deg, #9aa7b4, #707c8b);
   text-align: center;
   font-weight: 700;
@@ -875,8 +891,8 @@ video {
   border-radius: 0.375rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -888,17 +904,14 @@ video {
 }
 
 .btnstd:hover{
-  background-image: linear-gradient(30deg, #82a87f, #5f7d5f);
+  background-image: linear-gradient(90deg, #687682, #283642);
   --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .btnboring{
-  border-width: 1px;
-  --tw-border-opacity: 1;
-  border-color: rgb(2 10 29 / var(--tw-border-opacity));
-  background-image: linear-gradient(30deg, #2e2e2e, #404c5b);
+  background-image: linear-gradient(90deg, #283642, #111517);
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
   margin-top: 0.25rem;
@@ -906,8 +919,8 @@ video {
   border-radius: 0.375rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -919,7 +932,7 @@ video {
 }
 
 .btnboring:hover{
-  background-image: linear-gradient(30deg, #82a87f, #5f7d5f);
+  background-image: linear-gradient(90deg, #687682, #283642);
 }
 
 .btnaggrselect{
@@ -950,8 +963,8 @@ button{
   border-radius: 0.375rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -1095,7 +1108,7 @@ h1{
       /* Position the ul below the li */
       display: block;
       padding: 0;
-      width: 150px;
+      width: 200px;
       list-style-type: none;
       /* dropdown element */
       li {
@@ -1169,6 +1182,10 @@ h1{
     margin-bottom: 1rem;
   }
 
+  .md\:flex{
+    display: flex;
+  }
+
   .md\:w-4\/5{
     width: 80%;
   }
@@ -1185,6 +1202,16 @@ h1{
     font-size: 2.25rem;
     line-height: 2.5rem;
   }
+
+  .md\:text-7xl{
+    font-size: 4.5rem;
+    line-height: 1;
+  }
+
+  .md\:text-3xl{
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
 }
 
 @media (min-width: 1280px){
@@ -1196,11 +1223,6 @@ h1{
 @media (min-width: 1536px){
   .\32xl\:w-3\/4{
     width: 75%;
-  }
-
-  .\32xl\:text-8xl{
-    font-size: 6rem;
-    line-height: 1;
   }
 }
   

@@ -25,18 +25,20 @@ function getSleepDataFiles(filesObject) {
 
 
 const LoadTheFile = ({status, setStatus, error, handleUpload, isLoaded}) => {
-    return (<div className="p-4 w-full">
-        <h1 className="font-bold">Upload the zip file data dump Garmin sent you</h1>
+    return (<div className="flex flex-col items-center p-4 w-full mt-20">
+        <h2 className="font-bold text-2xl md:text-3xl mb-4">Upload your Garmin data .zip file</h2>
+        <div className="flex">
         <input 
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        className="w-1 h-12 opacity-0 cursor-pointer"
         type="file" 
         onChange={handleUpload} 
         id = "file-upload"
         />
         <label 
             htmlFor="file-upload" 
-            className="btn bg-btn-grad py-2 px-4 cursor-pointer inline-block text-white"
+            className="btn bg-btn-boring-rev-grad py-2 px-4 cursor-pointer inline-block text-white"
         >Browse files</label>
+        </div>
         {error && 
         <div className="text-red-500 mt-2">Error: {error.message}
         {setStatus(StatusEnum.NOT_STARTED)}
@@ -49,8 +51,8 @@ const LoadTheFile = ({status, setStatus, error, handleUpload, isLoaded}) => {
 
 const LoadAnotherFile = ({ isLoaded, toggleIsLoaded }) => {
     return (
-        <div className="flex justify-end h-16 mt-4 w-full">
-            <button className="btn btnboring" onClick={toggleIsLoaded}>
+        <div className="flex justify-end  w-full">
+            <button className="btnboring" onClick={toggleIsLoaded}>
                 {'Load Another File'}
             </button>
         </div>

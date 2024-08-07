@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
-import {curveLinear, curveStepAfter} from '@visx/curve';
+import {curveStepBefore, curveStepAfter} from '@visx/curve';
 import { LinearGradient } from '@visx/gradient';
 import {LinePath, AreaClosed} from '@visx/shape';
 import { GridRows } from '@visx/grid';

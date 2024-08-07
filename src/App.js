@@ -22,11 +22,10 @@ function App() {
       <div className='App'>
         <Nav />
         <Routes>
-          <Route path="/"  element={<Home />}  />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/thegraphs" element={<UnzipNPlot />} />
+          <Route path="/" element={<UnzipNPlot />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </div>

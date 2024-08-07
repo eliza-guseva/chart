@@ -31,10 +31,7 @@ const NavMenu = ({ isOpen, toggleDropdown }) => {
         src="/menu.png" alt="Navigation Menu"/>
         <ul className={`nav menu ${isOpen ? 'show' : ''}`}>
         <li>
-            {genLink("/", "Home", isOpen, toggleDropdown)}
-        </li>
-        <li>
-            {genLink("/thegraphs", "Parse data", isOpen, toggleDropdown)}
+            {genLink("/", "Parse Garmin data", isOpen, toggleDropdown)}
         </li>
         <li>
             {genLink("/contact", "Contact", isOpen, toggleDropdown)}
@@ -102,7 +99,7 @@ const Logo = () => {
             <div>
                 <h3 className="header logo simbolic text-accent">Local</h3>
             </div>
-            <div className="text-7xl font-nixie font-extrabold 2xl:text-8xl">
+            <div className="text-6xl font-nixie font-extrabold md:text-7xl">
                 Charts
             </div>
         </div>
@@ -111,7 +108,7 @@ const Logo = () => {
 
 const Slogan = () => {
     return (
-        <div className="flex items-end justify-center font-mmd gap-4">
+        <div className="hidden md:flex items-end justify-center font-mmd gap-4">
             <div>SEE</div><div>·</div><div>YOUR</div><div>·</div><div>DATA</div>
         </div>
     );
