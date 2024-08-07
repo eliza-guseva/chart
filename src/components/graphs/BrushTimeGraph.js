@@ -183,7 +183,7 @@ const BrushTimeGraph = ({
 
     return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
-        <h1 className='md:text-4xl md:mb-4 font-bold text-2xl mb-2'>{graphTitle}</h1>
+        <h2 className='md:text-3xl font-bold text-2xl m-1'>{graphTitle}</h2>
         <div>
         <div style={style}>
                 <button 

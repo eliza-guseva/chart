@@ -95,21 +95,25 @@ const Menus = () => {
 
 const Logo = () => {
     return (
+        <Link to="/" className="header logo">
         <div className="header logo">
             <div>
                 <h3 className="header logo simbolic text-accent">Local</h3>
             </div>
-            <div className="text-6xl font-nixie font-extrabold md:text-7xl">
+            <div className="text-5xl font-nixie font-extrabold md:text-6xl">
                 Charts
             </div>
         </div>
+        </Link>
     );
 }
 
 const Slogan = () => {
     return (
-        <div className="hidden md:flex items-end justify-center font-mmd gap-4">
+        <div className="hidden md:flex items-end justify-center">
+        <Link to="/" className="hidden md:flex items-end justify-center text-xl font-mmd gap-4">
             <div>SEE</div><div>·</div><div>YOUR</div><div>·</div><div>DATA</div>
+        </Link>
         </div>
     );
 }

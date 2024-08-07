@@ -26,7 +26,7 @@ function getSleepDataFiles(filesObject) {
 
 const LoadTheFile = ({status, setStatus, error, handleUpload, isLoaded}) => {
     return (<div className="flex flex-col items-center p-4 w-full mt-20">
-        <h2 className="font-bold text-2xl md:text-3xl mb-4">Upload your Garmin data .zip file</h2>
+        <h2 className="font-bold text-xl md:text-2xl mb-4">Upload your Garmin data .zip file</h2>
         <div className="flex">
         <input 
         className="w-1 h-12 opacity-0 cursor-pointer"

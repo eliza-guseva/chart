@@ -17,7 +17,7 @@
     @apply 
     min-h-screen 
     flex flex-col items-center justify-start 
-    text-[calc(8px+2vmin)] text-white font-general
+    text-[calc(7px+2vmin)] text-white font-general
     bg-bgoval
     z-0
     relative
@@ -155,14 +155,14 @@ h1 {
   }
   .logo.simbolic {
       font-family:'Nixie One', cursive;
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-weight: bolder;
       margin-bottom: -0.5rem;
   }
   
   .icon {
-      width: 40px;
-      height: 40px;
+      width: 30px;
+      height: 30px;
   }
   
   .navigation {
@@ -206,9 +206,9 @@ h1 {
               &:hover {
                 ul {
                   visibility: visible;
-                  background: #545B62;
+                  background: #ffffff11;
                   opacity: 1;
-                  box-shadow: 0px 3px 5px 2px #EBECF1;
+                  box-shadow: 0px 3px 5px 2px #b0b5c0;
                   text-align: right;
                   li {
                     display: flex;

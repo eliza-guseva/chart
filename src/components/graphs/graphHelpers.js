@@ -15,9 +15,9 @@ export function calculateSvgWidth(containerWidth) {
         return containerWidth;
     }
     else if (containerWidth < 1200) {
-        return containerWidth * 0.9;
+        return containerWidth * 0.85;
     }
-    return containerWidth * 0.8;
+    return containerWidth * 0.7;
   }
 
 export function calculateWHRatio(containerWidth) {
@@ -92,10 +92,10 @@ export function getMainChartBottom(margin, height, width) {
         chart_separation = 60;
     }
     else if (width < 1200) {
-        chart_separation = 90;
+        chart_separation = 70;
     }
     else {
-        chart_separation = 90;
+        chart_separation = 80;
     }
     let innerHeight = getInnerHeight(height, margin);
     let brushHeight = getBrushHeight(height, margin);
