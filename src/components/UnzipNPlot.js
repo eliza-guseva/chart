@@ -5,7 +5,8 @@ import TheGraphs from "./TheGraphs";
 import { 
     WELLNESS_HEADER, 
     ENDURANCE_HEADER, 
-    SLEEP_TAIL
+    SLEEP_TAIL,
+    TRAINING_LOAD_HEADER
 } from "../common/common";
 
 const StatusEnum = Object.freeze({
@@ -15,14 +16,12 @@ const StatusEnum = Object.freeze({
   });
 
 
-function getEnudranceScoreFiles(filesObject) {
-    return filesObject.filter((file) => file.name.startsWith(ENDURANCE_HEADER));
+function getSpecificFiles(filesObject, header, tail='') {
+    if (tail === '') {
+        return filesObject.filter((file) => file.name.startsWith(header));
+    }
+    return filesObject.filter((file) => file.name.startsWith(header) && file.name.endsWith(tail));
 }
-
-function getSleepDataFiles(filesObject) {
-    return filesObject.filter((file) => file.name.startsWith(WELLNESS_HEADER) && file.name.endsWith(SLEEP_TAIL));
-}
-
 
 const LoadTheFile = ({status, setStatus, error, handleUpload, isLoaded}) => {
     return (<div className="flex flex-col items-center p-4 w-full mt-20">
@@ -161,8 +160,11 @@ const UnzipNPlot = () => {
                 setFilesObject(filesObject);
 
                 setSelectFiles({
-                    'sleep': getSleepDataFiles(filesObject),
-                    'endurance': getEnudranceScoreFiles(filesObject)
+                    'sleep': getSpecificFiles(filesObject, WELLNESS_HEADER, SLEEP_TAIL),
+                    'performance': {
+                        'endurance': getSpecificFiles(filesObject, ENDURANCE_HEADER),
+                        'trainingLoad': getSpecificFiles(filesObject, TRAINING_LOAD_HEADER),
+                    }
                 });
                 setStatus(StatusEnum.LOADED);
             })

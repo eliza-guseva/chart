@@ -65,7 +65,6 @@ const EnduranceMainGraph = ({
         [yMax, selection, margin]
     );
     return (<>
-        <LinearGradient id="area-gradient" from="#7f888e" to="#545b62" />
         <rect 
             x={margin.left} 
             y={margin.top} 

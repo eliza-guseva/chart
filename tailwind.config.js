@@ -21,17 +21,18 @@ module.exports = {
             'gentlewhite': '#f8f9fa11',
             'mediumwhite': '#f8f9fb33',
             'darkwhite': '#f8f9fa88',
+            'bckglight':'#2b3945',
             'accent': '#b0b5c0'
         },
         backgroundImage: {
             'btn-grad': 'linear-gradient(30deg, #9aa7b4, #707c8b)',
-            'btn-hover-grad': 'linear-gradient(90deg, #687682, #283642)',
-            'btn-boring-grad': 'linear-gradient(90deg, #283642, #111517)',
-            'btn-boring-rev-grad': 'linear-gradient(90deg, #111517, #283642)',
+            'btn-hover-grad': 'linear-gradient(90deg, #687682, #2b3945)',
+            'btn-boring-grad': 'linear-gradient(90deg, #2b3945, #111517)',
+            'btn-boring-rev-grad': 'linear-gradient(90deg, #111517, #2b3945)',
             'btn-accent-grad': 'linear-gradient(90deg, #a36b4d, #c38975)',
             'btn-light-grad': 'linear-gradient(0deg, #404c5b, #606c7b)',
             'btn-dark-grad': 'linear-gradient(0deg, #1e1e1e, #3e3e3e)',
-            'bgoval': 'linear-gradient(0deg, #0e0e0e 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #283642, #0b0d0c 50%)',
+            'bgoval': 'linear-gradient(0deg, #0e0e0e 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #2b3945, #0b0d0c 50%)',
           }
     },
   },

@@ -118,6 +118,43 @@ export function processEnduranceData(enduranceData) {
     return enduranceData;
     }
 
+export function processTrainingLoadData(trainingLoadData) {
+    // group by calendarDate with max function
+    if (!Array.isArray(trainingLoadData)) {
+        throw new TypeError("trainingLoadData should be an array");
+    }
+
+    // group by calendarDate with max function
+    let groupedData = trainingLoadData.reduce((acc, obj) => {
+        const key = obj.calendarDate;
+        if (!acc[key] || acc[key].dailyTrainingLoadAcute < obj.dailyTrainingLoadAcute) {
+            acc[key] = obj;
+        }
+
+        return acc;
+    }, {});
+    console.log('groupedData', groupedData);
+    groupedData = Object.values(groupedData);
+    // add maxAcuteLoad
+    groupedData = groupedData.map(
+        (element) => {
+            element.maxAcuteLoad = Math.max(
+                element.dailyTrainingLoadAcute, 
+                element.dailyTrainingLoadChronic*1.5);
+            return element;
+        });
+    // calenderDate is timestamp, add datestr for display
+    groupedData = groupedData.map(
+        (element) => {
+            element.dateStr = timeFormat('%Y-%m-%d')(element.calendarDate);
+            return element;
+        });
+    // sort by calendarDate, which is unix timestamp
+    groupedData = groupedData.sort(
+        (a, b) => a.calendarDate - b.calendarDate);
+    return groupedData;
+    }
+
 export function aggregateData(data, frequency, keys, aggFn) {
     // Helper function to parse date and adjust based on frequency
     function getAdjustedDate(date, frequency) {

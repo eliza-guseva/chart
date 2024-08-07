@@ -1,9 +1,10 @@
 import React from 'react';
+import RunPaceTime from './activities/RunPaceTime';
 
 const Activities = ({}) => {
     return (
         <div>
-            <h1>Activities</h1>
+            <RunPaceTime />
         </div>
     );
 }

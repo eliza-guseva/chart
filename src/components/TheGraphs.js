@@ -47,8 +47,12 @@ const TheGraphs = ({selectFiles}) => {
 
     useEffect(() => {
         const processData = async () => {
-            const data = await parseFiles(selectFiles, 'endurance');
-            setPerformanceData(processEnduranceData(data));
+            let data = {};
+            for (let key in selectFiles['performance']) {
+                let this_data = await parseFiles(selectFiles['performance'], key);
+                data[key] = this_data;
+            }
+            setPerformanceData(data);
         };
 
         processData();

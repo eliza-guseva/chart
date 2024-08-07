@@ -593,20 +593,16 @@ video {
   }
 }
 
+.m-1{
+  margin: 0.25rem;
+}
+
 .m-10{
   margin: 2.5rem;
 }
 
 .m-4{
   margin: 1rem;
-}
-
-.m-2{
-  margin: 0.5rem;
-}
-
-.m-1{
-  margin: 0.25rem;
 }
 
 .my-2{
@@ -616,10 +612,6 @@ video {
 
 .\!mt-4{
   margin-top: 1rem !important;
-}
-
-.mb-2{
-  margin-bottom: 0.5rem;
 }
 
 .mb-4{
@@ -644,6 +636,14 @@ video {
 
 .mt-4{
   margin-top: 1rem;
+}
+
+.-mb-1{
+  margin-bottom: -0.25rem;
+}
+
+.-mb-2{
+  margin-bottom: -0.5rem;
 }
 
 .inline-block{
@@ -744,7 +744,7 @@ video {
 }
 
 .bg-btn-boring-rev-grad{
-  background-image: linear-gradient(90deg, #111517, #283642);
+  background-image: linear-gradient(90deg, #111517, #2b3945);
 }
 
 .p-4{
@@ -789,6 +789,16 @@ video {
 
 .text-xl{
   font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-4xl{
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.text-lg{
+  font-size: 1.125rem;
   line-height: 1.75rem;
 }
 
@@ -844,7 +854,7 @@ video {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background-image: linear-gradient(0deg, #0e0e0e 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #283642, #0b0d0c 50%);
+  background-image: linear-gradient(0deg, #0e0e0e 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #2b3945, #0b0d0c 50%);
   font-family: Barlow Condensed, sans-serif;
   font-size: calc(7px + 2vmin);
   --tw-text-opacity: 1;
@@ -898,14 +908,14 @@ video {
 }
 
 .btnstd:hover{
-  background-image: linear-gradient(90deg, #687682, #283642);
+  background-image: linear-gradient(90deg, #687682, #2b3945);
   --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .btnboring{
-  background-image: linear-gradient(90deg, #283642, #111517);
+  background-image: linear-gradient(90deg, #2b3945, #111517);
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
   margin-top: 0.25rem;
@@ -926,7 +936,7 @@ video {
 }
 
 .btnboring:hover{
-  background-image: linear-gradient(90deg, #687682, #283642);
+  background-image: linear-gradient(90deg, #687682, #2b3945);
 }
 
 .btnaggrselect{
@@ -1172,14 +1182,6 @@ h1{
 }
 
 @media (min-width: 768px){
-  .md\:mb-4{
-    margin-bottom: 1rem;
-  }
-
-  .md\:mb-2{
-    margin-bottom: 0.5rem;
-  }
-
   .md\:flex{
     display: flex;
   }
@@ -1201,9 +1203,9 @@ h1{
     line-height: 2rem;
   }
 
-  .md\:text-4xl{
-    font-size: 2.25rem;
-    line-height: 2.5rem;
+  .md\:text-3xl{
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
 
   .md\:text-6xl{
@@ -1211,9 +1213,14 @@ h1{
     line-height: 1;
   }
 
-  .md\:text-3xl{
-    font-size: 1.875rem;
-    line-height: 2.25rem;
+  .md\:text-xl{
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .md\:text-5xl{
+    font-size: 3rem;
+    line-height: 1;
   }
 }
 
