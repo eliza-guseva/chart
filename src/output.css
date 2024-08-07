@@ -694,6 +694,10 @@ video {
   flex-direction: column;
 }
 
+.items-end{
+  align-items: flex-end;
+}
+
 .items-center{
   align-items: center;
 }
@@ -761,13 +765,31 @@ video {
   font-family: Orbitron, monospace;
 }
 
+.font-nixie{
+  font-family: Nixie One, sans-serif;
+}
+
 .text-2xl{
   font-size: 1.5rem;
   line-height: 2rem;
 }
 
+.text-7xl{
+  font-size: 4.5rem;
+  line-height: 1;
+}
+
 .font-bold{
   font-weight: 700;
+}
+
+.font-extrabold{
+  font-weight: 800;
+}
+
+.text-accent{
+  --tw-text-opacity: 1;
+  color: rgb(163 170 179 / var(--tw-text-opacity));
 }
 
 .text-black{
@@ -809,7 +831,7 @@ video {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background-image: linear-gradient(0deg, #0e0e0e 0%, #ffffff00 60%), radial-gradient(120% 290% at 54% 12%, #434a53, #0b0d0c 50%);
+  background-image: linear-gradient(0deg, #0e0e0e 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #283642, #0b0d0c 50%);
   font-family: Barlow Condensed, sans-serif;
   font-size: calc(8px + 2vmin);
   --tw-text-opacity: 1;
@@ -902,7 +924,7 @@ video {
 
 .btnaggrselect{
   border-radius: 0px;
-  background-color: #f8f9fa33;
+  background-color: #f8f9fb33;
   padding-top: 0px;
   padding-bottom: 0px;
   padding-left: 0.5rem;
@@ -1030,18 +1052,9 @@ h1{
 
 .logo.simbolic {
   font-family:'Nixie One', cursive;
-  font-size: 1em;
+  font-size: 2rem;
   font-weight: bolder;
-  color: white;
-  margin-bottom: -1em;
-}
-
-.logo.charts {
-  font-family: 'Nixie One', cursive;
-  font-size: 3em;
-  color: white;
-  font-weight: bolder;
-  margin-top: 0;
+  margin-bottom: -0.5rem;
 }
 
 .icon {
@@ -1183,6 +1196,11 @@ h1{
 @media (min-width: 1536px){
   .\32xl\:w-3\/4{
     width: 75%;
+  }
+
+  .\32xl\:text-8xl{
+    font-size: 6rem;
+    line-height: 1;
   }
 }
   

@@ -18,15 +18,6 @@ import {
     getIdxFromEnd,
 } from './graphHelpers';
 
-const brushStyle = {
-    fillColor: "#ffddff",
-    accentColor: "#f6acc8",
-    selectedBoxStyle: {
-        fill: 'url(#brush_pattern)',
-        stroke: '#ffffff',
-    },
-}
-
 function getAllKeys(keys, brushKey) {
     if (keys.includes(brushKey)) {
         return keys;

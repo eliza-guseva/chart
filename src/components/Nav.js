@@ -100,10 +100,10 @@ const Logo = () => {
     return (
         <div className="header logo">
             <div>
-                <h3 className="header logo simbolic">Extra</h3>
+                <h3 className="header logo simbolic text-accent">Local</h3>
             </div>
-            <div>
-                <h2 className="header logo charts"> Charts</h2>
+            <div className="text-7xl font-nixie font-extrabold 2xl:text-8xl">
+                Charts
             </div>
         </div>
     );
@@ -111,7 +111,7 @@ const Logo = () => {
 
 const Slogan = () => {
     return (
-        <div className="flex items-center justify-center font-mmd gap-4">
+        <div className="flex items-end justify-center font-mmd gap-4">
             <div>SEE</div><div>·</div><div>YOUR</div><div>·</div><div>DATA</div>
         </div>
     );

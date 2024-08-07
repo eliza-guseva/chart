@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
-import {curveLinear} from '@visx/curve';
+import {curveLinear, curveStepAfter} from '@visx/curve';
 import { LinearGradient } from '@visx/gradient';
 import {LinePath, AreaClosed} from '@visx/shape';
 import { GridRows } from '@visx/grid';
@@ -14,8 +14,8 @@ import { StandardAxisLeft, StandardAxisBottom } from '../GraphComponents';
 
 
 const brushStyle = {
-    fillColor: "#ffddff",
-    accentColor: "#f6acc8",
+    fillColor: "#676e72",
+    accentColor: "#e8e6ff",
     selectedBoxStyle: {
         fill: 'url(#brush_pattern)',
         stroke: '#ffffff',
@@ -28,8 +28,8 @@ const colors = ['#fff'];
 const brushKey = 'overallScore';
 
 const enduranceBands = [
-    {score: 4699, color: '#dd2222'},
-    {score: 5199, color: '#f56e07'},
+    {score: 4699, color: '#c43535'},
+    {score: 5199, color: '#eb7531'},
     {score: 5699, color: '#ffae00'},
 ]
 
@@ -68,7 +68,7 @@ const EnduranceMainGraph = ({
             y={margin.top} 
             width={xMax - 2 * margin.left} 
             height={yMax - margin.top} 
-            fill="#767d8488"/>
+            fill="#f8f9fb33"/>
         <GridRows
             left={margin.left}
             scale={yScale}
@@ -80,14 +80,15 @@ const EnduranceMainGraph = ({
         {selection.slice(1).map((d, i) => {
                 const segmentData = [selection[i], selection[i + 1]];
                 return (
-                    <LinePath
+                    <AreaClosed
                         key={`line-segment-${i}`}
                         data={segmentData}
                         x={(d) => xScale(getDate(d))}
                         y={(d) => yScale(d.overallScore)}
                         stroke={getEnduranceBandColor(segmentData[0].overallScore)}
-                        strokeWidth={7}
-                        curve={curveLinear}
+                        fill={getEnduranceBandColor(segmentData[0].overallScore)}
+                        strokeWidth={1}
+                        curve={curveStepAfter}
                         xScale={xScale}
                         yScale={yScale}
                     />

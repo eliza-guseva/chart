@@ -14,14 +14,13 @@ import { getMainChartBottom } from '../graphHelpers';
 
 
 const brushStyle = {
-    fillColor: "#ffddff",
-    accentColor: "#f6acc8",
+    fillColor: "#4bb0ff",
+    accentColor: "#c8d6f2",
     selectedBoxStyle: {
         fill: 'url(#brush_pattern)',
         stroke: '#ffffff',
     },
 }
-
 
 const keys = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
 const colors = ['#007bff', '#ff44cc', '#44aaff', '#ccbbee'];
@@ -48,7 +47,7 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             y={margin.top} 
             width={xMax - 2 * margin.left - margin.right} 
             height={yMax - margin.top} 
-            fill="#767d8888"/>
+            fill="#f8f9fb33"/>
         <GridRows
             left={margin.left}
             scale={yScale}

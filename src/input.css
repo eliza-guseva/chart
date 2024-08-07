@@ -159,17 +159,9 @@ h1 {
   }
   .logo.simbolic {
       font-family:'Nixie One', cursive;
-      font-size: 1em;
+      font-size: 2rem;
       font-weight: bolder;
-      color: white;
-      margin-bottom: -1em;
-  }
-  .logo.charts {
-      font-family: 'Nixie One', cursive;
-      font-size: 3em;
-      color: white;
-      font-weight: bolder;
-      margin-top: 0;
+      margin-bottom: -0.5rem;
   }
   
   .icon {
