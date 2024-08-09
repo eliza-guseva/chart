@@ -45,13 +45,13 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
         <rect 
             x={margin.left} 
             y={margin.top} 
-            width={xMax - 2 * margin.left - margin.right} 
+            width={xMax - margin.left} 
             height={yMax - margin.top} 
-            fill="#f8f9fb33"/>
+            fill="#f8f9fb11"/>
         <GridRows
             left={margin.left}
             scale={yScale}
-            width={xMax - 2 * margin.left}
+            width={xMax - margin.left}
             stroke='#fff'
             strokeOpacity={0.2}
             pointerEvents="none"

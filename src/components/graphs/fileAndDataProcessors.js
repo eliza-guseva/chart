@@ -62,6 +62,23 @@ export function getAvg(data, key) {
     return data.reduce((acc, d) => acc + d[key], 0) / data.length;
     }
 
+export function getMin(data, key) {
+    return data.reduce((acc, d) => Math.min(acc, d[key]), Infinity);
+    }
+
+export function getMedian(data, key) {
+    const sortedData = data.map(d => d[key]).sort((a, b) => a - b);
+    const mid = Math.floor(sortedData.length / 2);
+    return (
+        sortedData.length % 2 !== 0 
+        ? sortedData[mid] 
+        : (sortedData[mid - 1] + sortedData[mid]) / 2
+    );}
+
+export function sortData(data, key) {
+    return data.sort((a, b) => a[key] - b[key]);
+    }
+
 
 export function processSleepData(sleepData) {
     // filter element array objects with key sleepStartTimestampGMT null
@@ -113,9 +130,7 @@ export function processSleepData(sleepData) {
 
 export function processEnduranceData(enduranceData) {
     // sort by calendarDate, which is unix timestamp
-    enduranceData = enduranceData.sort(
-        (a, b) => a.calendarDate - b.calendarDate);
-    return enduranceData;
+    return sortData(enduranceData, 'calendarDate');
     }
 
 export function processTrainingLoadData(trainingLoadData) {
@@ -150,59 +165,150 @@ export function processTrainingLoadData(trainingLoadData) {
             return element;
         });
     // sort by calendarDate, which is unix timestamp
-    groupedData = groupedData.sort(
-        (a, b) => a.calendarDate - b.calendarDate);
-    return groupedData;
+    return sortData(groupedData, 'calendarDate');
     }
 
-export function aggregateData(data, frequency, keys, aggFn) {
-    // Helper function to parse date and adjust based on frequency
-    function getAdjustedDate(date, frequency) {
-        const parseDate = timeParse('%Y-%m-%d');
-        const formatDate = timeFormat('%Y-%m-%d');
-        const parsedDate = moment(date);
-        let adjustedDate;
+/**
+ * Processes the activities data.
+ *
+ * @param {Object[]} activitiesData - The activities data to be processed.
+ * @param {string} activitiesData[].activityType - The type of activity.
+ * ...
+ * @returns {{Object.<string, Array>}} - The processed activities data.
+ */
+export function processActivitiesData(activitiesData) {
+    activitiesData = activitiesData[0].summarizedActivitiesExport;
+    activitiesData = sortData(activitiesData, 'calendarDate');
+    activitiesData = activitiesData.map(
+        (element) => {
+            element.distance_km = element.distance / 100000;
+            element.duration_min = element.duration / 60000;
+            element.pace_minkm = element.duration_min / element.distance_km;
+            element.speed_kmh = element.distance_km / (element.duration_min / 60);
+            element.elevationGain_m = element.elevationGain / 100 ?? 0;
+            element.elevationLoss_m = element.elevationLoss / 100 ?? 0;
+            element.homolElGain_m = element.elevationGain_m - element.elevationLoss_m;
+            element.calendarDate = new Date(element.beginTimestamp);
+            return element;
+        });
+    // filter out paces > 100 min/km
+    activitiesData = activitiesData.filter(
+        (element) => element.pace_minkm < 100);
+    // filter out speeds > 150 km/h 
+    activitiesData = activitiesData.filter(
+        (element) => element.speed_kmh < 150);
+    // keep only elements
 
-        switch (frequency) {
-            case 'day':
-                adjustedDate = parsedDate;
-                break;
-            case 'week':
-                adjustedDate = parsedDate.startOf('isoWeek');
-                break;
-            case 'month':
-                adjustedDate = parsedDate.startOf('month');
-                break;
-            case 'year':
-                adjustedDate = parsedDate.startOf('year');
-                break;
-            default:
-                adjustedDate = parsedDate;
-                break;
+    const activitiesObj = {};
+
+    activitiesData.forEach((activity) => {
+        const { activityType } = activity;
+
+        if (!activitiesObj[activityType]) {
+            activitiesObj[activityType] = [];
         }
 
-        // Format the adjusted date to a string and then parse it back to a D3 date object
-        const formattedDate = formatDate(adjustedDate.toDate());
-        return parseDate(formattedDate);
+        activitiesObj[activityType].push(activity);
+    });
+    return activitiesObj;  
+}
+
+// ** Aggregation functions ** //
+
+
+/**
+ * Selects the first date of a given frequency from a provided date.
+ *
+ * @param {string} date - The date to select from.
+ * @param {string} frequency - The frequency to select (day, week, month, year).
+ * @returns {Date} - The selected date as a JavaScript Date object.
+ */
+export function selectFirstOf(date, frequency, latestDate) {
+    const parseDate = timeParse('%Y-%m-%d');
+    const formatDate = timeFormat('%Y-%m-%d');
+    const parsedDate = moment(date);
+    let adjustedDate;
+
+    switch (frequency) {
+        case 'day':
+            adjustedDate = parsedDate;
+            break;
+        case 'week':
+            adjustedDate = parsedDate.startOf('isoWeek');
+            break;
+        case 'month':
+            adjustedDate = parsedDate.startOf('month');
+            break;
+        case 'year':
+            adjustedDate = parsedDate.startOf('year');
+            break;
+        default:
+            adjustedDate = parsedDate;
+            break;
     }
 
-    // Group data based on adjusted date
-    const groupedData = data.reduce((acc, obj) => {
-        const adjustedDate = getAdjustedDate(obj.calendarDate, frequency);
-        const adjustedDateStr = adjustedDate.toISOString(); // Convert date object to ISO string for unique key
+    // Format the adjusted date to a string and then parse it back to a D3 date object
+    const formattedDate = formatDate(adjustedDate.toDate());
+    return parseDate(formattedDate);
+}
 
-        if (!acc[adjustedDateStr]) {
-            acc[adjustedDateStr] = [];
+export function selectDaysAgo(date, frequency, latestDate) {
+    const parsedDate = moment(date);
+    const parsedLatestDate = moment(latestDate);
+    let freqAgo;
+    let adjustedDate;
+
+    // calculate how many days ago the date is
+    const daysAgo = parsedLatestDate.diff(parsedDate, 'days');
+
+    switch (frequency) {
+        case 'day':
+            adjustedDate = parsedDate;
+            break;
+        case 'week':
+            freqAgo = Math.floor(daysAgo / 7);
+            adjustedDate = parsedLatestDate.subtract(freqAgo, 'weeks');
+            break;
+        case 'month':
+            freqAgo = Math.floor(daysAgo / 30);
+            adjustedDate = parsedLatestDate.subtract(freqAgo * 30, 'days');
+            break;
+        default:
+            adjustedDate = parsedDate;
+            break;
+    }  
+    return adjustedDate.toDate();
+}
+
+function getDataGroups(data, frequency, groupFunction) {
+    const latestDate = moment(data[data.length - 1].calendarDate);
+    const groupedData = data.reduce((accumVal, curVal) => {
+        const adjustedDate = groupFunction(
+            curVal.calendarDate, 
+            frequency, 
+            latestDate
+        );
+        // Convert date object to ISO string for unique key
+        const adjustedDateStr = adjustedDate.toISOString(); 
+
+        if (!accumVal[adjustedDateStr]) {
+            accumVal[adjustedDateStr] = [];
         }
-        acc[adjustedDateStr].push(obj);
-        return acc;
+        accumVal[adjustedDateStr].push(curVal);
+        return accumVal;
     }, {});
+    return groupedData;
+}
+
+
+export function aggregateData(data, frequency, keys, groupFunction, aggFn) {
+    const groupedData = getDataGroups(data, frequency, groupFunction);
 
     // Aggregate data for each group
     const aggregatedData = Object.keys(groupedData).map((key) => {
         const group = groupedData[key];
         const aggregatedObj = {
-            calendarDate: new Date(key), // Convert ISO string back to Date object
+            calendarDate: new Date(key),
         };
         keys.forEach((k) => {
             aggregatedObj[k] = aggFn(group, k);

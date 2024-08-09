@@ -1,10 +1,10 @@
 import React from 'react';
 import RunPaceTime from './activities/RunPaceTime';
 
-const Activities = ({}) => {
+const Activities = ({activitiesData}) => {
     return (
         <div>
-            <RunPaceTime />
+            <RunPaceTime runningData={activitiesData.running} />
         </div>
     );
 }

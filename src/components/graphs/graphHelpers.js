@@ -11,11 +11,14 @@ export const brushStyle = {
 }
 
 export function calculateSvgWidth(containerWidth) {
-    if (containerWidth < 600) {
+    if (containerWidth < 750) {
         return containerWidth;
     }
-    else if (containerWidth < 1200) {
+    else if (containerWidth < 900) {
         return containerWidth * 0.85;
+    }
+    else if (containerWidth < 1200) {
+        return containerWidth * 0.8;
     }
     return containerWidth * 0.7;
   }
@@ -23,6 +26,12 @@ export function calculateSvgWidth(containerWidth) {
 export function calculateWHRatio(containerWidth) {
     if (containerWidth < 600) {
         return 0.9;
+    }
+    else if (containerWidth < 750) {
+        return 0.75;
+    }
+    else if (containerWidth < 900) {
+        return 0.7;
     }
     return 0.6;
 }
@@ -33,12 +42,12 @@ export function calculateSvgHeight(containerWidth) {
 
 export function getMargin(width, left_factor=1.0) {
     if (width < 600) {
-        return { top: 30, right: -30, bottom: 30, left: left_factor * 40 };
+        return { top: 30, right: 10, bottom: 30, left: left_factor * 40 };
     }
     else if (width < 1200) {
-        return { top: 30, right: 0, bottom: 30, left: left_factor * 60 };
+        return { top: 30, right: 10, bottom: 30, left: left_factor * 60 };
     }
-    return { top: 30, right: 0, bottom: 60, left: left_factor *  60 };
+    return { top: 30, right: 10, bottom: 60, left: left_factor *  60 };
 }
 
 
@@ -47,7 +56,7 @@ export function getInnerHeight(height, margin) {
 }
 
 export function getXMax(width, margin) {
-    return width - margin.left - margin.right;
+    return width - margin.right;
 }
 
 

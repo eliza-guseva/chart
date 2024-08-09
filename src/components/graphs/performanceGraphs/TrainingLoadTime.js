@@ -1,17 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useMemo } from 'react';
-import { max, min } from 'd3-array';
+import { max } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
-import {curveLinear, curveStepAfter, curveBasis} from '@visx/curve';
-import { LinearGradient } from '@visx/gradient';
+import {curveLinear, curveBasis} from '@visx/curve';
 import {LinePath, AreaClosed} from '@visx/shape';
-import { Threshold } from '@visx/threshold';
-import { GridRows } from '@visx/grid';
 import BrushTimeGraph from '../BrushTimeGraph';
 import { getDate } from '../fileAndDataProcessors';
 import { getMainChartBottom } from '../graphHelpers';
-import { StandardAxisLeft, StandardAxisBottom } from '../GraphComponents';
+import { StandardAxisLeft, StandardAxisBottom, Grid } from '../GraphComponents';
 
 
 const brushStyle = {
@@ -32,6 +28,16 @@ const keys = [
 const colors = ['#fff'];
 const brushKey = 'dailyTrainingLoadAcute';
 
+
+/**
+ * Renders the main graph component for the Training Load time graph.
+ *
+ * @param {Object[]} selection - The data points to be displayed on the graph.
+ * @param {Object} svgDimensions - The dimensions of the SVG container.
+ * @param {Object} xScale - The x-axis scale.
+ * @param {Object} props - Additional props.
+ * @returns {JSX.Element} The rendered TrainingLoadMainGraph component.
+ */
 const TrainingLoadMainGraph = ({
     selection, 
     svgDimensions,
@@ -51,26 +57,26 @@ const TrainingLoadMainGraph = ({
             [yMax, selection, margin]
         );
     return (<>
-        <LinearGradient id="threshold" from='#f8f9ff64' to='#fdf9fb44' />
         <rect 
             x={margin.left} 
             y={margin.top} 
-            width={xMax - 2 * margin.left} 
+            width={xMax - margin.left} 
             height={yMax - margin.top} 
-            fill="url(#threshold)"
+            fill="#f8f9fb11"
             />
-        <GridRows
-            left={margin.left}
-            scale={yScale}
-            width={xMax - 2 * margin.left}
-            stroke='#fff'
-            strokeOpacity={0.2}
-            pointerEvents="none"
-          />
+        <Grid
+            rows={true}
+            cols={true}
+            xScale={xScale}
+            yScale={yScale}
+            xMax={xMax}
+            yMax={yMax}
+            margin={margin}
+        />
           <AreaClosed
             data={selection}
-            fill='#0d760aa8'
-            stroke='#0d760aff'
+            fill='#108010bb'
+            stroke='#108010ff'
             x={(d) => xScale(getDate(d))}
             y0={(d) => yScale(d[keys[1]] * 0.8)}
             y1={(d) => yScale(d[keys[1]] * 1.5)}
@@ -81,7 +87,7 @@ const TrainingLoadMainGraph = ({
             data={selection}
             x={(d) => xScale(getDate(d))}
             y={(d) => yScale(d[keys[0]])}
-            stroke='#ffffff'
+            stroke='#ddffdd'
             strokeWidth={4}
             curve={curveLinear}
         />
@@ -89,7 +95,6 @@ const TrainingLoadMainGraph = ({
         <StandardAxisLeft
             label={yLabel}
             yScale={yScale}
-            margin={margin}
             svgDimensions={svgDimensions}
             dx={(svgDimensions.width < 600) ? '0.0em' : '-0.5em'}
         />
@@ -101,6 +106,12 @@ const TrainingLoadMainGraph = ({
     </>)
 }
 
+/**
+ * Renders the Training Load Time graph component.
+ *
+ * @param {Object} trainingLoadData - The training load data.
+ * @returns {JSX.Element} The rendered TrainingLoadTime component.
+ */
 const TrainingLoadTime = ({ trainingLoadData }) => {
     console.log('traingLoad', trainingLoadData.slice(105, 115));
     return (

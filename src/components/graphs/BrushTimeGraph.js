@@ -2,9 +2,8 @@ import React, { useRef, useState, useMemo, useEffect } from 'react';
 import { scaleTime, scaleLinear } from '@visx/scale';
 import { extent } from 'd3-array';
 import { max } from 'd3-array';
-import { getDate, aggregateData, getAvg } from './fileAndDataProcessors';
+import { getDate, aggregateData, getAvg, selectFirstOf } from './fileAndDataProcessors';
 import { 
-    StandardAxisLeft,
     BrushSubGraph, 
 } from './GraphComponents';
 
@@ -35,11 +34,14 @@ const BrushTimeGraph = ({
     brushStyle,
     graphTitle,
     left_factor=1.0,
+    isAllowAgg=true,
+    groupFunction=selectFirstOf,
     aggFn = getAvg,
+    inverseBrush=false,
 }) => {
     const allKeys = getAllKeys(keys, brushKey);
-    const weeklyData = aggregateData(dailyData, 'week', allKeys, aggFn);
-    const monthlyData = aggregateData(dailyData, 'month', allKeys, aggFn);
+    const weeklyData = aggregateData(dailyData, 'week', allKeys, groupFunction, aggFn);
+    const monthlyData = aggregateData(dailyData, 'month', allKeys, groupFunction, aggFn);
     const [aggregatedData, setAggregatedData] = useState(dailyData);
     const [aggrLevel, setAggrLevel] = useState('daily');
     const initIdxStart = getIdxFromEnd(aggregatedData, 75);
@@ -150,9 +152,9 @@ const BrushTimeGraph = ({
         () =>
             scaleLinear({
             range: [getBrushHeight(svgHeight, margin), 0],
-            domain: [0, max(dailyData, (d) => d[brushKey])],
+            domain: (inverseBrush) ? [max(dailyData, (d) => d[brushKey]), 0] : [0, max(dailyData, (d) => d[brushKey])],
             }),
-        [dailyData, svgHeight, margin, brushKey]
+        [dailyData, svgHeight, margin, brushKey, inverseBrush]
     );
 
     const initialBrushPosition = useMemo(
@@ -174,17 +176,19 @@ const BrushTimeGraph = ({
     }, [aggrLevel]);
 
     let style = {
-        display: 'flex',
+        display: isAllowAgg ? 'flex' : 'none',
+        width: svgWidth - margin.right + 'px',
         justifyContent: 'right',
         marginRight: svgWidth - xMax + 'px',
         marginBottom: '-33px',
+        zIndex: 10
     };
     console.log(svgWidth - xMax - margin.left)
 
     return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <h2 className='md:text-3xl font-bold text-2xl m-1'>{graphTitle}</h2>
-        <div>
+        <div className='w-full flex flex-col items-center'>
         <div style={style}>
                 <button 
                     className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}

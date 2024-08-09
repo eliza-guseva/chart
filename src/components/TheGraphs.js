@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Wellness from './graphs/Wellness';
 import Performance from './graphs/Performance';
 import Activities from './graphs/Activities';
-import { parseFiles, processSleepData, processEnduranceData } from './graphs/fileAndDataProcessors';
+import { parseFiles, processSleepData, processEnduranceData, processActivitiesData } from './graphs/fileAndDataProcessors';
 
 
 
@@ -33,6 +33,7 @@ const Tabs = ({setSelectedTab}) => {
 const TheGraphs = ({selectFiles}) => {
     const [sleepData, setSleepData] = useState(null);
     const [performanceData, setPerformanceData] = useState(null);
+    const [activitiesData, setActivitiesData] = useState(null);
     const [selectedTab, setSelectedTab] = useState(TabsEnum.WELLNESS);
 
     useEffect(() => {
@@ -44,6 +45,16 @@ const TheGraphs = ({selectFiles}) => {
 
         processData();
         }, [selectFiles]);
+
+    useEffect(() => {
+        const processData = async () => {
+            const data = await parseFiles(selectFiles, 'activities');
+            const processedData = processActivitiesData(data);
+            setActivitiesData(processedData);
+        };
+
+        processData();
+    }, [selectFiles]);
 
     useEffect(() => {
         const processData = async () => {
@@ -66,7 +77,7 @@ const TheGraphs = ({selectFiles}) => {
             {selectedTab === TabsEnum.WELLNESS && <Wellness sleepData={sleepData} />}
             {selectedTab === TabsEnum.PERFORMANCE && <Performance performanceData={performanceData} />}
             {selectedTab === TabsEnum.HRV && <div>HRV</div>}
-            {selectedTab === TabsEnum.ACTIVITIES && <Activities />}
+            {selectedTab === TabsEnum.ACTIVITIES && <Activities activitiesData={activitiesData} />}
         </div>
     );
 };

@@ -3,6 +3,7 @@ import { AreaClosed } from '@visx/shape';
 import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';
+import { GridRows, GridColumns } from '@visx/grid';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { format as d3Format } from 'd3-format';
 import { getDate } from './fileAndDataProcessors';
@@ -43,19 +44,67 @@ export const StandardAxisBottom = ({
 };
 
 
+/**
+ * Renders a grid component with optional rows and columns.
+ *
+ * @param {boolean} rows - Whether to render grid rows.
+ * @param {boolean} cols - Whether to render grid columns.
+ * @param {function} xScale - The x-axis scale function.
+ * @param {number} xMax - The maximum value of the x-axis scale.
+ * @param {function} yScale - The y-axis scale function.
+ * @param {number} yMax - The maximum value of the y-axis scale.
+ * @param {object} margin - The margin object containing top, right, bottom, and left values.
+ * @returns {JSX.Element} The rendered grid component.
+ */
+export const Grid = ({
+    rows,
+    cols,
+    xScale,
+    xMax,
+    yScale,
+    yMax,
+    margin,
+}) => {
+    return (
+        <>
+        {rows &&
+            <GridRows
+                left={margin.left}
+                scale={yScale}
+                width={xMax - margin.left}
+                stroke='#fff'
+                strokeOpacity={0.2}
+                pointerEvents="none"
+            />
+        }
+       {cols &&
+            <GridColumns
+                top={margin.top}
+                scale={xScale}
+                height={yMax - margin.top}
+                stroke='#fff'
+                strokeOpacity={0.2}
+                pointerEvents="none"
+                />
+        }
+        </>
+    )
+};
+
+
 export const StandardAxisLeft = ({
     label,
     yScale,
-    margin,
     svgDimensions,
-    dx
+    dx,
+    tickFormat='.0f',
 }) => {
     return (<AxisLeft
-        left={margin.left}
+        left={svgDimensions.margin.left}
         scale={yScale}
         stroke='#fff'
         tickStroke='#fff'
-        tickFormat={d3Format('.0f')}
+        tickFormat={d3Format(tickFormat)}
         tickLabelProps={() => ({
           fill: '#fff',
           fontSize: '0.8em',

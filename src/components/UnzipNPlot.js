@@ -6,7 +6,9 @@ import {
     WELLNESS_HEADER, 
     ENDURANCE_HEADER, 
     SLEEP_TAIL,
-    TRAINING_LOAD_HEADER
+    TRAINING_LOAD_HEADER,
+    FITNESS_HEADER,
+    ACTIVITIES_TAIL
 } from "../common/common";
 
 const StatusEnum = Object.freeze({
@@ -164,7 +166,8 @@ const UnzipNPlot = () => {
                     'performance': {
                         'endurance': getSpecificFiles(filesObject, ENDURANCE_HEADER),
                         'trainingLoad': getSpecificFiles(filesObject, TRAINING_LOAD_HEADER),
-                    }
+                    },
+                    'activities': getSpecificFiles(filesObject, FITNESS_HEADER, ACTIVITIES_TAIL),
                 });
                 setStatus(StatusEnum.LOADED);
             })

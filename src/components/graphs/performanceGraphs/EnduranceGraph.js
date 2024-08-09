@@ -6,11 +6,14 @@ import { scaleLinear } from '@visx/scale';
 import {curveStepBefore, curveStepAfter} from '@visx/curve';
 import { LinearGradient } from '@visx/gradient';
 import {LinePath, AreaClosed} from '@visx/shape';
-import { GridRows } from '@visx/grid';
 import BrushTimeGraph from '../BrushTimeGraph';
 import { getDate } from '../fileAndDataProcessors';
 import { getMainChartBottom } from '../graphHelpers';
-import { StandardAxisLeft, StandardAxisBottom } from '../GraphComponents';
+import { 
+    StandardAxisLeft, 
+    StandardAxisBottom,
+    Grid,
+} from '../GraphComponents';
 
 
 const brushStyle = {
@@ -68,17 +71,18 @@ const EnduranceMainGraph = ({
         <rect 
             x={margin.left} 
             y={margin.top} 
-            width={xMax - 2 * margin.left} 
+            width={xMax - margin.left} 
             height={yMax - margin.top} 
-            fill="#f8f9fb33"/>
-        <GridRows
-            left={margin.left}
-            scale={yScale}
-            width={xMax - 2 * margin.left}
-            stroke='#fff'
-            strokeOpacity={0.2}
-            pointerEvents="none"
-          />
+            fill="#f8f9fb11"/>
+        <Grid
+            rows={true}
+            cols={true}
+            xScale={xScale}
+            yScale={yScale}
+            xMax={xMax}
+            yMax={yMax}
+            margin={margin}
+        />
         {selection.slice(1).map((d, i) => {
                 const segmentData = [selection[i], selection[i + 1]];
                 return (
