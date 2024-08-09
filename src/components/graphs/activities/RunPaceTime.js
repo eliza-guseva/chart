@@ -86,22 +86,6 @@ const RunPaceMainGraph = ({
             yMax={yMax}
             xScale={xScale}
         />
-        <LinePath
-            data={monthly}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(d[brushKey])}
-            stroke='#ccffcc'
-            strokeWidth={4}
-            curve={curveLinear}
-        />
-        <LinePath
-            data={monthlyMin}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(d[brushKey])}
-            stroke='#44dd44'
-            strokeWidth={4}
-            curve={curveLinear}
-        />
         <Group>
         {selection.map((d, i) => {
             const date = getDate(d);
@@ -121,6 +105,22 @@ const RunPaceMainGraph = ({
             );
         })}
         </Group>
+        <LinePath
+            data={monthly}
+            x={(d) => xScale(getDate(d))}
+            y={(d) => yScale(d[brushKey])}
+            stroke='#ccffcc'
+            strokeWidth={4}
+            curve={curveLinear}
+        />
+        <LinePath
+            data={monthlyMin}
+            x={(d) => xScale(getDate(d))}
+            y={(d) => yScale(d[brushKey])}
+            stroke='#44dd44'
+            strokeWidth={4}
+            curve={curveLinear}
+        />
         </>);
 }
 
