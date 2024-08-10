@@ -2,6 +2,10 @@ import React, { useRef, useState, useMemo, useEffect } from 'react';
 import { scaleTime, scaleLinear } from '@visx/scale';
 import { extent } from 'd3-array';
 import { max } from 'd3-array';
+
+import { 
+    TooltipWithBounds, 
+} from '@visx/tooltip';
 import { getDate, aggregateData, getAvg, selectFirstOf } from './fileAndDataProcessors';
 import { 
     BrushSubGraph, 
@@ -66,6 +70,11 @@ const BrushTimeGraph = ({
             margin: getMargin(600, left_factor),
         });
     const containerRef = useRef(null);
+    const [tooltipInfo, setTooltipInfo] = useState({
+        tooltipData: null,
+        tooltipTop: 0,
+        tooltipLeft: 0,
+    });
 
     useEffect(() => {
         const handleResize = () => {
@@ -185,6 +194,8 @@ const BrushTimeGraph = ({
     };
     console.log(svgWidth - xMax - margin.left)
 
+    
+
     return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <h2 className='md:text-3xl font-bold text-2xl m-1'>{graphTitle}</h2>
@@ -211,6 +222,8 @@ const BrushTimeGraph = ({
                     selection,
                     svgDimensions,
                     xScale,
+                    tooltipInfo,
+                    setTooltipInfo,
                 })}
                 <BrushSubGraph
                     allData={dailyData}
@@ -224,7 +237,17 @@ const BrushTimeGraph = ({
                     brushRef={brushRef}
                     brushStyle={brushStyle}
                 />
+                
             </svg>
+            {tooltipInfo.tooltipData && (
+                <TooltipWithBounds 
+                // tpp
+                top={tooltipInfo.tooltipTop}
+                left={tooltipInfo.tooltipLeft}
+                >
+                {tooltipInfo.tooltipData}
+                </TooltipWithBounds>
+            )}
         </div>
     </div>
     );

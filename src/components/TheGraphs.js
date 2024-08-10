@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import Wellness from './graphs/Wellness';
 import Performance from './graphs/Performance';
 import Activities from './graphs/Activities';
-import { parseFiles, processSleepData, processEnduranceData, processActivitiesData } from './graphs/fileAndDataProcessors';
+import { 
+    parseFiles, 
+    processSleepData, 
+    processActivitiesData 
+} from './graphs/fileAndDataProcessors';
+
+
+
 
 
 
@@ -19,10 +26,10 @@ const Tabs = ({setSelectedTab}) => {
 
     return (
         <div className='w-full grid grid-cols-2 md:grid-cols-4 mb-4'>
-            <button onClick={() => setSelectedTab(TabsEnum.WELLNESS)}>Wellness</button>
-            <button onClick={() => setSelectedTab(TabsEnum.PERFORMANCE)}>Performance</button>
-            <button onClick={() => setSelectedTab(TabsEnum.HRV)}>HRV</button>
-            <button onClick={() => setSelectedTab(TabsEnum.ACTIVITIES)}>Activities</button>
+            <button className='btnboring' onClick={() => setSelectedTab(TabsEnum.WELLNESS)}>Wellness</button>
+            <button className='btn' onClick={() => setSelectedTab(TabsEnum.PERFORMANCE)}>Performance</button>
+            <button className='btn' onClick={() => setSelectedTab(TabsEnum.HRV)}>HRV</button>
+            <button className='btnboring' onClick={() => setSelectedTab(TabsEnum.ACTIVITIES)}>Activities</button>
         </div>
     );
 }
@@ -73,7 +80,6 @@ const TheGraphs = ({selectFiles}) => {
     return (
         <div className='w-full'>
             <Tabs setSelectedTab={setSelectedTab} />
-            {/* conditionally render according to selectedTab */}
             {selectedTab === TabsEnum.WELLNESS && <Wellness sleepData={sleepData} />}
             {selectedTab === TabsEnum.PERFORMANCE && <Performance performanceData={performanceData} />}
             {selectedTab === TabsEnum.HRV && <div>HRV</div>}

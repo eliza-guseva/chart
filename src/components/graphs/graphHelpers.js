@@ -69,6 +69,7 @@ export function getBrushHeight(height, margin) {
 // time format
 export const formatDate = timeFormat('%b %d');
 export const formatDateYear = timeFormat('%b %d, %y');
+export const formatDateYearPretty = timeFormat('%b %d, %Y');
 export const formatYear = timeFormat('%Y');
 export const formatMonth = timeFormat('%b');
 export const formatMonthYear = timeFormat('%b %Y');

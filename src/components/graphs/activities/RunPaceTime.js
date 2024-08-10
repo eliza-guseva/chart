@@ -1,27 +1,27 @@
-import React from 'react';
+import {React} from 'react';
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
 import { scaleSequential } from 'd3-scale';
 import { interpolateRdBu } from 'd3-scale-chromatic';
-import {curveStepBefore, curveStepAfter, curveLinear} from '@visx/curve';
-import { LinearGradient } from '@visx/gradient';
-import {LinePath, AreaClosed} from '@visx/shape';
+import {curveLinear} from '@visx/curve';
+import {LinePath, Bar} from '@visx/shape';
 import { GlyphSquare } from '@visx/glyph';
-import { GridRows } from '@visx/grid';
 import { Group } from '@visx/group';
+import { useTooltip } from '@visx/tooltip';
+import { localPoint } from '@visx/event';
+
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
     getDate, 
     sortData, 
     selectDaysAgo, 
     aggregateData, 
-    getAvg, 
     getMin, 
     getMedian
 } from '../fileAndDataProcessors';
-import { getMainChartBottom } from '../graphHelpers';
+import { getMainChartBottom, formatDateYearPretty } from '../graphHelpers';
 import { StandardAxisLeft, StandardAxisBottom } from '../GraphComponents';
 
 const brushStyle = {
@@ -42,6 +42,8 @@ const RunPaceMainGraph = ({
     selection, 
     svgDimensions, 
     xScale, 
+    tooltipInfo,
+    setTooltipInfo,
     ...props }) => 
 {
     const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
@@ -57,6 +59,7 @@ const RunPaceMainGraph = ({
             }),
         [yMax, selection, margin]
     );
+
     const monthly = aggregateData(selection, 'month', keys, selectDaysAgo, getMedian);
     const monthlyMin = aggregateData(selection, 'month', keys, selectDaysAgo, getMin);
 
@@ -66,6 +69,59 @@ const RunPaceMainGraph = ({
     ]));
     const colorScale = scaleSequential(interpolateRdBu)
     .domain([maxAbsHomolElGain, -maxAbsHomolElGain]);
+
+    const { 
+        tooltipData, 
+        tooltipLeft, 
+        tooltipTop, 
+        tooltipOpen, 
+        showTooltip, 
+        hideTooltip 
+    } = useTooltip();
+
+    function formatTooltipData(d) {
+        const date = formatDateYearPretty(d['calendarDate']);
+        const avgPace = (
+            Math.floor(d['pace_minkm']) 
+            + ':' 
+            + Math.floor((d['pace_minkm'] % 1) * 60).toString().padStart(2, '0')
+        );
+        // add new line
+        return (
+                <div>
+                    <strong>Date:</strong> {date} <br />
+                    <strong>Pace:</strong> {avgPace} min/km <br />
+                    <strong>Distance:</strong> {d['distance_km'].toFixed(2)} km <br />
+                    <strong>Elevation: 🔼</strong> {d['elevationGain_m'].toFixed(0)} m 🔽 {d['elevationLoss_m'].toFixed(0)} m
+                </div>
+            );
+    }
+
+    const handleTooltip = (event, datapoint) => {
+        const svg = event.currentTarget.ownerSVGElement;
+        const point = localPoint(svg, event);
+        
+        if (point) {
+            const { top, left } = svg.getBoundingClientRect();
+            setTooltipInfo(
+                {
+                    tooltipData: tooltipData,
+                    tooltipLeft: tooltipLeft,
+                    tooltipTop: tooltipTop,
+                }
+            );
+            showTooltip({
+            tooltipData: formatTooltipData(datapoint),
+            tooltipLeft: point.x + left,
+            tooltipTop: point.y + margin.top + 24 + top,
+            });
+            
+        }
+        };
+    const handleMouseLeave = () => {
+        setTooltipInfo(''); // Clear tooltip info
+        hideTooltip(); // Hide the tooltip
+    };
 
     return (<>
         <rect 
@@ -86,25 +142,6 @@ const RunPaceMainGraph = ({
             yMax={yMax}
             xScale={xScale}
         />
-        <Group>
-        {selection.map((d, i) => {
-            const date = getDate(d);
-            const x = xScale(date);
-            const y = yScale(d[brushKey]);
-            return (
-                <GlyphSquare
-                    key={i}
-                    left={x}
-                    top={y}
-                    size={10 * d['distance_km']}
-                    fill={colorScale(d['homolElGain_m'])}
-                    fillOpacity={0.5}
-                    stroke={colorScale(d['homolElGain_m'])}
-                    strokeWidth={1}
-                />
-            );
-        })}
-        </Group>
         <LinePath
             data={monthly}
             x={(d) => xScale(getDate(d))}
@@ -121,6 +158,30 @@ const RunPaceMainGraph = ({
             strokeWidth={4}
             curve={curveLinear}
         />
+        <Group>
+        {selection.map((d, i) => {
+            const date = getDate(d);
+            const x = xScale(date);
+            const y = yScale(d[brushKey]);
+            return (
+                <GlyphSquare
+                    key={i}
+                    left={x}
+                    top={y}
+                    size={10 * d['distance_km']}
+                    fill={colorScale(d['homolElGain_m'])}
+                    fillOpacity={0.5}
+                    stroke={colorScale(d['homolElGain_m'])}
+                    strokeWidth={1}
+                    onTouchStart={(event) => handleTooltip(event, d)}
+                    onTouchMove={(event) => handleTooltip(event, d)}
+                    onMouseMove={(event) => handleTooltip(event, d)}
+                    onMouseLeave={handleMouseLeave}
+                    onTouchEnd={handleMouseLeave}
+                />
+            );
+        })}
+        </Group>
         </>);
 }
 
@@ -137,7 +198,7 @@ const RunPaceTime = ({ runningData }) => {
             brushStyle={brushStyle}
             graphTitle='Pace vs time, (min/km)'
             colors={colors}
-            left_factor={1.4}
+            left_factor={1.0}
             isAllowAgg={false}
             inverseBrush={true}
         />
