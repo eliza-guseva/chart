@@ -5,8 +5,9 @@ import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
 import { scaleSequential } from 'd3-scale';
 import { interpolateRdBu } from 'd3-scale-chromatic';
-import {curveLinear} from '@visx/curve';
-import {LinePath, Bar} from '@visx/shape';
+import {curveLinear, curveStepBefore} from '@visx/curve';
+import {LinePath, Bar, AreaClosed} from '@visx/shape';
+import { LinearGradient } from '@visx/gradient';
 import { GlyphSquare } from '@visx/glyph';
 import { Group } from '@visx/group';
 import { useTooltip } from '@visx/tooltip';
@@ -22,7 +23,7 @@ import {
     getMedian
 } from '../fileAndDataProcessors';
 import { getMainChartBottom, formatDateYearPretty } from '../graphHelpers';
-import { StandardAxisLeft, StandardAxisBottom } from '../GraphComponents';
+import { StandardAxisLeft, StandardAxisBottom, Grid } from '../GraphComponents';
 
 const brushStyle = {
     fillColor: "#676e72",
@@ -129,7 +130,8 @@ const RunPaceMainGraph = ({
             y={margin.top} 
             width={xMax - margin.left} 
             height={yMax - margin.top} 
-            fill="#f8f9fb44"/>
+            fill="#f8f9fb11" 
+            />
         <StandardAxisLeft
             label={yLabel}
             yScale={yScale}
@@ -142,21 +144,24 @@ const RunPaceMainGraph = ({
             yMax={yMax}
             xScale={xScale}
         />
+        <Grid
+            rows={true}
+            cols={true}
+            xScale={xScale}
+            xMax={xMax}
+            yScale={yScale}
+            yMax={yMax}
+            margin={margin}
+            stroke='#858585'
+        />
         <LinePath
             data={monthly}
             x={(d) => xScale(getDate(d))}
             y={(d) => yScale(d[brushKey])}
-            stroke='#ccffcc'
-            strokeWidth={4}
+            stroke='#d4ffdd'
+            strokeWidth={6}
             curve={curveLinear}
-        />
-        <LinePath
-            data={monthlyMin}
-            x={(d) => xScale(getDate(d))}
-            y={(d) => yScale(d[brushKey])}
-            stroke='#44dd44'
-            strokeWidth={4}
-            curve={curveLinear}
+            yScale={yScale}
         />
         <Group>
         {selection.map((d, i) => {
@@ -170,7 +175,7 @@ const RunPaceMainGraph = ({
                     top={y}
                     size={10 * d['distance_km']}
                     fill={colorScale(d['homolElGain_m'])}
-                    fillOpacity={0.5}
+                    fillOpacity={0.6}
                     stroke={colorScale(d['homolElGain_m'])}
                     strokeWidth={1}
                     onTouchStart={(event) => handleTooltip(event, d)}

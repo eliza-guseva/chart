@@ -64,6 +64,7 @@ export const Grid = ({
     yScale,
     yMax,
     margin,
+    stroke = '#fff',
 }) => {
     return (
         <>
@@ -72,7 +73,7 @@ export const Grid = ({
                 left={margin.left}
                 scale={yScale}
                 width={xMax - margin.left}
-                stroke='#fff'
+                stroke={stroke}
                 strokeOpacity={0.2}
                 pointerEvents="none"
             />
@@ -82,7 +83,7 @@ export const Grid = ({
                 top={margin.top}
                 scale={xScale}
                 height={yMax - margin.top}
-                stroke='#fff'
+                stroke={stroke}
                 strokeOpacity={0.2}
                 pointerEvents="none"
                 />

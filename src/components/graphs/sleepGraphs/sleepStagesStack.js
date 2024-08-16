@@ -48,14 +48,6 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             width={xMax - margin.left} 
             height={yMax - margin.top} 
             fill="#f8f9fb11"/>
-        <GridRows
-            left={margin.left}
-            scale={yScale}
-            width={xMax - margin.left}
-            stroke='#fff'
-            strokeOpacity={0.2}
-            pointerEvents="none"
-          />
         {MyAreaStackVsDate({
             data: selection,
             xScale,
@@ -66,6 +58,14 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             margin,
             curve: curveStepAfter,
         })}
+        <GridRows
+            left={margin.left}
+            scale={yScale}
+            width={xMax - margin.left}
+            stroke='#fff'
+            strokeOpacity={0.2}
+            pointerEvents="none"
+          />
         <StandardAxisLeft
             label={yLabel}
             yScale={yScale}
