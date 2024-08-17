@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {curveStepAfter} from '@visx/curve';
+import {curveStepAfter, curveStepBefore} from '@visx/curve';
 import { scaleLinear } from '@visx/scale';
 import { max } from 'd3-array';
 import { useMemo } from 'react';
@@ -46,13 +46,14 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
         [yMax, selection, margin]
     );
     console.log('xScale', xScale.domain());
-    selection.push({
-        calendarDate: xScale.domain()[1],
-        deepSleepHours: 0,
-        remSleepHours: 0,
-        lightSleepHours: 0,
-        awakeSleepHours: 0,
-    });
+    console.log('selection', selection);
+    // selection.push({
+    //     calendarDate: xScale.domain()[1],
+    //     deepSleepHours: 0,
+    //     remSleepHours: 0,
+    //     lightSleepHours: 0,
+    //     awakeSleepHours: 0,
+    // });
     return (<>
         <rect 
             x={margin.left} 
@@ -68,7 +69,7 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             keys: keys,
             colors: colors,
             margin,
-            curve: curveStepAfter,
+            curve: curveStepBefore,
         })}
         <Grid
             rows={true}

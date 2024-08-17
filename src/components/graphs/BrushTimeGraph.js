@@ -7,7 +7,13 @@ import moment from 'moment';
 import { 
     TooltipWithBounds, 
 } from '@visx/tooltip';
-import { getDate, aggregateData, getAvg, selectFirstOf } from './fileAndDataProcessors';
+import { 
+    getDate, 
+    aggregateData, 
+    getAvg, 
+    selectFirstOf,
+    selectDaysAgo,
+} from './fileAndDataProcessors';
 import { 
     BrushSubGraph, 
 } from './GraphComponents';
@@ -40,7 +46,7 @@ const BrushTimeGraph = ({
     graphTitle,
     left_factor=1.0,
     isAllowAgg=true,
-    groupFunction=selectFirstOf,
+    groupFunction=selectDaysAgo,
     aggFn = getAvg,
     inverseBrush=false,
 }) => {
@@ -120,23 +126,14 @@ const BrushTimeGraph = ({
                 break;
             case 'weekly':
                 selectionData = weeklyData;
-                let lastSunday = moment(x1).endOf('week');
-                x0 = moment(x0).startOf('week')
-                x1 = lastSunday
                 break;
             case 'monthly':
                 selectionData = monthlyData;
-                let lastDay = moment(x1).endOf('month') 
-                // lastDay.add(1, 'days');
-                x0 = moment(x0).startOf('month')
-                x1 = lastDay
                 break;
             default:
                 selectionData = dailyData;
         }
         setSelectionDomain({ x0, x1, y0, y1 });
-        console.log('x0', x0, 'x1', x1)
-        console.log('selection domain', selectionDomain)
         const dataCopy = selectionData.filter((d) => {
             const x = getDate(d);
             return x >= x0 && x <= x1;
