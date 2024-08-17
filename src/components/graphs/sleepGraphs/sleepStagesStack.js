@@ -1,20 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {curveStepAfter, curveStepBefore} from '@visx/curve';
+import {curveStepBefore} from '@visx/curve';
 import { scaleLinear } from '@visx/scale';
-import { max } from 'd3-array';
+import { max, min } from 'd3-array';
 import { useMemo } from 'react';
+import { useTooltip, defaultStyles } from '@visx/tooltip';
+import { localPoint } from '@visx/event';
+import { Bar } from '@visx/shape';
+
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
     MyAreaStackVsDate,  
     StandardAxisLeft,
     Grid,
 } from '../GraphComponents';
-import { getMainChartBottom } from '../graphHelpers';
+import { 
+    formatDateYearPretty, 
+    getMainChartBottom,
+ } from '../graphHelpers';
 import { 
     MAIN_GRAPH_BCKG, 
     GRID_COLOR,
 } from '../styles';
+import {
+    getDate,
+} from '../fileAndDataProcessors';
 
 
 const brushStyle = {
@@ -31,7 +41,41 @@ const colors = ['#007bff', '#ff44cc', '#44aaff', '#ccbbee'];
 const brushKey = 'totalSleepHours';
 
 
-const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
+function fmtDateTooltip(d, point, xScale, aggrLevel) {
+    const x = point.x;
+    const date = xScale.invert(x);
+    let datestr;
+    if (aggrLevel === 'daily') {
+        datestr = formatDateYearPretty(date);
+    }
+    else {
+        const selectedPeriod = min(d.filter((d) => {
+            return (getDate(d) >= date);
+        })) || d[d.length - 1];
+        const periodBefore = d[d.indexOf(selectedPeriod) - 1] || d[0];
+        datestr = (
+            formatDateYearPretty(getDate(periodBefore)) 
+            + ' - ' 
+            + formatDateYearPretty(getDate(selectedPeriod))
+        );
+    }
+
+    return (
+            <div>
+                <strong>{datestr}</strong>
+            </div>
+        );
+}
+
+
+const SleepStackMainGraph = ({
+    selection, 
+    svgDimensions, 
+    xScale,
+    tooltipInfo,
+    setTooltipInfo,
+    aggrLevel,
+}) => {
     const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
     const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
     const xMax = svgWidth - margin.right;
@@ -45,15 +89,54 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             }),
         [yMax, selection, margin]
     );
-    console.log('xScale', xScale.domain());
-    console.log('selection', selection);
-    // selection.push({
-    //     calendarDate: xScale.domain()[1],
-    //     deepSleepHours: 0,
-    //     remSleepHours: 0,
-    //     lightSleepHours: 0,
-    //     awakeSleepHours: 0,
-    // });
+
+    const { 
+        tooltipData, 
+        tooltipLeft, 
+        tooltipTop, 
+        tooltipOpen, 
+        showTooltip, 
+        hideTooltip 
+    } = useTooltip();
+
+    const handleTooltip = (event, data) => {
+        const svg = event.currentTarget.ownerSVGElement;
+        const point = localPoint(svg, event);
+
+        if (point) {
+            const { top, left } = svg.getBoundingClientRect();
+            console.log('point', point);
+            console.log('data', data);
+            const datapoint = data['data'];
+                setTooltipInfo([
+                    {
+                        tooltipData: tooltipData,
+                        tooltipLeft: point.x + left,
+                        tooltipTop: top + yMax + margin.top - 12,
+                        style: {
+                            ...defaultStyles,
+                            backgroundColor: '#ffffffdd',
+                            color: '#000',
+                            border: 'none',
+                            lineHeight: '1.2',
+                        },
+                        loc_x: point.x,
+                        loc_y: point.y,
+                    }
+                ])
+                showTooltip({
+                    tooltipData: fmtDateTooltip(datapoint, point, xScale, aggrLevel),
+                    tooltipLeft: point.x + left,
+                    tooltipTop: top + yMax + 24,
+                });
+        }
+    };
+
+    const handleMouseLeave = () => {
+        setTooltipInfo(['']); // Clear tooltip info
+        hideTooltip(); // Hide the tooltip
+    };
+
     return (<>
         <rect 
             x={margin.left} 
@@ -87,6 +170,18 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             margin={margin}
             svgDimensions={svgDimensions}
             dx={(svgDimensions.width < 600) ? '1.5em' : '0.5em'}
+        />
+        <Bar
+            x={margin.left}
+            y={margin.top}
+            width={xMax - margin.left}
+            height={yMax - margin.top}
+            fill='transparent'
+            onTouchStart={(event) => handleTooltip(event, {'name': 'selection', 'data': selection})}
+            onTouchMove={(event) => handleTooltip(event, {'name': 'selection', 'data': selection})}
+            onMouseMove={(event) => handleTooltip(event, {'name': 'selection', 'data': selection})}
+            onMouseLeave={handleMouseLeave}
+            onTouchEnd={handleMouseLeave}
         />
     </>)}
 

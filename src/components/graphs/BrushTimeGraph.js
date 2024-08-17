@@ -231,6 +231,7 @@ const BrushTimeGraph = ({
                     xScale,
                     tooltipInfo,
                     setTooltipInfo,
+                    aggrLevel,
                 })}
                 <BrushSubGraph
                     allData={dailyData}
