@@ -1,5 +1,5 @@
 import React from 'react';
-import { AreaClosed } from '@visx/shape';
+import { AreaClosed, Bar } from '@visx/shape';
 import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';

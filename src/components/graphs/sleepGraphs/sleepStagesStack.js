@@ -2,15 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {curveStepAfter} from '@visx/curve';
 import { scaleLinear } from '@visx/scale';
-import { GridRows } from '@visx/grid';
 import { max } from 'd3-array';
 import { useMemo } from 'react';
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
     MyAreaStackVsDate,  
     StandardAxisLeft,
+    Grid,
 } from '../GraphComponents';
 import { getMainChartBottom } from '../graphHelpers';
+import { 
+    MAIN_GRAPH_BCKG, 
+    GRID_COLOR,
+} from '../styles';
 
 
 const brushStyle = {
@@ -41,13 +45,21 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             }),
         [yMax, selection, margin]
     );
+    console.log('xScale', xScale.domain());
+    selection.push({
+        calendarDate: xScale.domain()[1],
+        deepSleepHours: 0,
+        remSleepHours: 0,
+        lightSleepHours: 0,
+        awakeSleepHours: 0,
+    });
     return (<>
         <rect 
             x={margin.left} 
             y={margin.top} 
             width={xMax - margin.left} 
             height={yMax - margin.top} 
-            fill="#f8f9fb11"/>
+            fill={MAIN_GRAPH_BCKG}/>
         {MyAreaStackVsDate({
             data: selection,
             xScale,
@@ -58,14 +70,16 @@ const SleepStackMainGraph = ({selection, svgDimensions, xScale}) => {
             margin,
             curve: curveStepAfter,
         })}
-        <GridRows
-            left={margin.left}
-            scale={yScale}
-            width={xMax - margin.left}
-            stroke='#fff'
-            strokeOpacity={0.2}
-            pointerEvents="none"
-          />
+        <Grid
+            rows={true}
+            cols={false}
+            yScale={yScale}
+            xScale={xScale}
+            xMax={xMax}
+            yMax={yMax}
+            margin={margin}
+            stroke={GRID_COLOR}
+            />
         <StandardAxisLeft
             label={yLabel}
             yScale={yScale}

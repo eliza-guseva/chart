@@ -1,7 +1,8 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import { scaleTime, scaleLinear } from '@visx/scale';
 import { extent } from 'd3-array';
-import { max } from 'd3-array';
+import { max, min } from 'd3-array';
+import moment from 'moment';
 
 import { 
     TooltipWithBounds, 
@@ -105,16 +106,13 @@ const BrushTimeGraph = ({
     }, [svgDimensions]); // Dependency array includes svgDimensions to avoid unnecessary updates
 
     const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
-    // adjust font size based on svgWidth
 
-    const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
     const xMax = getXMax(svgWidth, margin);
 
     // preparing brush
     const onBrushChange = (domain) => {
         if (!domain) return;
-        const { x0, x1, y0, y1 } = domain;
-        setSelectionDomain(domain);
+        let { x0, x1, y0, y1 } = domain;
         let selectionData;
         switch (aggrLevel) {
             case 'daily':
@@ -122,18 +120,26 @@ const BrushTimeGraph = ({
                 break;
             case 'weekly':
                 selectionData = weeklyData;
+                let lastSunday = moment(x1).endOf('week');
+                x0 = moment(x0).startOf('week')
+                x1 = lastSunday
                 break;
             case 'monthly':
                 selectionData = monthlyData;
+                let lastDay = moment(x1).endOf('month') 
+                // lastDay.add(1, 'days');
+                x0 = moment(x0).startOf('month')
+                x1 = lastDay
                 break;
             default:
                 selectionData = dailyData;
         }
-
+        setSelectionDomain({ x0, x1, y0, y1 });
+        console.log('x0', x0, 'x1', x1)
+        console.log('selection domain', selectionDomain)
         const dataCopy = selectionData.filter((d) => {
             const x = getDate(d);
-            const y = d[brushKey];
-            return x > x0 && x < x1 && y > y0 && y < y1;
+            return x >= x0 && x <= x1;
         });
         setSelection(dataCopy);
     };
@@ -143,9 +149,9 @@ const BrushTimeGraph = ({
         () =>
             scaleTime({
             range: [margin.left, xMax],
-            domain: extent(selection, getDate),
+            domain: selectionDomain ? [selectionDomain.x0, selectionDomain.x1] : extent(dailyData, getDate),
             }),
-        [xMax, selection, margin]
+        [xMax, margin, selectionDomain, dailyData]
     );
 
     const brushXScale = useMemo(
