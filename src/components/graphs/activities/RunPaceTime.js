@@ -6,12 +6,12 @@ import { scaleLinear } from '@visx/scale';
 import { scaleSequential } from 'd3-scale';
 import { interpolateRdBu } from 'd3-scale-chromatic';
 import {curveLinear} from '@visx/curve';
-import {LinePath, Bar} from '@visx/shape';
+import {LinePath, Bar, Line} from '@visx/shape';
 import { GlyphSquare } from '@visx/glyph';
 import { Group } from '@visx/group';
-import { useTooltip } from '@visx/tooltip';
+import { useTooltip, defaultStyles } from '@visx/tooltip';
 import { localPoint } from '@visx/event';
-
+import { LinearGradient } from '@visx/gradient';
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
     getDate, 
@@ -69,13 +69,8 @@ function fmtMonthlyToolTip(d, point, xScale) {
     const ThisDate = formatDateYearPretty(selectedMonth.calendarDate);
     let medianPace = selectedMonth['pace_minkm'];
     medianPace = Math.floor(medianPace) + ':' + Math.floor((medianPace % 1) * 60).toString().padStart(2, '0');
-    
-    const style = {
-        backgroundColor: '#ffffff00',
-    }
-
     return (
-        <div style={style}>
+        <div>
             {ThirtyDaysBefore + '-' + ThisDate}<br />
             Median Pace:
             <strong>{medianPace} min/km </strong> 
@@ -140,6 +135,13 @@ const RunPaceMainGraph = ({
                         tooltipData: tooltipData,
                         tooltipLeft: tooltipLeft,
                         tooltipTop: tooltipTop,
+                        style: {
+                            ...defaultStyles,
+                            lineHeight: '1.2',
+                            backgroundColor: '#ffffffdd'
+                        },
+                        loc_x: point.x,
+                        loc_y: point.y,
                     }]
                 );
                 showTooltip({
@@ -154,6 +156,15 @@ const RunPaceMainGraph = ({
                         tooltipData: tooltipData,
                         tooltipLeft: point.x + left,
                         tooltipTop: top + yMax + margin.top - 24,
+                        style: {
+                            ...defaultStyles,
+                            backgroundColor: '#ffffffdd',
+                            color: '#000',
+                            border: 'none',
+                            lineHeight: '1.2',
+                        },
+                        loc_x: point.x,
+                        loc_y: point.y,
                     }
                 ])
                 showTooltip({
@@ -168,8 +179,12 @@ const RunPaceMainGraph = ({
         setTooltipInfo(['']); // Clear tooltip info
         hideTooltip(); // Hide the tooltip
     };
-
     return (<>
+    <LinearGradient 
+        id="lineGradient" 
+        from="#3cb7b4" 
+        to="#42e397" 
+        vertical={false} />
         <rect 
             x={margin.left} 
             y={margin.top} 
@@ -203,11 +218,17 @@ const RunPaceMainGraph = ({
             data={monthly}
             x={(d) => xScale(getDate(d))}
             y={(d) => yScale(d[brushKey])}
-            stroke='#d4ffdd'
+            stroke='url(#lineGradient)'
             strokeWidth={6}
             curve={curveLinear}
             yScale={yScale}
         />
+        {tooltipData &&  <Line
+            // locate at cursor point
+            from={{ x: tooltipInfo[0].loc_x, y: margin.top }}
+            to={{ x: tooltipInfo[0].loc_x, y: yMax }}
+            stroke='#ffffff'
+              />}
         <Bar
             x={margin.left}
             y={margin.top}

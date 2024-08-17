@@ -132,12 +132,12 @@ const BrushTimeGraph = ({
             default:
                 selectionData = dailyData;
         }
-        setSelectionDomain({ x0, x1, y0, y1 });
         const dataCopy = selectionData.filter((d) => {
             const x = getDate(d);
             return x >= x0 && x <= x1;
         });
         setSelection(dataCopy);
+        setSelectionDomain({ x0, x1, y0, y1 });
     };
 
     // scales
