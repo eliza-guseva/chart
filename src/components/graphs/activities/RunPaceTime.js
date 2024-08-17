@@ -5,9 +5,8 @@ import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
 import { scaleSequential } from 'd3-scale';
 import { interpolateRdBu } from 'd3-scale-chromatic';
-import {curveLinear, curveStepBefore} from '@visx/curve';
-import {LinePath, Bar, AreaClosed} from '@visx/shape';
-import { LinearGradient } from '@visx/gradient';
+import {curveLinear} from '@visx/curve';
+import {LinePath, Bar} from '@visx/shape';
 import { GlyphSquare } from '@visx/glyph';
 import { Group } from '@visx/group';
 import { useTooltip } from '@visx/tooltip';
@@ -37,6 +36,52 @@ const brushStyle = {
 const keys = ['pace_minkm'];
 const colors = ['#fff'];
 const brushKey = 'pace_minkm';
+
+
+function fmtSingleRunToolTip(d) {
+    const date = formatDateYearPretty(d['calendarDate']);
+    const avgPace = (
+        Math.floor(d['pace_minkm']) 
+        + ':' 
+        + Math.floor((d['pace_minkm'] % 1) * 60).toString().padStart(2, '0')
+    );
+    
+    return (
+            <div>
+                <strong>Date:</strong> {date} <br />
+                <strong>Pace:</strong> {avgPace} min/km <br />
+                <strong>Distance:</strong> {d['distance_km'].toFixed(2)} km <br />
+                <strong>Elevation: 🔼</strong> {d['elevationGain_m'].toFixed(0)} m 🔽 {d['elevationLoss_m'].toFixed(0)} m
+            </div>
+        );
+}
+
+
+function fmtMonthlyToolTip(d, point, xScale) {
+    const x = point.x;
+    const date = xScale.invert(x)
+    // d is an array of objects. find the one with the date less than date and max date
+    const selectedMonth = min(d.filter((d) => {
+        return (getDate(d) >= date);
+    })) || d[d.length - 1];
+    const ThirtyDaysBefore = formatDateYearPretty(
+        selectedMonth.calendarDate - 30 * 24 * 60 * 60 * 1000);
+    const ThisDate = formatDateYearPretty(selectedMonth.calendarDate);
+    let medianPace = selectedMonth['pace_minkm'];
+    medianPace = Math.floor(medianPace) + ':' + Math.floor((medianPace % 1) * 60).toString().padStart(2, '0');
+    
+    const style = {
+        backgroundColor: '#ffffff00',
+    }
+
+    return (
+        <div style={style}>
+            {ThirtyDaysBefore + '-' + ThisDate}<br />
+            Median Pace:
+            <strong>{medianPace} min/km </strong> 
+        </div>
+    );
+}
 
 
 const RunPaceMainGraph = ({ 
@@ -80,47 +125,47 @@ const RunPaceMainGraph = ({
         hideTooltip 
     } = useTooltip();
 
-    function formatTooltipData(d) {
-        const date = formatDateYearPretty(d['calendarDate']);
-        const avgPace = (
-            Math.floor(d['pace_minkm']) 
-            + ':' 
-            + Math.floor((d['pace_minkm'] % 1) * 60).toString().padStart(2, '0')
-        );
-        // add new line
-        return (
-                <div>
-                    <strong>Date:</strong> {date} <br />
-                    <strong>Pace:</strong> {avgPace} min/km <br />
-                    <strong>Distance:</strong> {d['distance_km'].toFixed(2)} km <br />
-                    <strong>Elevation: 🔼</strong> {d['elevationGain_m'].toFixed(0)} m 🔽 {d['elevationLoss_m'].toFixed(0)} m
-                </div>
-            );
-    }
+    
 
-    const handleTooltip = (event, datapoint) => {
+    const handleTooltip = (event, data) => {
         const svg = event.currentTarget.ownerSVGElement;
         const point = localPoint(svg, event);
         
         if (point) {
             const { top, left } = svg.getBoundingClientRect();
-            setTooltipInfo(
-                {
-                    tooltipData: tooltipData,
-                    tooltipLeft: tooltipLeft,
-                    tooltipTop: tooltipTop,
-                }
-            );
-            showTooltip({
-            tooltipData: formatTooltipData(datapoint),
-            tooltipLeft: point.x + left,
-            tooltipTop: point.y + margin.top + 24 + top,
-            });
-            
-        }
+            if (data['name'] === 'single') {
+                const datapoint = data['data'];
+                setTooltipInfo(
+                    [{
+                        tooltipData: tooltipData,
+                        tooltipLeft: tooltipLeft,
+                        tooltipTop: tooltipTop,
+                    }]
+                );
+                showTooltip({
+                    tooltipData: fmtSingleRunToolTip(datapoint),
+                    tooltipLeft: point.x + left,
+                    tooltipTop: point.y + margin.top + 24 + top,
+                });
+            } else if (data['name'] === 'monthly') {
+                const datapoint = data['data'];
+                setTooltipInfo([
+                    {
+                        tooltipData: tooltipData,
+                        tooltipLeft: point.x + left,
+                        tooltipTop: top + yMax + margin.top - 24,
+                    }
+                ])
+                showTooltip({
+                    tooltipData: fmtMonthlyToolTip(datapoint, point, xScale),
+                    tooltipLeft: point.x + left,
+                    tooltipTop: top + yMax + 24,
+                });
+            }
         };
+    };
     const handleMouseLeave = () => {
-        setTooltipInfo(''); // Clear tooltip info
+        setTooltipInfo(['']); // Clear tooltip info
         hideTooltip(); // Hide the tooltip
     };
 
@@ -163,6 +208,18 @@ const RunPaceMainGraph = ({
             curve={curveLinear}
             yScale={yScale}
         />
+        <Bar
+            x={margin.left}
+            y={margin.top}
+            width={xMax - margin.left}
+            height={yMax - margin.top}
+            fill='transparent'
+            onTouchStart={(event) => handleTooltip(event, {'name': 'monthly', 'data': monthly})}
+            onTouchMove={(event) => handleTooltip(event, {'name': 'monthly', 'data': monthly})}
+            onMouseMove={(event) => handleTooltip(event, {'name': 'monthly', 'data': monthly})}
+            onMouseLeave={handleMouseLeave}
+            onTouchEnd={handleMouseLeave}
+        />
         <Group>
         {selection.map((d, i) => {
             const date = getDate(d);
@@ -178,9 +235,9 @@ const RunPaceMainGraph = ({
                     fillOpacity={0.6}
                     stroke={colorScale(d['homolElGain_m'])}
                     strokeWidth={1}
-                    onTouchStart={(event) => handleTooltip(event, d)}
-                    onTouchMove={(event) => handleTooltip(event, d)}
-                    onMouseMove={(event) => handleTooltip(event, d)}
+                    onTouchStart={(event) => handleTooltip(event, {'name': 'single', 'data': d})}
+                    onTouchMove={(event) => handleTooltip(event, {'name': 'single', 'data': d})}
+                    onMouseMove={(event) => handleTooltip(event, {'name': 'single', 'data': d})}
                     onMouseLeave={handleMouseLeave}
                     onTouchEnd={handleMouseLeave}
                 />
@@ -193,7 +250,6 @@ const RunPaceMainGraph = ({
 
 const RunPaceTime = ({ runningData }) => {
     runningData = sortData(runningData, 'calendarDate');
-    console.log('runningData', runningData[180]);
     return (
         <BrushTimeGraph
             dailyData={runningData}

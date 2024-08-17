@@ -1,17 +1,17 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import { scaleTime, scaleLinear } from '@visx/scale';
 import { extent } from 'd3-array';
-import { max, min } from 'd3-array';
+import { max } from 'd3-array';
 import moment from 'moment';
 
 import { 
     TooltipWithBounds, 
+    defaultStyles
 } from '@visx/tooltip';
 import { 
     getDate, 
     aggregateData, 
     getAvg, 
-    selectFirstOf,
     selectDaysAgo,
 } from './fileAndDataProcessors';
 import { 
@@ -24,7 +24,6 @@ import {
     getMargin,
     calculateSvgWidth,
     calculateSvgHeight,
-    getMainChartBottom,
     getIdxFromEnd,
 } from './graphHelpers';
 
@@ -77,11 +76,11 @@ const BrushTimeGraph = ({
             margin: getMargin(600, left_factor),
         });
     const containerRef = useRef(null);
-    const [tooltipInfo, setTooltipInfo] = useState({
+    const [tooltipInfo, setTooltipInfo] = useState([{
         tooltipData: null,
         tooltipTop: 0,
         tooltipLeft: 0,
-    });
+    }]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -247,14 +246,22 @@ const BrushTimeGraph = ({
                 />
                 
             </svg>
-            {tooltipInfo.tooltipData && (
-                <TooltipWithBounds 
-                // tpp
-                top={tooltipInfo.tooltipTop}
-                left={tooltipInfo.tooltipLeft}
-                >
-                {tooltipInfo.tooltipData}
-                </TooltipWithBounds>
+            {/* for every tooltip in tooltipInfo depict tooltip */}
+            {tooltipInfo.map((tooltip, idx) => {
+                return (
+                    tooltip.tooltipData && (
+                        <TooltipWithBounds 
+                        // tpp
+                        key={idx}
+                        top={tooltip.tooltipTop}
+                        left={tooltip.tooltipLeft}
+                        style={tooltip.style ? tooltip.style : defaultStyles}
+                        >
+                        {tooltip.tooltipData}
+                        </TooltipWithBounds>
+                    )
+                );
+            }
             )}
         </div>
     </div>
