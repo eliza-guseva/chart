@@ -17,6 +17,7 @@ import {
 import { 
     formatDateYearPretty, 
     getMainChartBottom,
+    formatDate,
  } from '../graphHelpers';
 import { 
     MAIN_GRAPH_BCKG, 
@@ -41,28 +42,81 @@ const colors = ['#007bff', '#ff44cc', '#44aaff', '#ccbbee'];
 const brushKey = 'totalSleepHours';
 
 
-function fmtDateTooltip(d, point, xScale, aggrLevel) {
+function hours2TimeStr(hours) {
+    const h = Math.floor(hours);
+    const m = Math.floor((hours % 1) * 60);
+    return h + ':' + m.toString().padStart(2, '0');
+}
+
+const LittleCircle = ({color}) => {
+    return <span style={{ 
+        display: 'inline-block', 
+        width: '0.6rem', 
+        height: '0.6rem', 
+        backgroundColor: color,
+        borderRadius: '50%', 
+        marginRight: '0.5rem'
+        }
+    }></span>;
+}
+
+const ToolTipDiv = ({d, point, xScale, aggrLevel}) => {
     const x = point.x;
     const date = xScale.invert(x);
     let datestr;
+    let avgText = '';
+    const selectedPeriod = min(d.filter((d) => {
+        return (getDate(d) >= date);
+    })) || d[d.length - 1];
     if (aggrLevel === 'daily') {
-        datestr = formatDateYearPretty(date);
+        datestr = formatDate(date);
+
     }
     else {
-        const selectedPeriod = min(d.filter((d) => {
-            return (getDate(d) >= date);
-        })) || d[d.length - 1];
+        avgText = 'Avg ';
         const periodBefore = d[d.indexOf(selectedPeriod) - 1] || d[0];
-        datestr = (
-            formatDateYearPretty(getDate(periodBefore)) 
-            + ' - ' 
-            + formatDateYearPretty(getDate(selectedPeriod))
-        );
+        if (selectedPeriod['calendarDate'].getMonth() 
+            === periodBefore['calendarDate'].getMonth()) {
+            datestr = (
+                formatDate(getDate(periodBefore)) 
+                + ' - ' + 
+                selectedPeriod['calendarDate'].getDate()
+            );
+        }
+        else {
+            datestr = (
+                formatDate(getDate(periodBefore)) 
+                + ' - ' 
+                + formatDate(getDate(selectedPeriod))
+            );}
     }
 
     return (
             <div>
-                <strong>{datestr}</strong>
+                <p style={{color: '#ffffffbb'}} >{datestr}</p>
+                <p>
+                    <LittleCircle color={'#fff'} />
+                    <strong>{avgText} Total: {hours2TimeStr(selectedPeriod['totalSleepHours'])}</strong>
+                </p>
+                <hr style={{ borderTop: '1px solid #ccc', margin: '0.25rem 0' }} />
+
+                <p>
+                    <LittleCircle color={colors[3]} />
+                    {avgText} Awake: <strong>{hours2TimeStr(selectedPeriod['awakeSleepHours'])}</strong>
+                </p>
+                <p>
+                    <LittleCircle color={colors[2]} />
+                    {avgText} Light: <strong>{hours2TimeStr(selectedPeriod['lightSleepHours'])}</strong>
+                </p>
+                <p>
+                    <LittleCircle color={colors[1]} />
+                    {avgText} REM: <strong>{hours2TimeStr(selectedPeriod['remSleepHours'])}</strong>
+                </p>
+                <p>
+                    <LittleCircle color={colors[0]} />
+                    {avgText} Deep: <strong>{hours2TimeStr(selectedPeriod['deepSleepHours'])}</strong>
+                </p>
+                
             </div>
         );
 }
@@ -115,8 +169,8 @@ const SleepStackMainGraph = ({
                         tooltipTop: top + yMax + margin.top - 12,
                         style: {
                             ...defaultStyles,
-                            backgroundColor: '#ffffffdd',
-                            color: '#000',
+                            backgroundColor: '#2d363fdd',
+                            color: '#fff',
                             border: 'none',
                             lineHeight: '1.2',
                         },
@@ -125,7 +179,12 @@ const SleepStackMainGraph = ({
                     }
                 ])
                 showTooltip({
-                    tooltipData: fmtDateTooltip(datapoint, point, xScale, aggrLevel),
+                    tooltipData: ToolTipDiv({
+                        d: selection,
+                        point: point,
+                        xScale: xScale,
+                        aggrLevel: aggrLevel,
+                    }),
                     tooltipLeft: point.x + left,
                     tooltipTop: top + yMax + 24,
                 });
