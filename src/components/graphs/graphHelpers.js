@@ -147,24 +147,21 @@ export const formatMonthYear = timeFormat('%b %Y');
  * @param {string} pointFreq - The point frequency ('day', 'week', 'month', 'year').
  * @returns {number|undefined} The tick frequency.
  */
-export function getTicksFrequencies(data, pointFreq) {
+export function getTicksFrequencies(pointFreq) {
     let multiplier;
-    if (pointFreq  === 'day') {
+    if (pointFreq  === 'daily') {
         multiplier = 1;
     }
-    else if (pointFreq === 'week') {
+    else if (pointFreq === 'weekly') {
         multiplier = 7;
     }
-    else if (pointFreq === 'month') {
+    else if (pointFreq === 'monthly') {
         multiplier = 30;
     }
     else {
         multiplier = 365;
     }
-    if (data.length <= 8) {
-        return timeDay.every(1 * multiplier);
-    }
-    return undefined;
+    return multiplier
 }
 
 /**

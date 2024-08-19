@@ -1,8 +1,10 @@
 import React from 'react';
-import { AreaClosed, Bar } from '@visx/shape';
+import { subDays } from 'date-fns';
+import { AreaClosed } from '@visx/shape';
 import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';
+import { scaleTime, scaleLinear } from '@visx/scale';
 import { GridRows, GridColumns } from '@visx/grid';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { format as d3Format } from 'd3-format';
@@ -21,16 +23,20 @@ export const StandardAxisBottom = ({
     data,
     yMax,
     xScale,
-    pointFreq = 'day',
+    pointFreq = 'daily',
 }) => {
-    let tickFreq = getTicksFrequencies(data, pointFreq);
-    let tickVal = tickFreq === 0 ? null : tickFreq;
+    let tickFreq = getTicksFrequencies(pointFreq);
+
+    const scaledTime = scaleTime({
+        domain: [subDays(data[0].calendarDate, tickFreq - 1), data[data.length - 1].calendarDate],
+        range: [0, xScale.range()[1]],
+    });
+    console.log('scaledTime', scaledTime.domain());
     
     return (<AxisBottom
         top={yMax}
         scale={xScale}
         stroke='#fff'
-        tickValues={xScale.ticks(tickVal)}
         tickStroke='#fff'
         tickFormat={formatDateYear}
         tickLabelProps={() => ({
@@ -130,7 +136,7 @@ export const MyAreaStackVsDate = ({
     yScale,
     yMax,
     keys, 
-    colors, 
+    colors,
     ...props}) => {
     let stack = [];
     // iterate from the end of the keys array

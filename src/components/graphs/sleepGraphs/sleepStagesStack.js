@@ -14,10 +14,11 @@ import {
     StandardAxisLeft,
     Grid,
 } from '../GraphComponents';
-import { 
-    formatDateYearPretty, 
+import {
     getMainChartBottom,
     formatDate,
+    hours2TimeStr,
+    LittleCircle,
  } from '../graphHelpers';
 import { 
     MAIN_GRAPH_BCKG, 
@@ -41,24 +42,6 @@ const keys = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepH
 const colors = ['#007bff', '#ff44cc', '#44aaff', '#ccbbee'];
 const brushKey = 'totalSleepHours';
 
-
-function hours2TimeStr(hours) {
-    const h = Math.floor(hours);
-    const m = Math.floor((hours % 1) * 60);
-    return h + ':' + m.toString().padStart(2, '0');
-}
-
-const LittleCircle = ({color}) => {
-    return <span style={{ 
-        display: 'inline-block', 
-        width: '0.6rem', 
-        height: '0.6rem', 
-        backgroundColor: color,
-        borderRadius: '50%', 
-        marginRight: '0.5rem'
-        }
-    }></span>;
-}
 
 const ToolTipDiv = ({d, point, xScale, aggrLevel}) => {
     const x = point.x;
@@ -211,6 +194,7 @@ const SleepStackMainGraph = ({
             keys: keys,
             colors: colors,
             margin,
+            pointFreq: aggrLevel,
             curve: curveStepBefore,
         })}
         <Grid
