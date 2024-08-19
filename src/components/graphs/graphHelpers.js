@@ -123,6 +123,8 @@ export const formatDateYear = timeFormat('%b %d, %y');
  */
 export const formatDateYearPretty = timeFormat('%b %d, %Y');
 
+export const formatDateWithWeekday = timeFormat('%a %b %d');
+
 /**
  * Formats the year using the specified time format.
  * @type {Function}

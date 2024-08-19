@@ -13,6 +13,7 @@ import {
     aggregateData, 
     getAvg, 
     selectDaysAgo,
+    selectFirstOf,
 } from './fileAndDataProcessors';
 import { 
     BrushSubGraph, 
@@ -25,6 +26,7 @@ import {
     calculateSvgWidth,
     calculateSvgHeight,
     getIdxFromEnd,
+    formatDateWithWeekday
 } from './graphHelpers';
 
 function getAllKeys(keys, brushKey) {
@@ -32,6 +34,15 @@ function getAllKeys(keys, brushKey) {
         return keys;
     }
     return [...keys, brushKey];
+}
+
+function getX0Weekly(x1, x0) {
+    let nDays = moment(x1).diff(moment(x0), 'days');
+    let remainder = nDays % 7;
+    if (remainder !== 0) {
+        x0 = moment(x1).subtract(nDays + (7 - remainder), 'days').toDate();
+    }
+    return x0;
 }
 
 
@@ -45,27 +56,27 @@ const BrushTimeGraph = ({
     graphTitle,
     left_factor=1.0,
     isAllowAgg=true,
-    groupFunction=selectDaysAgo,
     aggFn = getAvg,
     inverseBrush=false,
 }) => {
+    // STATES AND INITIALIZATION
     const allKeys = getAllKeys(keys, brushKey);
-    const weeklyData = aggregateData(dailyData, 'week', allKeys, groupFunction, aggFn);
-    const monthlyData = aggregateData(dailyData, 'month', allKeys, groupFunction, aggFn);
-    const [aggregatedData, setAggregatedData] = useState(dailyData);
+    //const weeklyData = aggregateData(dailyData, 'week', allKeys, groupFunction, aggFn);
+    //const monthlyData = aggregateData(dailyData, 'month', allKeys, groupFunction, aggFn);
+    //const [aggregatedData, setAggregatedData] = useState(dailyData);
     const [aggrLevel, setAggrLevel] = useState('daily');
-    const initIdxStart = getIdxFromEnd(aggregatedData, 75);
-    const initIdxEnd = getIdxFromEnd(aggregatedData, 1);
+    const initIdxStart = getIdxFromEnd(dailyData, 75);
+    const initIdxEnd = getIdxFromEnd(dailyData, 1);
     const brushRef = useRef(null);
     const [selection, setSelection] = useState(
-        aggregatedData.slice(initIdxStart, initIdxEnd)
+        dailyData.slice(initIdxStart, initIdxEnd)
     );
     const [selectionDomain, setSelectionDomain] = useState(
         {
-            x0: getDate(aggregatedData[initIdxStart]),
-            x1: getDate(aggregatedData[initIdxEnd]),
+            x0: getDate(dailyData[initIdxStart]),
+            x1: getDate(dailyData[initIdxEnd]),
             y0: 0,
-            y1: max(aggregatedData, (d) => d[brushKey]),
+            y1: max(dailyData, (d) => d[brushKey]),
         }
 
     )
@@ -81,7 +92,7 @@ const BrushTimeGraph = ({
         tooltipTop: 0,
         tooltipLeft: 0,
     }]);
-
+    // REACTIVE FUNCTIONS
     useEffect(() => {
         const handleResize = () => {
             if (containerRef.current) {
@@ -118,26 +129,46 @@ const BrushTimeGraph = ({
     const onBrushChange = (domain) => {
         if (!domain) return;
         let { x0, x1, y0, y1 } = domain;
-        let selectionData;
+        let aggregatedData;
+        let dataCopy;
+        console.log('old domain', formatDateWithWeekday(x0), formatDateWithWeekday(x1));
         switch (aggrLevel) {
             case 'daily':
-                selectionData = dailyData;
+                aggregatedData = dailyData;
+                dataCopy = aggregatedData.filter((d) => {
+                    const x = getDate(d);
+                    return x >= x0 && x <= x1;
+                });
                 break;
             case 'weekly':
-                selectionData = weeklyData;
+                x0 = getX0Weekly(x1, x0);
+                aggregatedData = aggregateData(dailyData, 'week', allKeys, selectDaysAgo, aggFn);
+                dataCopy = aggregatedData.filter((d) => {
+                    const x = getDate(d);
+                    return x >= x0 && x <= x1;
+                });
                 break;
             case 'monthly':
-                selectionData = monthlyData;
+                x0 = moment(x0).startOf('month').toDate();
+                let x1em = moment(x1).endOf('month').toDate();
+                aggregatedData = aggregateData(dailyData, 'month', allKeys, selectFirstOf, aggFn);
+                dataCopy = aggregatedData.filter((d) => {
+                    const x = getDate(d);
+                    return x >= x0 && x <= x1em;
+                });
+                dataCopy[dataCopy.length - 1]['calendarDate'] = new Date(x1);
+                console.log('monthly data', aggregatedData);
                 break;
             default:
-                selectionData = dailyData;
+                console.log('aggrLevel not recognized');
         }
-        const dataCopy = selectionData.filter((d) => {
-            const x = getDate(d);
-            return x >= x0 && x <= x1;
-        });
+        
+
+        x1 = getDate(dataCopy[dataCopy.length - 1]);
+        console.log('dataCopy', dataCopy);
         setSelection(dataCopy);
         setSelectionDomain({ x0, x1, y0, y1 });
+        console.log('new domain', formatDateWithWeekday(x0), formatDateWithWeekday(x1));
     };
 
     // scales
@@ -170,10 +201,10 @@ const BrushTimeGraph = ({
 
     const initialBrushPosition = useMemo(
         () => ({
-            start: { x: brushXScale(getDate(aggregatedData[initIdxStart])) },
-            end: { x: brushXScale(getDate(aggregatedData[initIdxEnd])) },
+            start: { x: brushXScale(getDate(dailyData[initIdxStart])) },
+            end: { x: brushXScale(getDate(dailyData[initIdxEnd])) },
         }),
-        [brushXScale, aggregatedData, initIdxStart, initIdxEnd]
+        [brushXScale, dailyData, initIdxStart, initIdxEnd]
     );
 
     const onChooseAggrLevel = (aggrLevel) => {

@@ -234,13 +234,13 @@ export function selectFirstOf(date, frequency, latestDate) {
             adjustedDate = parsedDate;
             break;
         case 'week':
-            adjustedDate = parsedDate.startOf('week');
+            adjustedDate = parsedDate.endOf('week');
             break;
         case 'month':
-            adjustedDate = parsedDate.startOf('month');
+            adjustedDate = parsedDate.endOf('month');
             break;
         case 'year':
-            adjustedDate = parsedDate.startOf('year');
+            adjustedDate = parsedDate.endOf('year');
             break;
         default:
             adjustedDate = parsedDate;

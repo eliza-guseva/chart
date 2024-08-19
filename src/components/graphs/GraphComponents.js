@@ -31,7 +31,6 @@ export const StandardAxisBottom = ({
         domain: [subDays(data[0].calendarDate, tickFreq - 1), data[data.length - 1].calendarDate],
         range: [0, xScale.range()[1]],
     });
-    console.log('scaledTime', scaledTime.domain());
     
     return (<AxisBottom
         top={yMax}

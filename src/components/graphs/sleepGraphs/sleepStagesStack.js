@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import { useTooltip, defaultStyles } from '@visx/tooltip';
 import { localPoint } from '@visx/event';
 import { Bar } from '@visx/shape';
+import { addDays} from 'date-fns';
 
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
@@ -57,18 +58,18 @@ const ToolTipDiv = ({d, point, xScale, aggrLevel}) => {
     }
     else {
         avgText = 'Avg ';
-        const periodBefore = d[d.indexOf(selectedPeriod) - 1] || d[0];
+        const periodBeforeDt = addDays((d[d.indexOf(selectedPeriod) - 1] || d[0]).calendarDate, 1);
         if (selectedPeriod['calendarDate'].getMonth() 
-            === periodBefore['calendarDate'].getMonth()) {
+            === periodBeforeDt.getMonth()) {
             datestr = (
-                formatDate(getDate(periodBefore)) 
+                formatDate(periodBeforeDt)
                 + ' - ' + 
                 selectedPeriod['calendarDate'].getDate()
             );
         }
         else {
             datestr = (
-                formatDate(getDate(periodBefore)) 
+                formatDate(periodBeforeDt)
                 + ' - ' 
                 + formatDate(getDate(selectedPeriod))
             );}
@@ -142,8 +143,6 @@ const SleepStackMainGraph = ({
 
         if (point) {
             const { top, left } = svg.getBoundingClientRect();
-            console.log('point', point);
-            console.log('data', data);
             const datapoint = data['data'];
                 setTooltipInfo([
                     {
