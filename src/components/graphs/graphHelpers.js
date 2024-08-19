@@ -1,6 +1,10 @@
 import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
 
+/**
+ * The style object for the brush.
+ * @type {Object}
+ */
 export const brushStyle = {
     fillColor: "#ffddff",
     accentColor: "#f6acc8",
@@ -10,6 +14,11 @@ export const brushStyle = {
     },
 }
 
+/**
+ * Calculates the SVG width based on the container width.
+ * @param {number} containerWidth - The width of the container.
+ * @returns {number} The calculated SVG width.
+ */
 export function calculateSvgWidth(containerWidth) {
     if (containerWidth < 750) {
         return containerWidth;
@@ -21,8 +30,13 @@ export function calculateSvgWidth(containerWidth) {
         return containerWidth * 0.8;
     }
     return containerWidth * 0.7;
-  }
+}
 
+/**
+ * Calculates the width-to-height ratio for the SVG based on the container width.
+ * @param {number} containerWidth - The width of the container.
+ * @returns {number} The calculated width-to-height ratio.
+ */
 export function calculateWHRatio(containerWidth) {
     if (containerWidth < 600) {
         return 0.9;
@@ -36,10 +50,21 @@ export function calculateWHRatio(containerWidth) {
     return 0.6;
 }
 
+/**
+ * Calculates the SVG height based on the container width.
+ * @param {number} containerWidth - The width of the container.
+ * @returns {number} The calculated SVG height.
+ */
 export function calculateSvgHeight(containerWidth) {
     return calculateSvgWidth(containerWidth) * calculateWHRatio(containerWidth);
 }
 
+/**
+ * Calculates the margin object based on the width and left factor.
+ * @param {number} width - The width of the chart.
+ * @param {number} [left_factor=1.0] - The factor to multiply the left margin by.
+ * @returns {Object} The margin object.
+ */
 export function getMargin(width, left_factor=1.0) {
     if (width < 600) {
         return { top: 30, right: 10, bottom: 30, left: left_factor * 40 };
@@ -50,31 +75,78 @@ export function getMargin(width, left_factor=1.0) {
     return { top: 30, right: 10, bottom: 60, left: left_factor *  60 };
 }
 
-
+/**
+ * Calculates the inner height of the chart based on the height and margin.
+ * @param {number} height - The height of the chart.
+ * @param {Object} margin - The margin object.
+ * @returns {number} The calculated inner height.
+ */
 export function getInnerHeight(height, margin) {
     return height - margin.top - margin.bottom;
 }
 
+/**
+ * Calculates the maximum x-coordinate based on the width and margin.
+ * @param {number} width - The width of the chart.
+ * @param {Object} margin - The margin object.
+ * @returns {number} The calculated maximum x-coordinate.
+ */
 export function getXMax(width, margin) {
     return width - margin.right;
 }
 
-
-
+/**
+ * Calculates the height of the brush based on the height and margin.
+ * @param {number} height - The height of the chart.
+ * @param {Object} margin - The margin object.
+ * @returns {number} The calculated brush height.
+ */
 export function getBrushHeight(height, margin) {
     return getInnerHeight(height, margin) * 0.15;
-
 }
 
-// time format
+/**
+ * Formats the date using the specified time format.
+ * @type {Function}
+ */
 export const formatDate = timeFormat('%b %d');
+
+/**
+ * Formats the date with year using the specified time format.
+ * @type {Function}
+ */
 export const formatDateYear = timeFormat('%b %d, %y');
+
+/**
+ * Formats the date with year (fully spelled out) using the specified time format.
+ * @type {Function}
+ */
 export const formatDateYearPretty = timeFormat('%b %d, %Y');
+
+/**
+ * Formats the year using the specified time format.
+ * @type {Function}
+ */
 export const formatYear = timeFormat('%Y');
+
+/**
+ * Formats the month using the specified time format.
+ * @type {Function}
+ */
 export const formatMonth = timeFormat('%b');
+
+/**
+ * Formats the month and year using the specified time format.
+ * @type {Function}
+ */
 export const formatMonthYear = timeFormat('%b %Y');
 
-// get ticks frequescies
+/**
+ * Gets the tick frequencies based on the data and point frequency.
+ * @param {Array} data - The data array.
+ * @param {string} pointFreq - The point frequency ('day', 'week', 'month', 'year').
+ * @returns {number|undefined} The tick frequency.
+ */
 export function getTicksFrequencies(data, pointFreq) {
     let multiplier;
     if (pointFreq  === 'day') {
@@ -92,10 +164,16 @@ export function getTicksFrequencies(data, pointFreq) {
     if (data.length <= 8) {
         return timeDay.every(1 * multiplier);
     }
-    return 0
+    return undefined;
 }
 
-
+/**
+ * Calculates the bottom position of the main chart based on the margin, height, and width.
+ * @param {Object} margin - The margin object.
+ * @param {number} height - The height of the chart.
+ * @param {number} width - The width of the chart.
+ * @returns {number} The calculated bottom position of the main chart.
+ */
 export function getMainChartBottom(margin, height, width) {
     let chart_separation;
     if (width < 600) {
@@ -112,7 +190,40 @@ export function getMainChartBottom(margin, height, width) {
     return margin.top + innerHeight - brushHeight - chart_separation; 
 }
 
-
+/**
+ * Gets the index from the end of the array.
+ * @param {Array} array - The array.
+ * @param {number} indexFromEnd - The index from the end.
+ * @returns {number} The calculated index from the end.
+ */
 export function getIdxFromEnd(array, indexFromEnd) {
   return array.length - indexFromEnd;
+}
+
+/**
+ * Converts hours to a time string in the format "HH:MM".
+ * @param {number} hours - The hours value.
+ * @returns {string} The formatted time string.
+ */
+export function hours2TimeStr(hours) {
+    const h = Math.floor(hours);
+    const m = Math.floor((hours % 1) * 60);
+    return h + ':' + m.toString().padStart(2, '0');
+}
+
+/**
+ * A functional component that renders a little circle with the specified color.
+ * @param {string} color - The color of the circle.
+ * @returns {JSX.Element} The rendered circle element.
+ */
+export const LittleCircle = ({color}) => {
+    return <span style={{ 
+        display: 'inline-block', 
+        width: '0.6rem', 
+        height: '0.6rem', 
+        backgroundColor: color,
+        borderRadius: '50%', 
+        marginRight: '0.5rem'
+        }
+    }></span>;
 }
