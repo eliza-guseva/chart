@@ -118,7 +118,6 @@ const EnduranceMainGraph = ({
 
 
 const EnduranceGraph = ({ enduranceData }) => {
-    
     return (
         <BrushTimeGraph
             dailyData={enduranceData}

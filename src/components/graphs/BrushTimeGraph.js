@@ -131,7 +131,6 @@ const BrushTimeGraph = ({
         let { x0, x1, y0, y1 } = domain;
         let aggregatedData;
         let dataCopy;
-        console.log('old domain', formatDateWithWeekday(x0), formatDateWithWeekday(x1));
         switch (aggrLevel) {
             case 'daily':
                 aggregatedData = dailyData;
@@ -157,7 +156,6 @@ const BrushTimeGraph = ({
                     return x >= x0 && x <= x1em;
                 });
                 dataCopy[dataCopy.length - 1]['calendarDate'] = new Date(x1);
-                console.log('monthly data', aggregatedData);
                 break;
             default:
                 console.log('aggrLevel not recognized');
@@ -165,10 +163,8 @@ const BrushTimeGraph = ({
         
 
         x1 = getDate(dataCopy[dataCopy.length - 1]);
-        console.log('dataCopy', dataCopy);
         setSelection(dataCopy);
         setSelectionDomain({ x0, x1, y0, y1 });
-        console.log('new domain', formatDateWithWeekday(x0), formatDateWithWeekday(x1));
     };
 
     // scales

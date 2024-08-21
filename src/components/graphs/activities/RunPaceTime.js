@@ -21,7 +21,12 @@ import {
     getMin, 
     getMedian
 } from '../fileAndDataProcessors';
-import { getMainChartBottom, formatDateYearPretty } from '../graphHelpers';
+import { 
+    getMainChartBottom, 
+    formatDateYearPretty, 
+    fmtMonthlyDatestr,
+    hours2TimeStr
+} from '../graphHelpers';
 import { StandardAxisLeft, StandardAxisBottom, Grid } from '../GraphComponents';
 
 const brushStyle = {
@@ -48,10 +53,11 @@ function fmtSingleRunToolTip(d) {
     
     return (
             <div>
-                <strong>Date:</strong> {date} <br />
-                <strong>Pace:</strong> {avgPace} min/km <br />
-                <strong>Distance:</strong> {d['distance_km'].toFixed(2)} km <br />
-                <strong>Elevation: 🔼</strong> {d['elevationGain_m'].toFixed(0)} m 🔽 {d['elevationLoss_m'].toFixed(0)} m
+                <p style={{color: '#ffffffbb'}} > 🏃🏽 {date} 🏃🏽‍♀️</p>
+                Pace: <strong>{avgPace} min/km </strong> <br />
+                Distance: <strong> {d['distance_km'].toFixed(2)} km </strong> <br />
+                Avg HR: <strong> {d['avgHr'].toFixed(0)} bpm </strong> <br />
+                Elevation: <strong>🔼 {d['elevationGain_m'].toFixed(0)} m 🔽 {d['elevationLoss_m'].toFixed(0)} m </strong>
             </div>
         );
 }
@@ -64,16 +70,14 @@ function fmtMonthlyToolTip(d, point, xScale) {
     const selectedMonth = min(d.filter((d) => {
         return (getDate(d) >= date);
     })) || d[d.length - 1];
-    const ThirtyDaysBefore = formatDateYearPretty(
-        selectedMonth.calendarDate - 30 * 24 * 60 * 60 * 1000);
-    const ThisDate = formatDateYearPretty(selectedMonth.calendarDate);
+    const thirtyDaysBefore = new Date(selectedMonth.calendarDate - 29 * 24 * 60 * 60 * 1000);
+    const datestr = fmtMonthlyDatestr(selectedMonth.calendarDate, thirtyDaysBefore);
     let medianPace = selectedMonth['pace_minkm'];
-    medianPace = Math.floor(medianPace) + ':' + Math.floor((medianPace % 1) * 60).toString().padStart(2, '0');
+    medianPace = ' ' + hours2TimeStr(medianPace);
     return (
         <div>
-            {ThirtyDaysBefore + '-' + ThisDate}<br />
-            Median Pace:
-            <strong>{medianPace} min/km </strong> 
+            <p style={{color: '#ffffffbb'}} >{datestr}</p>
+            Median Run: <strong>{medianPace} min/km </strong> 
         </div>
     );
 }
@@ -137,8 +141,10 @@ const RunPaceMainGraph = ({
                         tooltipTop: tooltipTop,
                         style: {
                             ...defaultStyles,
+                            backgroundColor: '#2d363fdd',
+                            color: '#fff',
+                            border: 'none',
                             lineHeight: '1.2',
-                            backgroundColor: '#ffffffdd'
                         },
                         loc_x: point.x,
                         loc_y: point.y,
@@ -156,15 +162,15 @@ const RunPaceMainGraph = ({
                         tooltipData: tooltipData,
                         tooltipLeft: point.x + left,
                         tooltipTop: top + yMax + margin.top - 24,
+                        loc_x: point.x,
+                        loc_y: point.y,
                         style: {
                             ...defaultStyles,
-                            backgroundColor: '#ffffffdd',
-                            color: '#000',
+                            backgroundColor: '#2d363fdd',
+                            color: '#fff',
                             border: 'none',
                             lineHeight: '1.2',
                         },
-                        loc_x: point.x,
-                        loc_y: point.y,
                     }
                 ])
                 showTooltip({

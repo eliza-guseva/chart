@@ -1,5 +1,6 @@
 import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
+import { getYear } from 'date-fns';
 
 /**
  * The style object for the brush.
@@ -142,6 +143,16 @@ export const formatMonth = timeFormat('%b');
  * @type {Function}
  */
 export const formatMonthYear = timeFormat('%b %Y');
+
+export function fmtMonthlyDatestr(selectedMonth, thirtyDaysBefore) {
+    if (getYear(selectedMonth) === getYear(thirtyDaysBefore)) {
+        if (selectedMonth.getMonth() === thirtyDaysBefore.getMonth()) {
+            return formatDate(thirtyDaysBefore) + ' - ' + selectedMonth.getDate() + ' ,' + getYear(selectedMonth)
+        }
+        return formatDate(selectedMonth) + ' - ' + formatDate(thirtyDaysBefore) + ' ,' + getYear(selectedMonth)
+    }
+    return formatDateYearPretty(thirtyDaysBefore) + ' - ' + formatDateYearPretty(selectedMonth);
+}
 
 /**
  * Gets the tick frequencies based on the data and point frequency.
