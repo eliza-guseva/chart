@@ -38,10 +38,12 @@ const Tabs = ({setSelectedTab}) => {
 
 
 const TheGraphs = ({selectFiles}) => {
+    console.log('selectFiles', selectFiles);
     const [sleepData, setSleepData] = useState(null);
     const [performanceData, setPerformanceData] = useState(null);
     const [activitiesData, setActivitiesData] = useState(null);
     const [selectedTab, setSelectedTab] = useState(TabsEnum.WELLNESS);
+    console.log('performanceData', performanceData);
 
     useEffect(() => {
         const processData = async () => {

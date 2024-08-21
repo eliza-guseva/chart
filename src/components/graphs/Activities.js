@@ -7,7 +7,9 @@ const Activities = ({activitiesData}) => {
         <div className='w-full flex'>
             <SideBar sections={['section1', 'section2', 'section3']} />
             <div className='w-full flex flex-col'>
-            <RunPaceTime runningData={activitiesData.running} />
+            {(activitiesData.running) &&
+            (activitiesData.running.length > 0) && 
+            <RunPaceTime runningData={activitiesData.running} />}
             </div>
         </div>
     );

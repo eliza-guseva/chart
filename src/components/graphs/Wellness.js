@@ -6,8 +6,7 @@ import SleepStagesStack from './sleepGraphs/sleepStagesStack';
 const Wellness = ({sleepData}) => {
     return (
         <div className='graphdiv'>
-            {sleepData && <SleepStagesStack sleepData={sleepData} />}
-            {/* {sleepData && <SleepStagesStack sleepData={sleepData} />} */}
+            {(sleepData) && (sleepData.length > 0) && <SleepStagesStack sleepData={sleepData} />}
         </div>
     );
 };

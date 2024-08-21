@@ -12,8 +12,8 @@ const Performance = ({performanceData}) => {
     console.log('performanceData', performanceData);
     return (
         <div>
-            <EnduranceGraph enduranceData={endurance_data} />
-            <TrainingLoadTime trainingLoadData={training_load_data} />
+            {(endurance_data) && (endurance_data.length > 0) && <EnduranceGraph enduranceData={endurance_data} />}
+            {(training_load_data) && (training_load_data.length > 0) && <TrainingLoadTime trainingLoadData={training_load_data} />}
         </div>
     );
 }
