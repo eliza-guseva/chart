@@ -193,7 +193,7 @@ const SleepStackMainGraph = ({
             keys: keys,
             colors: colors,
             margin,
-            pointFreq: aggrLevel,
+            aggrLevel: aggrLevel,
             curve: curveStepBefore,
         })}
         <Grid

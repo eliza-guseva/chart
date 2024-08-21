@@ -1,6 +1,14 @@
 import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
-import { getYear } from 'date-fns';
+import { 
+    getYear, 
+    getDay, 
+    startOfWeek, 
+    addDays, 
+    addMonths, 
+    startOfMonth 
+} from 'date-fns';
+import { scaleTime } from '@visx/scale';
 
 /**
  * The style object for the brush.
@@ -236,4 +244,60 @@ export const LittleCircle = ({color}) => {
         marginRight: '0.5rem'
         }
     }></span>;
+}
+
+// time tick tools
+
+const getallDoW = (startDate, endDate, dayNum) => {
+    const fridays = [];
+    let current = startOfWeek(startDate, { weekStartsOn: dayNum });
+
+    while (current <= endDate) {
+        fridays.push(current);
+        current = addDays(current, 7);
+    }
+
+    return fridays;
+};
+
+export function getMonthlyTicks(data, xScale) {
+    let ticks;
+    const lastDate = new Date(data[data.length - 1].calendarDate)
+    const firstDate = xScale.invert(xScale.range()[0]);
+    const timeScale = scaleTime({
+        range: xScale.range(),
+        domain: xScale.domain(),
+    });
+    ticks = timeScale.ticks();
+
+    if (data.length <= 5) {
+    ticks = [];
+        let current = startOfMonth(firstDate);
+
+        while (current <= lastDate) {
+            ticks.push(current);
+            current = addMonths(current, 1); // Move to the next month
+        }
+    }
+
+    ticks.push(lastDate);
+
+    return ticks;
+};
+
+export function getWeeklyTicks(data, xScale) {
+    let ticks;
+    const lastDate = new Date(data[data.length - 1].calendarDate);
+    const firstDate = xScale.invert(xScale.range()[0]);
+    ticks = getallDoW(firstDate, lastDate, getDay(lastDate));
+    if (ticks.length >= 14 && ticks.length <= 26) {
+        ticks = ticks.slice()
+        .reverse()
+        .filter((_, index) => index % 2 === 0)
+        .reverse();    
+    }
+    else if (ticks.length > 26) {
+        ticks = getMonthlyTicks(data, xScale);
+    }
+    return ticks;
 }

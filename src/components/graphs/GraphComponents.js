@@ -1,42 +1,58 @@
 import React from 'react';
-import { subDays } from 'date-fns';
+import { 
+    startOfWeek, 
+    addDays, 
+    getDay, 
+    addMonths, 
+    startOfMonth 
+} from 'date-fns';
 import { AreaClosed } from '@visx/shape';
 import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
 import { Brush } from '@visx/brush';
-import { scaleTime, scaleLinear } from '@visx/scale';
+import { scaleTime } from '@visx/scale';
 import { GridRows, GridColumns } from '@visx/grid';
 import { AxisBottom, AxisLeft } from '@visx/axis';
 import { format as d3Format } from 'd3-format';
 import { getDate } from './fileAndDataProcessors';
 import { 
-    getTicksFrequencies, 
     formatDateYear,
     getBrushHeight,
     getXMax,
     formatMonthYear,
+    getWeeklyTicks,
+    getMonthlyTicks,
 } from './graphHelpers';
 
-// function
+
 
 export const StandardAxisBottom = ({
     data,
     yMax,
     xScale,
-    pointFreq = 'daily',
+    aggrLevel = 'daily',
 }) => {
-    let tickFreq = getTicksFrequencies(pointFreq);
-
-    const scaledTime = scaleTime({
-        domain: [subDays(data[0].calendarDate, tickFreq - 1), data[data.length - 1].calendarDate],
-        range: [0, xScale.range()[1]],
-    });
-    
+    let ticks;
+    if (aggrLevel === 'weekly') {
+        ticks = getWeeklyTicks(data, xScale);
+    }
+    else if (aggrLevel === 'monthly') {
+        ticks = getMonthlyTicks(data, xScale);
+    }
+    else {
+        const timeScale = scaleTime({
+            range: xScale.range(),
+            domain: xScale.domain(),
+        });
+        ticks = timeScale.ticks();
+        ticks.push(new Date(data[data.length - 1].calendarDate));
+    }
     return (<AxisBottom
         top={yMax}
         scale={xScale}
         stroke='#fff'
         tickStroke='#fff'
+        tickValues={ticks}
         tickFormat={formatDateYear}
         tickLabelProps={() => ({
             fill: '#fff',
@@ -136,6 +152,7 @@ export const MyAreaStackVsDate = ({
     yMax,
     keys, 
     colors,
+    aggrLevel,
     ...props}) => {
     let stack = [];
     // iterate from the end of the keys array
@@ -164,6 +181,8 @@ return <>
             data={data}
             yMax={yMax}
             xScale={xScale}
+            aggrLevel={aggrLevel}
+
         />
     </>;
 };
