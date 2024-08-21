@@ -29,8 +29,19 @@ import {
 } from '../graphHelpers';
 import { StandardAxisLeft, StandardAxisBottom, Grid } from '../GraphComponents';
 
+
+const TimeGradient = () => {
+    return <LinearGradient 
+        id="lineGradient" 
+        from="#3cb7b4" 
+        to="#42e397" 
+        vertical={false} />
+}
+
+
+
 const brushStyle = {
-    fillColor: "#676e72",
+    fillColor: "#3cb8b4",
     accentColor: "#e8e6ff",
     selectedBoxStyle: {
         fill: 'url(#brush_pattern)',
@@ -186,11 +197,7 @@ const RunPaceMainGraph = ({
         hideTooltip(); // Hide the tooltip
     };
     return (<>
-    <LinearGradient 
-        id="lineGradient" 
-        from="#3cb7b4" 
-        to="#42e397" 
-        vertical={false} />
+        <TimeGradient />
         <rect 
             x={margin.left} 
             y={margin.top} 

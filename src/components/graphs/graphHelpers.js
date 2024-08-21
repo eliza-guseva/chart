@@ -11,19 +11,6 @@ import {
 import { scaleTime } from '@visx/scale';
 
 /**
- * The style object for the brush.
- * @type {Object}
- */
-export const brushStyle = {
-    fillColor: "#ffddff",
-    accentColor: "#f6acc8",
-    selectedBoxStyle: {
-        fill: 'url(#brush_pattern)',
-        stroke: '#ffffff',
-    },
-}
-
-/**
  * Calculates the SVG width based on the container width.
  * @param {number} containerWidth - The width of the container.
  * @returns {number} The calculated SVG width.
