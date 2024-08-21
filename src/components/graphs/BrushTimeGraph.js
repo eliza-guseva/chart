@@ -61,9 +61,6 @@ const BrushTimeGraph = ({
 }) => {
     // STATES AND INITIALIZATION
     const allKeys = getAllKeys(keys, brushKey);
-    //const weeklyData = aggregateData(dailyData, 'week', allKeys, groupFunction, aggFn);
-    //const monthlyData = aggregateData(dailyData, 'month', allKeys, groupFunction, aggFn);
-    //const [aggregatedData, setAggregatedData] = useState(dailyData);
     const [aggrLevel, setAggrLevel] = useState('daily');
     const initIdxStart = getIdxFromEnd(dailyData, 75);
     const initIdxEnd = getIdxFromEnd(dailyData, 1);
@@ -213,7 +210,7 @@ const BrushTimeGraph = ({
 
     }, [aggrLevel]);
 
-    let styleOuter = {
+    let styleSvgHeader = {
         display: 'flex',
         flexDirection: 'row',
         width: svgWidth - margin.right + 'px',
@@ -222,7 +219,7 @@ const BrushTimeGraph = ({
         marginBottom: '-33px',
         zIndex: 10,
     };
-    let styleInner = {
+    let styleAggrButtons = {
         display: isAllowAgg ? 'flex' : 'none',
     };
 
@@ -231,9 +228,9 @@ const BrushTimeGraph = ({
     return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <div className='w-full flex flex-col items-center'>
-        <div style={styleOuter}>
+        <div style={styleSvgHeader}>
         <p className='md:text-3xl font-bold text-2xl z-10 self-start'>{graphTitle}</p>
-        <div style={styleInner}>
+        <div style={styleAggrButtons}>
                 <button 
                     className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}
                     onClick={() => onChooseAggrLevel('daily')}
