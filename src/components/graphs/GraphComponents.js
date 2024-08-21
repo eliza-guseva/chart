@@ -267,7 +267,7 @@ export const BrushSubGraph = (
                 onChange={onBrushChange}
                 selectedBoxStyle={brushStyle.selectedBoxStyle}
                 ref={brushRef}
-                useWindowMoveEvents={false}
+                useWindowMoveEvents={true}
             />
         </Group>
     );
