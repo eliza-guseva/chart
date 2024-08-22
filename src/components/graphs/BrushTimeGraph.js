@@ -213,14 +213,23 @@ const BrushTimeGraph = ({
     let styleSvgHeader = {
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'space-between',
         width: svgWidth - margin.right + 'px',
-        justifyContent: 'right',
         marginRight: svgWidth - xMax + 'px',
         marginBottom: '-33px',
         zIndex: 10,
     };
     let styleAggrButtons = {
         display: isAllowAgg ? 'flex' : 'none',
+        alignSelf: 'end',
+    };
+
+    let titleStyle = {
+        fontSize: '1.3em',
+        fontWeight: 'bold',
+        zIndex: 10,
+        marginLeft: margin.left + 'px',
+        marginBottom: '4px',
     };
 
     
@@ -229,7 +238,7 @@ const BrushTimeGraph = ({
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <div className='w-full flex flex-col items-center'>
         <div style={styleSvgHeader}>
-        <p className='md:text-3xl font-bold text-2xl z-10 self-start'>{graphTitle}</p>
+        <p style={titleStyle}>{graphTitle}</p>
         <div style={styleAggrButtons}>
                 <button 
                     className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}
