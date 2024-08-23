@@ -221,7 +221,7 @@ const BrushTimeGraph = ({
         justifyContent: 'space-between',
         width: svgWidth - margin.right + 'px',
         marginRight: svgWidth - xMax + 'px',
-        marginBottom: '-33px',
+        marginBottom: '-30px',
         zIndex: 10,
     };
     let styleAggrButtons = {

@@ -31,7 +31,7 @@ import {
     getDate,
     getAvg
 } from '../fileAndDataProcessors';
-import { sv } from 'date-fns/locale';
+import { sl, sv } from 'date-fns/locale';
 
 
 const brushStyle = {
@@ -231,6 +231,7 @@ const SleepStackMainGraph = ({
 
 
 const SleepStagesStack = ({ sleepData }) => {
+    console.log('sleepData', sleepData[sleepData.length - 1]);
     return (
         <BrushTimeGraph
             dailyData={sleepData}
