@@ -16,6 +16,7 @@ import {
     getWeeklyTicks,
     getMonthlyTicks,
     LittleCircle,
+    fmtTwoDatestr
 } from './graphHelpers';
 
 
@@ -271,38 +272,68 @@ export const SingleStat = ({
     stat, 
     title, 
     color, 
-    svgDimensions, 
     formatterFunc,
     unit=''}) => {
-    let pStyle;
-    if (svgDimensions.width < 400) {
-        pStyle = {
-            paddingRight: '0.8rem',
-            color: '#fff',
-            fontSize: '0.9rem',
-            textAlign: 'right',
-        }
-    }
-    else {
-        pStyle = {
+    const pStyle = {
             paddingRight: '1.1rem',
             color: '#fff',
             fontSize: '1.1rem',
+            whiteSpace: 'nowrap',
         }
-    }
-    let br;
-    if (svgDimensions.width < 400) {br = <br />}
-    else {
-        br = ' ';
-    }
+
     return (
     <p style={pStyle}>
         <LittleCircle color={color} />
-        {title}
-        :
-        {br}
+        {title}{': '}
         {formatterFunc(stat)}
         {unit}
         </p>
     )
+}
+
+export const StatsHeader = ({selection, statsTitle}) => (
+    <div className='flex gap-5'>
+        <div>{statsTitle}</div>
+        <div style={{color: '#ffffffbb'}}>{fmtTwoDatestr(selection[selection.length - 1].calendarDate, selection[0].calendarDate)} </div>
+        <hr style={{ borderTop: '1px solid #ffffffbb', margin: '0.25rem 0' }} />
+    </div>
+);
+
+export const StatsDiv = ({
+    statsTitle,
+    selection,
+    statsData,
+    svgDimensions,
+    titles,
+    allColors,
+    fmtFuncs,
+    units,
+}) => {
+    const statsStyle = {
+        width: (
+            svgDimensions.width - 
+            svgDimensions.margin.left - 
+            svgDimensions.margin.right),
+        display: 'flex',
+        marginLeft: svgDimensions.margin.left,
+        flexDirection: 'column',
+    }
+    return  (
+        <div style={statsStyle} >
+            <StatsHeader statsTitle={statsTitle} selection={selection} />
+            <div className='grid grid-cols-2 lg:grid-cols-3'>
+    {statsData.map((stat, index) => (
+        <SingleStat
+            key={titles[index]}  // Using titles as the key, assuming they are unique
+            stat={stat}
+            title={titles[index]}
+            color={allColors[index]}
+            formatterFunc={fmtFuncs[index]}
+            unit={units[index]}
+        />
+    )
+    )}
+</div>
+        </div>
+    );
 }

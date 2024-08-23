@@ -4,15 +4,15 @@ import { useMemo } from 'react';
 import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
 import {curveStepBefore, curveStepAfter} from '@visx/curve';
-import { LinearGradient } from '@visx/gradient';
-import {LinePath, AreaClosed} from '@visx/shape';
+import {AreaClosed} from '@visx/shape';
 import BrushTimeGraph from '../BrushTimeGraph';
-import { getDate } from '../fileAndDataProcessors';
+import { getDate, getAvg } from '../fileAndDataProcessors';
 import { getMainChartBottom } from '../graphHelpers';
 import { 
     StandardAxisLeft, 
     StandardAxisBottom,
     Grid,
+    StatsDiv,
 } from '../GraphComponents';
 
 
@@ -128,8 +128,32 @@ const EnduranceGraph = ({ enduranceData }) => {
             graphTitle='Endurance score'
             colors={colors}
             left_factor={1.6}
+            isAllowAgg={true}
+            SelectionStats={EnduranceStats}
         />
     );
 };
+
+const EnduranceStats = ({selection, allData, svgDimensions}) => {
+    const titles = ['Endurance score'];
+    const allKeys = ['overallScore'];
+    const averages = [getAvg(selection, 'overallScore')];
+    const fmtFuncs = Array.from({length: allKeys.length}, () => Math.round);
+    const units = Array.from({length: allKeys.length}, () => '');
+    const allColors = [getEnduranceBandColor(averages[0])];
+    return (
+        StatsDiv({
+            statsTitle: 'Avg Endurance score',
+            selection: selection,
+            statsData: averages,
+            svgDimensions: svgDimensions,
+            fmtFuncs: fmtFuncs,
+            units: units,
+            titles: titles,
+            allColors: allColors,
+            allKeys: allKeys,
+        })
+    )
+}
 
 export default EnduranceGraph;

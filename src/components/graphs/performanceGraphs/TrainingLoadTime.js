@@ -5,9 +5,14 @@ import { scaleLinear } from '@visx/scale';
 import {curveLinear, curveBasis} from '@visx/curve';
 import {LinePath, AreaClosed} from '@visx/shape';
 import BrushTimeGraph from '../BrushTimeGraph';
-import { getDate } from '../fileAndDataProcessors';
+import { getDate, getAvg } from '../fileAndDataProcessors';
 import { getMainChartBottom } from '../graphHelpers';
-import { StandardAxisLeft, StandardAxisBottom, Grid } from '../GraphComponents';
+import { 
+    StandardAxisLeft, 
+    StandardAxisBottom, 
+    Grid,
+    StatsDiv,
+} from '../GraphComponents';
 
 
 const brushStyle = {
@@ -124,8 +129,33 @@ const TrainingLoadTime = ({ trainingLoadData }) => {
             graphTitle='Acute Training Load'
             colors={colors}
             left_factor={1.4}
+            isAllowAgg={true}
+            SelectionStats={TrLoadStats}
         />
     );
+}
+
+const TrLoadStats = ({selection, allData, svgDimensions}) => {
+    const titles = ['Avg Acute Load', 'Avg Chronic Load', 'Avg Acute/Chronic',];
+    const allKeys = ['dailyTrainingLoadAcute', 'dailyTrainingLoadChronic', 
+    'dailyAcuteChronicWorkloadRatio'];
+    const averages = allKeys.map((key) => getAvg(selection, key));
+    const fmtFuncs = [Math.round, Math.round,  (d) => d.toFixed(1)];
+    const units = Array.from({length: allKeys.length}, () => '');
+    const allColors = ['#108010', '#108010', '#108010',];
+    return (
+        StatsDiv({
+            statsTitle: 'Training Load Stats',
+            selection: selection,
+            statsData: averages,
+            svgDimensions: svgDimensions,
+            fmtFuncs: fmtFuncs,
+            units: units,
+            titles: titles,
+            allColors: allColors,
+            allKeys: allKeys,
+        })
+    )
 }
 
 export default TrainingLoadTime;

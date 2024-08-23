@@ -31,7 +31,7 @@ import {
     StandardAxisLeft, 
     StandardAxisBottom, 
     Grid, 
-    SingleStat } from '../GraphComponents';
+    StatsDiv } from '../GraphComponents';
 
 
 const TimeGradient = () => {
@@ -308,47 +308,25 @@ const RunPaceTime = ({ runningData }) => {
 
 const RunPaceStats = ({selection, allData, svgDimensions}) => {
     const titles = ['Pace', 'Distance', 'Elevation Gain', 'Elevation Loss', 'Avg HR'];
-    const allColors = ['#fff', '#fff', '#fff', '#fff', '#fff'];
-    const keys = ['pace_minkm', 'distance_km', 'elevationGain_m', 'elevationLoss_m', 'avgHr'];
+    const allColors = ['#42df99', '#42df99', '#ff7777', '#7777ff', '#ffaadd'];
+    const allKeys = ['pace_minkm', 'distance_km', 'elevationGain_m', 'elevationLoss_m', 'avgHr'];
     const units = ['min/km', 'km', 'm', 'm', 'bpm'];
-    const formatterFuncs = [hours2TimeStr, (d) => d.toFixed(2), (d) => d.toFixed(0), (d) => d.toFixed(0), (d) => d.toFixed(0)];
+    const fmtFuncs = [hours2TimeStr, (d) => d.toFixed(2), (d) => d.toFixed(0), (d) => d.toFixed(0), (d) => d.toFixed(0)];
 
-    const averages = keys.map(key => getMedian(selection, key));
-    const statsStyle = {
-        width: (
-            svgDimensions.width - 
-            svgDimensions.margin.left - 
-            svgDimensions.margin.right),
-        display: 'flex',
-        marginLeft: svgDimensions.margin.left,
-        flexDirection: 'column',
-    }
-
-    const Header = () => (
-        <div className='flex gap-5'>
-            <div>Median run</div>
-            <div style={{color: '#ffffffbb'}}>{fmtTwoDatestr(selection[selection.length - 1].calendarDate, selection[0].calendarDate)} </div>
-            <hr style={{ borderTop: '1px solid #ffffffbb', margin: '0.25rem 0' }} />
-        </div>
-    );
+    const averages = allKeys.map(key => getMedian(selection, key));
     return (
-        <div style={statsStyle} >
-            <Header />
-            <div className='flex'>
-    {averages.map((stat, index) => (
-        <SingleStat
-            key={titles[index]}
-            stat={stat}
-            title={titles[index]}
-            color={allColors[index]}
-            svgDimensions={svgDimensions}
-            formatterFunc={formatterFuncs[index]}
-            unit={units[index]}
-        />
-    ))}
-</div>
-        </div>
-    );
+        StatsDiv({
+            statsTitle: 'Median run stats',
+            selection: selection,
+            statsData: averages,
+            svgDimensions: svgDimensions,
+            fmtFuncs: fmtFuncs,
+            units: units,
+            titles: titles,
+            allColors: allColors,
+            allKeys: allKeys,
+        })
+    )
 }
 
 RunPaceTime.propTypes = {

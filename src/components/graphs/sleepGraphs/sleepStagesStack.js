@@ -14,7 +14,7 @@ import {
     MyAreaStackVsDate,  
     StandardAxisLeft,
     Grid,
-    SingleStat,
+    StatsDiv,
 } from '../GraphComponents';
 import {
     getMainChartBottom,
@@ -249,43 +249,23 @@ const SleepStagesStack = ({ sleepData }) => {
 
 
 const SleepStagesStats = ({selection, allData, svgDimensions}) => {
+    const fmtFuncs = Array.from({length: allKeys.length}, () => hours2TimeStr);
+    const units = Array.from({length: allKeys.length}, () => 'h');
+    
     const avgSleepHours = allKeys.map(key => getAvg(selection, key));
-    const statsStyle = {
-        width: (
-            svgDimensions.width - 
-            svgDimensions.margin.left - 
-            svgDimensions.margin.right),
-        display: 'flex',
-        marginLeft: svgDimensions.margin.left,
-        flexDirection: 'column',
-    }
-
-    const Header = () => (
-        <div className='flex gap-5'>
-            <div>Avg Sleep Stages</div>
-            <div style={{color: '#ffffffbb'}}>{fmtTwoDatestr(selection[selection.length - 1].calendarDate, selection[0].calendarDate)} </div>
-            <hr style={{ borderTop: '1px solid #ffffffbb', margin: '0.25rem 0' }} />
-        </div>
-    );
-
     return (
-        <div style={statsStyle} >
-            <Header />
-            <div className='flex'>
-    {avgSleepHours.map((stat, index) => (
-        <SingleStat
-            key={titles[index]}  // Using titles as the key, assuming they are unique
-            stat={stat}
-            title={titles[index]}
-            color={allColors[index]}
-            svgDimensions={svgDimensions}
-            formatterFunc={hours2TimeStr}
-            unit={'h'}
-        />
-    ))}
-</div>
-        </div>
-    );
+        StatsDiv({
+            statsTitle: 'Avg Sleep Hours',
+            selection: selection,
+            statsData: avgSleepHours,
+            svgDimensions: svgDimensions,
+            fmtFuncs: fmtFuncs,
+            units: units,
+            titles: titles,
+            allColors: allColors,
+            allKeys: allKeys,
+        })
+    )
 }
 
 

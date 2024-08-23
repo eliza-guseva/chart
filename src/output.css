@@ -1256,6 +1256,12 @@ h1{
   }
 }
 
+@media (min-width: 1024px){
+  .lg\:grid-cols-3{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (min-width: 1280px){
   .xl\:w-4\/5{
     width: 80%;

@@ -3,6 +3,7 @@ import { timeFormat } from 'd3-time-format';
 import { 
     getYear, 
     getDay, 
+    getMonth,
     startOfWeek, 
     addDays, 
     addMonths, 
@@ -143,7 +144,7 @@ export const formatMonthYear = timeFormat('%b %Y');
 export function fmtTwoDatestr(lastDate, firstDate) {
     firstDate = addDays(firstDate, 1);
     if (getYear(lastDate) === getYear(firstDate)) {
-        if (lastDate.getMonth() === firstDate.getMonth()) {
+        if (getMonth(lastDate) === getMonth(firstDate)) {
             return formatDate(firstDate) + ' - ' + lastDate.getDate() + ' ,' + getYear(lastDate)
         }
         return formatDate(firstDate) + ' - ' + formatDate(lastDate) + ' ,' + getYear(lastDate)
