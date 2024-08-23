@@ -301,7 +301,11 @@ const BrushTimeGraph = ({
             }
             )}
             {SelectionStats && 
-                <SelectionStats selection={selection} allData={dailyData} />
+                <SelectionStats 
+                selection={selection} 
+                allData={dailyData} 
+                svgDimensions={svgDimensions}
+                />
             }
         </div>
     </div>

@@ -698,8 +698,16 @@ video {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.flex-row{
+  flex-direction: row;
+}
+
 .flex-col{
   flex-direction: column;
+}
+
+.flex-wrap{
+  flex-wrap: wrap;
 }
 
 .items-end{
@@ -720,6 +728,14 @@ video {
 
 .gap-4{
   gap: 1rem;
+}
+
+.gap-10{
+  gap: 2.5rem;
+}
+
+.gap-5{
+  gap: 1.25rem;
 }
 
 .place-self-center{

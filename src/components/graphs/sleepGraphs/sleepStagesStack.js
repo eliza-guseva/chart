@@ -27,7 +27,9 @@ import {
 } from '../styles';
 import {
     getDate,
+    getAvg
 } from '../fileAndDataProcessors';
+import { sv } from 'date-fns/locale';
 
 
 const brushStyle = {
@@ -42,6 +44,9 @@ const brushStyle = {
 const keys = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
 const colors = ['#007bff', '#ff44cc', '#44aaff', '#ccbbee'];
 const brushKey = 'totalSleepHours';
+const allKeys = ['totalSleepHours', ...keys];
+const allColors = ['#fff', ...colors];
+const titles = ['Total', 'Deep', 'REM', 'Light', 'Awake'];
 
 
 const ToolTipDiv = ({d, point, xScale, aggrLevel}) => {
@@ -76,32 +81,27 @@ const ToolTipDiv = ({d, point, xScale, aggrLevel}) => {
     }
 
     return (
-            <div>
-                <p style={{color: '#ffffffbb'}} >{datestr}</p>
-                <p>
-                    <LittleCircle color={'#fff'} />
-                    <strong>{avgText} Total: {hours2TimeStr(selectedPeriod['totalSleepHours'])}</strong>
-                </p>
-                <hr style={{ borderTop: '1px solid #ccc', margin: '0.25rem 0' }} />
-
-                <p>
-                    <LittleCircle color={colors[3]} />
-                    {avgText} Awake: <strong>{hours2TimeStr(selectedPeriod['awakeSleepHours'])}</strong>
-                </p>
-                <p>
-                    <LittleCircle color={colors[2]} />
-                    {avgText} Light: <strong>{hours2TimeStr(selectedPeriod['lightSleepHours'])}</strong>
-                </p>
-                <p>
-                    <LittleCircle color={colors[1]} />
-                    {avgText} REM: <strong>{hours2TimeStr(selectedPeriod['remSleepHours'])}</strong>
-                </p>
-                <p>
-                    <LittleCircle color={colors[0]} />
-                    {avgText} Deep: <strong>{hours2TimeStr(selectedPeriod['deepSleepHours'])}</strong>
-                </p>
-                
+        <div>
+        <p style={{color: '#ffffffbb'}}>{datestr}</p>
+        {allKeys.map((key, index) => (
+            <div key={key}>
+                {index === 0 ? (
+                    <>
+                        <p>
+                            <LittleCircle color={allColors[index]} />
+                            {avgText} {titles[index]}: <strong>{hours2TimeStr(selectedPeriod[key])}</strong>
+                        </p>
+                        <hr style={{ borderTop: '1px solid #ccc', margin: '0.25rem 0' }} />
+                    </>
+                ) : (
+                    <p>
+                        <LittleCircle color={allColors[index]} />
+                        {avgText} {titles[index]}: <strong>{hours2TimeStr(selectedPeriod[key])}</strong>
+                    </p>
+                )}
             </div>
+        ))}
+    </div>
         );
 }
 
@@ -238,9 +238,77 @@ const SleepStagesStack = ({ sleepData }) => {
             brushStyle={brushStyle}
             graphTitle='Sleep Stages'
             left_factor={1.0}
+            isAllowAgg={true}
+            SelectionStats={SleepStagesStats}
         />
     );
 };
+
+const SingleStat = ({stat, title, color, svgDimensions}) => {
+    let pStyle;
+    if (svgDimensions.width < 400) {
+        pStyle = {
+            paddingRight: '0.8rem',
+            color: '#fff',
+            fontSize: '0.9rem',
+            textAlign: 'right',
+        }
+    }
+    else {
+        pStyle = {
+            paddingRight: '1.1rem',
+            color: '#fff',
+            fontSize: '1.1rem',
+        }
+    }
+    let br;
+    if (svgDimensions.width < 400) {br = <br />}
+    else {
+        br = ' ';
+    }
+    return (
+    <p style={pStyle}>
+        <LittleCircle color={color} />
+        {title}
+        :
+        {br}
+        {hours2TimeStr(stat)}
+        h
+        </p>
+    )
+}
+
+const SleepStagesStats = ({selection, allData, svgDimensions}) => {
+    const avgSleepHours = allKeys.map(key => getAvg(selection, key));
+    const statsStyle = {
+        width: (
+            svgDimensions.width - 
+            svgDimensions.margin.left - 
+            svgDimensions.margin.right),
+        display: 'flex',
+        marginLeft: svgDimensions.margin.left,
+        flexDirection: 'column',
+    }
+
+    return (
+        <div style={statsStyle} >
+            <div>
+                <p >Avg Sleep Stages</p>
+            </div>
+            <div className='flex'>
+    {avgSleepHours.map((stat, index) => (
+        <SingleStat
+            key={titles[index]}  // Using titles as the key, assuming they are unique
+            stat={stat}
+            title={titles[index]}
+            color={allColors[index]}
+            svgDimensions={svgDimensions}
+        />
+    ))}
+</div>
+        </div>
+    );
+}
 
 
 

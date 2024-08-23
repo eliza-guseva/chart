@@ -228,7 +228,7 @@ export const LittleCircle = ({color}) => {
         height: '0.6rem', 
         backgroundColor: color,
         borderRadius: '50%', 
-        marginRight: '0.5rem'
+        marginRight: '0.2rem'
         }
     }></span>;
 }
