@@ -1,6 +1,8 @@
 import React from 'react';
 import RunPaceTime from './activities/RunPaceTime';
 import PropTypes from 'prop-types';
+import { getAvg } from './fileAndDataProcessors';
+import {SingleStat} from './GraphComponents';
 // import SideBar from '../SideBar';
 
 
@@ -22,16 +24,7 @@ const Activities = ({activitiesData}) => {
             {(activitiesData.running) &&
             (activitiesData.running.length > 0) && 
             <RunPaceTime runningData={activitiesData.running} />}
-            <ActivitiesStats activitiesData={activitiesData} />
             </div>
-        </div>
-    );
-}
-
-const ActivitiesStats = ({activitiesData}) => {
-    return (
-        <div>
-            'hi'
         </div>
     );
 }

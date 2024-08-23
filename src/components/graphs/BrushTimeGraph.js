@@ -224,12 +224,6 @@ const BrushTimeGraph = ({
         marginBottom: '-33px',
         zIndex: 10,
     };
-    let dateStyle = {
-        color: '#ffffffbb',
-        alignSelf: 'end',
-        marginBottom: '4px',
-        marginLeft: (margin.left + 4) + 'px',
-    };
     let styleAggrButtons = {
         display: isAllowAgg ? 'flex' : 'none',
         alignSelf: 'end',
@@ -246,10 +240,7 @@ const BrushTimeGraph = ({
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <div className='w-full flex flex-col items-center'>
             <div style={styleSvgHeader}>
-                <div className='flex flex-col sm:flex-row'>
                 <p style={titleStyle}>{graphTitle}</p>
-                <p style={dateStyle}>{fmtTwoDatestr(selection[selection.length - 1].calendarDate, selection[0].calendarDate)} </p>
-                </div>
                 <div style={styleAggrButtons}>
                     <button 
                         className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}

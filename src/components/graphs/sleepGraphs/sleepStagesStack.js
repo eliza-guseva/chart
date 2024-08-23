@@ -14,13 +14,14 @@ import {
     MyAreaStackVsDate,  
     StandardAxisLeft,
     Grid,
+    SingleStat,
 } from '../GraphComponents';
 import {
     getMainChartBottom,
     formatDate,
     hours2TimeStr,
     LittleCircle,
-    fmtTwoDatestr
+    fmtTwoDatestr,
  } from '../graphHelpers';
 import { 
     MAIN_GRAPH_BCKG, 
@@ -245,39 +246,7 @@ const SleepStagesStack = ({ sleepData }) => {
     );
 };
 
-const SingleStat = ({stat, title, color, svgDimensions}) => {
-    let pStyle;
-    if (svgDimensions.width < 400) {
-        pStyle = {
-            paddingRight: '0.8rem',
-            color: '#fff',
-            fontSize: '0.9rem',
-            textAlign: 'right',
-        }
-    }
-    else {
-        pStyle = {
-            paddingRight: '1.1rem',
-            color: '#fff',
-            fontSize: '1.1rem',
-        }
-    }
-    let br;
-    if (svgDimensions.width < 400) {br = <br />}
-    else {
-        br = ' ';
-    }
-    return (
-    <p style={pStyle}>
-        <LittleCircle color={color} />
-        {title}
-        :
-        {br}
-        {hours2TimeStr(stat)}
-        h
-        </p>
-    )
-}
+
 
 const SleepStagesStats = ({selection, allData, svgDimensions}) => {
     const avgSleepHours = allKeys.map(key => getAvg(selection, key));
@@ -291,12 +260,17 @@ const SleepStagesStats = ({selection, allData, svgDimensions}) => {
         flexDirection: 'column',
     }
 
+    const Header = () => (
+        <div className='flex gap-5'>
+            <div>Avg Sleep Stages</div>
+            <div style={{color: '#ffffffbb'}}>{fmtTwoDatestr(selection[selection.length - 1].calendarDate, selection[0].calendarDate)} </div>
+            <hr style={{ borderTop: '1px solid #ffffffbb', margin: '0.25rem 0' }} />
+        </div>
+    );
+
     return (
         <div style={statsStyle} >
-            <div>
-                <p>Avg Sleep Stages</p>
-                <hr style={{ borderTop: '1px solid #ffffffbb', margin: '0.25rem 0' }} />
-            </div>
+            <Header />
             <div className='flex'>
     {avgSleepHours.map((stat, index) => (
         <SingleStat
@@ -305,6 +279,8 @@ const SleepStagesStats = ({selection, allData, svgDimensions}) => {
             title={titles[index]}
             color={allColors[index]}
             svgDimensions={svgDimensions}
+            formatterFunc={hours2TimeStr}
+            unit={'h'}
         />
     ))}
 </div>

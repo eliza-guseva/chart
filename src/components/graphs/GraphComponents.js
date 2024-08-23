@@ -1,11 +1,4 @@
 import React from 'react';
-import { 
-    startOfWeek, 
-    addDays, 
-    getDay, 
-    addMonths, 
-    startOfMonth 
-} from 'date-fns';
 import { AreaClosed } from '@visx/shape';
 import { Group } from '@visx/group';
 import { PatternLines } from '@visx/pattern';
@@ -22,6 +15,7 @@ import {
     formatMonthYear,
     getWeeklyTicks,
     getMonthlyTicks,
+    LittleCircle,
 } from './graphHelpers';
 
 
@@ -272,3 +266,43 @@ export const BrushSubGraph = (
         </Group>
     );
 };
+
+export const SingleStat = ({
+    stat, 
+    title, 
+    color, 
+    svgDimensions, 
+    formatterFunc,
+    unit=''}) => {
+    let pStyle;
+    if (svgDimensions.width < 400) {
+        pStyle = {
+            paddingRight: '0.8rem',
+            color: '#fff',
+            fontSize: '0.9rem',
+            textAlign: 'right',
+        }
+    }
+    else {
+        pStyle = {
+            paddingRight: '1.1rem',
+            color: '#fff',
+            fontSize: '1.1rem',
+        }
+    }
+    let br;
+    if (svgDimensions.width < 400) {br = <br />}
+    else {
+        br = ' ';
+    }
+    return (
+    <p style={pStyle}>
+        <LittleCircle color={color} />
+        {title}
+        :
+        {br}
+        {formatterFunc(stat)}
+        {unit}
+        </p>
+    )
+}
