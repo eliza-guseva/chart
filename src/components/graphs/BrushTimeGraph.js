@@ -3,6 +3,7 @@ import { scaleTime, scaleLinear } from '@visx/scale';
 import { extent } from 'd3-array';
 import { max } from 'd3-array';
 import moment from 'moment';
+import { getMonth } from 'date-fns';
 
 import { 
     TooltipWithBounds, 
@@ -26,7 +27,6 @@ import {
     calculateSvgWidth,
     calculateSvgHeight,
     getIdxFromEnd,
-    formatDateWithWeekday
 } from './graphHelpers';
 
 function getAllKeys(keys, brushKey) {
@@ -56,11 +56,13 @@ const BrushTimeGraph = ({
     graphTitle,
     left_factor=1.0,
     isAllowAgg=true,
-    aggFn = getAvg,
+    aggFn=getAvg,
     inverseBrush=false,
+    SelectionStats=null,
 }) => {
     // STATES AND INITIALIZATION
     const allKeys = getAllKeys(keys, brushKey);
+    const weeklyData = aggregateData(dailyData, 'week', allKeys, selectDaysAgo, aggFn);
     const [aggrLevel, setAggrLevel] = useState('daily');
     const initIdxStart = getIdxFromEnd(dailyData, 75);
     const initIdxEnd = getIdxFromEnd(dailyData, 1);
@@ -138,19 +140,22 @@ const BrushTimeGraph = ({
                 break;
             case 'weekly':
                 x0 = getX0Weekly(x1, x0);
-                aggregatedData = aggregateData(dailyData, 'week', allKeys, selectDaysAgo, aggFn);
+                aggregatedData = weeklyData;
                 dataCopy = aggregatedData.filter((d) => {
                     const x = getDate(d);
                     return x >= x0 && x <= x1;
                 });
                 break;
             case 'monthly':
-                x0 = moment(x0).startOf('month').toDate();
-                let x1em = moment(x1).endOf('month').toDate();
-                aggregatedData = aggregateData(dailyData, 'month', allKeys, selectFirstOf, aggFn);
+                console.log('x0', x0, 'x1', x1);
+                aggregatedData = aggregateData(
+                    dailyData.filter((d) => {
+                        const x = getDate(d);
+                        return x <= x1;
+                    }), 'month', allKeys, selectFirstOf, aggFn);
                 dataCopy = aggregatedData.filter((d) => {
                     const x = getDate(d);
-                    return x >= x0 && x <= x1em;
+                    return x >= x0 && x <= x1;
                 });
                 dataCopy[dataCopy.length - 1]['calendarDate'] = new Date(x1);
                 break;
@@ -228,34 +233,32 @@ const BrushTimeGraph = ({
         fontSize: '1.3em',
         fontWeight: 'bold',
         zIndex: 10,
-        marginLeft: margin.left + 'px',
+        marginLeft: (margin.left + 4) + 'px',
         marginBottom: '4px',
     };
-
-    
 
     return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <div className='w-full flex flex-col items-center'>
-        <div style={styleSvgHeader}>
-        <p style={titleStyle}>{graphTitle}</p>
-        <div style={styleAggrButtons}>
-                <button 
-                    className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}
-                    onClick={() => onChooseAggrLevel('daily')}
-                    >Daily
-                </button>
-                <button 
-                    className={aggrLevel === 'weekly' ? 'btnaggrselect' : 'btnaggr'}
-                    onClick={() => onChooseAggrLevel('weekly')}
-                    >Weekly
-                </button>
-                <button 
-                    className={aggrLevel === 'monthly' ? 'btnaggrselect' : 'btnaggr'}
-                    onClick={() => onChooseAggrLevel('monthly')}
-                    >Monthly
-                </button>
-            </div>
+            <div style={styleSvgHeader}>
+                <p style={titleStyle}>{graphTitle}</p>
+                <div style={styleAggrButtons}>
+                    <button 
+                        className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}
+                        onClick={() => onChooseAggrLevel('daily')}
+                        >Daily
+                    </button>
+                    <button 
+                        className={aggrLevel === 'weekly' ? 'btnaggrselect' : 'btnaggr'}
+                        onClick={() => onChooseAggrLevel('weekly')}
+                        >Weekly
+                    </button>
+                    <button 
+                        className={aggrLevel === 'monthly' ? 'btnaggrselect' : 'btnaggr'}
+                        onClick={() => onChooseAggrLevel('monthly')}
+                        >Monthly
+                    </button>
+                </div>
             </div>
             <svg className="bg-dark rounded-lg" width={svgWidth} height={svgHeight}>
                 {mainGraphComponent({
@@ -297,6 +300,9 @@ const BrushTimeGraph = ({
                 );
             }
             )}
+            {SelectionStats && 
+                <SelectionStats selection={selection} allData={dailyData} />
+            }
         </div>
     </div>
     );

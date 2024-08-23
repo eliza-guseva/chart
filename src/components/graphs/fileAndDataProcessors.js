@@ -227,6 +227,7 @@ export function selectFirstOf(date, frequency, latestDate) {
     const parseDate = timeParse('%Y-%m-%d');
     const formatDate = timeFormat('%Y-%m-%d');
     const parsedDate = moment(date);
+
     let adjustedDate;
 
     switch (frequency) {
@@ -234,13 +235,28 @@ export function selectFirstOf(date, frequency, latestDate) {
             adjustedDate = parsedDate;
             break;
         case 'week':
-            adjustedDate = parsedDate.endOf('week');
+            if (parsedDate.endOf('week').isAfter(latestDate)) {
+                adjustedDate = latestDate;
+            }
+            else {
+                adjustedDate = parsedDate.endOf('week');
+            }
             break;
         case 'month':
-            adjustedDate = parsedDate.endOf('month');
+            if (parsedDate.endOf('month').isAfter(latestDate)) {
+                adjustedDate = latestDate;
+            }
+            else {
+                adjustedDate = parsedDate.endOf('month');
+            }
             break;
         case 'year':
-            adjustedDate = parsedDate.endOf('year');
+            if (parsedDate.endOf('year').isAfter(latestDate)) {
+                adjustedDate = latestDate;
+            }
+            else {
+                adjustedDate = parsedDate.endOf('year');
+            }
             break;
         default:
             adjustedDate = parsedDate;
