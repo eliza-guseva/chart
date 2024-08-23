@@ -24,7 +24,7 @@ import {
 import { 
     getMainChartBottom, 
     formatDateYearPretty, 
-    fmtMonthlyDatestr,
+    fmtTwoDatestr,
     hours2TimeStr
 } from '../graphHelpers';
 import { StandardAxisLeft, StandardAxisBottom, Grid } from '../GraphComponents';
@@ -82,7 +82,7 @@ function fmtMonthlyToolTip(d, point, xScale) {
         return (getDate(d) >= date);
     })) || d[d.length - 1];
     const thirtyDaysBefore = new Date(selectedMonth.calendarDate - 29 * 24 * 60 * 60 * 1000);
-    const datestr = fmtMonthlyDatestr(selectedMonth.calendarDate, thirtyDaysBefore);
+    const datestr = fmtTwoDatestr(selectedMonth.calendarDate, thirtyDaysBefore);
     let medianPace = selectedMonth['pace_minkm'];
     medianPace = ' ' + hours2TimeStr(medianPace);
     return (

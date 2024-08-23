@@ -3,7 +3,6 @@ import { scaleTime, scaleLinear } from '@visx/scale';
 import { extent } from 'd3-array';
 import { max } from 'd3-array';
 import moment from 'moment';
-import { getMonth } from 'date-fns';
 
 import { 
     TooltipWithBounds, 
@@ -27,6 +26,7 @@ import {
     calculateSvgWidth,
     calculateSvgHeight,
     getIdxFromEnd,
+    fmtTwoDatestr,
 } from './graphHelpers';
 
 function getAllKeys(keys, brushKey) {
@@ -224,6 +224,12 @@ const BrushTimeGraph = ({
         marginBottom: '-33px',
         zIndex: 10,
     };
+    let dateStyle = {
+        color: '#ffffffbb',
+        alignSelf: 'end',
+        marginBottom: '4px',
+        marginLeft: (margin.left + 4) + 'px',
+    };
     let styleAggrButtons = {
         display: isAllowAgg ? 'flex' : 'none',
         alignSelf: 'end',
@@ -234,14 +240,16 @@ const BrushTimeGraph = ({
         fontWeight: 'bold',
         zIndex: 10,
         marginLeft: (margin.left + 4) + 'px',
-        marginBottom: '4px',
     };
 
     return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <div className='w-full flex flex-col items-center'>
             <div style={styleSvgHeader}>
+                <div className='flex flex-col sm:flex-row'>
                 <p style={titleStyle}>{graphTitle}</p>
+                <p style={dateStyle}>{fmtTwoDatestr(selection[selection.length - 1].calendarDate, selection[0].calendarDate)} </p>
+                </div>
                 <div style={styleAggrButtons}>
                     <button 
                         className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}

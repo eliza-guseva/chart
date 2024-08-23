@@ -20,6 +20,7 @@ import {
     formatDate,
     hours2TimeStr,
     LittleCircle,
+    fmtTwoDatestr
  } from '../graphHelpers';
 import { 
     MAIN_GRAPH_BCKG, 
@@ -293,7 +294,8 @@ const SleepStagesStats = ({selection, allData, svgDimensions}) => {
     return (
         <div style={statsStyle} >
             <div>
-                <p >Avg Sleep Stages</p>
+                <p>Avg Sleep Stages</p>
+                <hr style={{ borderTop: '1px solid #ffffffbb', margin: '0.25rem 0' }} />
             </div>
             <div className='flex'>
     {avgSleepHours.map((stat, index) => (

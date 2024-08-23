@@ -22,7 +22,16 @@ const Activities = ({activitiesData}) => {
             {(activitiesData.running) &&
             (activitiesData.running.length > 0) && 
             <RunPaceTime runningData={activitiesData.running} />}
+            <ActivitiesStats activitiesData={activitiesData} />
             </div>
+        </div>
+    );
+}
+
+const ActivitiesStats = ({activitiesData}) => {
+    return (
+        <div>
+            'hi'
         </div>
     );
 }

@@ -646,6 +646,22 @@ video {
   margin-top: 1rem;
 }
 
+.-mt-5{
+  margin-top: -1.25rem;
+}
+
+.mt-0{
+  margin-top: 0px;
+}
+
+.-mt-2{
+  margin-top: -0.5rem;
+}
+
+.mb-2{
+  margin-bottom: 0.5rem;
+}
+
 .inline-block{
   display: inline-block;
 }
@@ -1199,6 +1215,12 @@ h1{
 .hover\:bg-red-500:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+}
+
+@media (min-width: 640px){
+  .sm\:flex-row{
+    flex-direction: row;
+  }
 }
 
 @media (min-width: 768px){

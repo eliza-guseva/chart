@@ -6,7 +6,8 @@ import {
     startOfWeek, 
     addDays, 
     addMonths, 
-    startOfMonth 
+    startOfMonth, 
+    subDays
 } from 'date-fns';
 import { scaleTime } from '@visx/scale';
 
@@ -98,7 +99,7 @@ export function getXMax(width, margin) {
  * @returns {number} The calculated brush height.
  */
 export function getBrushHeight(height, margin) {
-    return getInnerHeight(height, margin) * 0.15;
+    return getInnerHeight(height, margin) * 0.1;
 }
 
 /**
@@ -139,14 +140,15 @@ export const formatMonth = timeFormat('%b');
  */
 export const formatMonthYear = timeFormat('%b %Y');
 
-export function fmtMonthlyDatestr(selectedMonth, thirtyDaysBefore) {
-    if (getYear(selectedMonth) === getYear(thirtyDaysBefore)) {
-        if (selectedMonth.getMonth() === thirtyDaysBefore.getMonth()) {
-            return formatDate(thirtyDaysBefore) + ' - ' + selectedMonth.getDate() + ' ,' + getYear(selectedMonth)
+export function fmtTwoDatestr(lastDate, firstDate) {
+    firstDate = addDays(firstDate, 1);
+    if (getYear(lastDate) === getYear(firstDate)) {
+        if (lastDate.getMonth() === firstDate.getMonth()) {
+            return formatDate(firstDate) + ' - ' + lastDate.getDate() + ' ,' + getYear(lastDate)
         }
-        return formatDate(selectedMonth) + ' - ' + formatDate(thirtyDaysBefore) + ' ,' + getYear(selectedMonth)
+        return formatDate(firstDate) + ' - ' + formatDate(lastDate) + ' ,' + getYear(lastDate)
     }
-    return formatDateYearPretty(thirtyDaysBefore) + ' - ' + formatDateYearPretty(selectedMonth);
+    return formatDateYearPretty(firstDate) + ' - ' + formatDateYearPretty(lastDate);
 }
 
 /**
