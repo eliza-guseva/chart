@@ -29,6 +29,8 @@ background-repeat: repeat;
 background-size: auto;
 }
 
+/* BUTTONS */
+
 .btn {
     @apply 
     py-1 px-3
@@ -71,9 +73,6 @@ background-size: auto;
     py-0 px-2
 }
 
-button {
-    @apply btn;
-  }
 
 .inpt {
     @apply
@@ -92,6 +91,7 @@ h1 {
     @apply h1;
 }
 
+/* pretty green toggle button */
 .togglesw {
     --s: 50px;
    /* adjust this to control the size*/
@@ -145,7 +145,43 @@ h1 {
   }
   
   
-  /* HOME */
+  /* TABS */
+
+.tabs {
+    @apply
+    w-full 
+    grid grid-cols-2 md:grid-cols-4 
+}
+
+.atab {
+    @apply
+    text-center
+    font-bold
+    cursor-pointer
+    text-white
+    hover:text-darkwhite
+    hover:bg-gentlewhite
+    rounded-tl-lg rounded-tr-lg
+    border-t border-l border-r border-gentlewhite
+
+}
+
+.tabWellness {
+    @apply
+    atab
+}
+
+.glider {
+    @apply
+    w-full
+    bg-darkwhite
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: #c3d2e3;
+  }
   
   /* HEADER */
   .header.container {

@@ -8,6 +8,8 @@ import {
     processSleepData, 
     processActivitiesData 
 } from './graphs/fileAndDataProcessors';
+import { he } from 'date-fns/locale';
+import { set } from 'date-fns';
 
 
 
@@ -22,14 +24,51 @@ const TabsEnum = Object.freeze({
   });
 
 
-const Tabs = ({setSelectedTab}) => {
+const Tabs = ({selectedTab, setSelectedTab}) => {
+    const getGliderStyle = () => {
+        let leftPosition = 0;
+        let backgroundImage = 'linear-gradient(90deg, #ffffff44 70%, #44aaff 100%), linear-gradient(90deg, #44aaff 0%, #ffffff 80%)';
+        
+        switch (selectedTab) {
+            case TabsEnum.PERFORMANCE:
+                leftPosition = '25%';
+                backgroundImage = 'linear-gradient(90deg, #ffffff44 70%, #ffa64d 100%), linear-gradient(90deg, #ffa64d 0%, #ffffff 80%)';
+                break;
+            case TabsEnum.HRV:
+                leftPosition = '50%';
+                backgroundImage = 'linear-gradient(90deg, #ffffff44 70%, #16c03f 100%), linear-gradient(90deg, #16c03f 0%, #ffffff 80%)';
+                break;
+            case TabsEnum.ACTIVITIES:
+                leftPosition = '75%';
+                backgroundImage = 'linear-gradient(90deg, #ffffff44 70%, #f93a67 100%), linear-gradient(90deg, #f93a67 0%, #ffffff 80%)';
+                break;
+            case TabsEnum.WELLNESS:
+            default:
+                leftPosition = 0;
+                break;
+        }
+
+        return {
+            width: '25%',
+            height: '4px', 
+            backgroundImage: `${backgroundImage}`,
+            left: `${leftPosition}`,
+            transition: 'left 0.35s ease',
+            position: 'absolute',
+            bottom: 0,
+        };
+    };
+
 
     return (
-        <div className='w-full grid grid-cols-2 md:grid-cols-4 mb-4'>
-            <button className='btnboring' onClick={() => setSelectedTab(TabsEnum.WELLNESS)}>Wellness</button>
-            <button className='btn' onClick={() => setSelectedTab(TabsEnum.PERFORMANCE)}>Performance</button>
-            <button className='btn' onClick={() => setSelectedTab(TabsEnum.HRV)}>HRV</button>
-            <button className='btnboring' onClick={() => setSelectedTab(TabsEnum.ACTIVITIES)}>Activities</button>
+        <div className='flex flex-col mb-8 relative'>
+            <div className='tabs'>
+            <button className='atab' onClick={() => setSelectedTab(TabsEnum.WELLNESS)}>Wellness</button>
+            <button className='atab' onClick={() => setSelectedTab(TabsEnum.PERFORMANCE)}>Performance</button>
+            <button className='atab' onClick={() => setSelectedTab(TabsEnum.HRV)}>HRV</button>
+            <button className='atab' onClick={() => setSelectedTab(TabsEnum.ACTIVITIES)}>Activities</button>
+            </div>
+            <div style={getGliderStyle()}></div>
         </div>
     );
 }
@@ -81,7 +120,7 @@ const TheGraphs = ({selectFiles}) => {
 
     return (
         <div className='w-full'>
-            <Tabs setSelectedTab={setSelectedTab} />
+            <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
             {selectedTab === TabsEnum.WELLNESS && <Wellness sleepData={sleepData} />}
             {selectedTab === TabsEnum.PERFORMANCE && <Performance performanceData={performanceData} />}
             {selectedTab === TabsEnum.HRV && <div>HRV</div>}

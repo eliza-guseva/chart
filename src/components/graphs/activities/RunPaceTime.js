@@ -307,7 +307,7 @@ const RunPaceTime = ({ runningData }) => {
 
 
 const RunPaceStats = ({selection, allData, svgDimensions}) => {
-    const titles = ['Pace', 'Distance', 'Elevation Gain', 'Elevation Loss', 'Avg HR'];
+    const titles = ['Pace', 'Distance', 'Elevation 🔼', 'Elevation 🔽', 'Avg HR'];
     const allColors = ['#42df99', '#42df99', '#ff7777', '#7777ff', '#ffaadd'];
     const allKeys = ['pace_minkm', 'distance_km', 'elevationGain_m', 'elevationLoss_m', 'avgHr'];
     const units = ['min/km', 'km', 'm', 'm', 'bpm'];
