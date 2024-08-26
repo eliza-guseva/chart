@@ -27,20 +27,20 @@ const TabsEnum = Object.freeze({
 const Tabs = ({selectedTab, setSelectedTab}) => {
     const getGliderStyle = () => {
         let leftPosition = 0;
-        let backgroundImage = 'linear-gradient(90deg, #ffffff44 70%, #44aaff 100%), linear-gradient(90deg, #44aaff 0%, #ffffff 80%)';
+        let backgroundImage = 'linear-gradient(90deg, #0282b744 70%, #00415c 100%), linear-gradient(90deg, #00415c 0%, #0282b7 80%)';
         
         switch (selectedTab) {
             case TabsEnum.PERFORMANCE:
                 leftPosition = '25%';
-                backgroundImage = 'linear-gradient(90deg, #ffffff44 70%, #ffa64d 100%), linear-gradient(90deg, #ffa64d 0%, #ffffff 80%)';
+                backgroundImage = 'linear-gradient(90deg, #f18b2f44 70%, #a65707 100%), linear-gradient(90deg, #a25403 0%, #f18b2f 80%)';
                 break;
             case TabsEnum.HRV:
                 leftPosition = '50%';
-                backgroundImage = 'linear-gradient(90deg, #ffffff44 70%, #16c03f 100%), linear-gradient(90deg, #16c03f 0%, #ffffff 80%)';
+                backgroundImage = 'linear-gradient(90deg, #6da36c44 70%, #0a6131 100%), linear-gradient(90deg, #0a6131 0%, #6da36c 80%)';
                 break;
             case TabsEnum.ACTIVITIES:
                 leftPosition = '75%';
-                backgroundImage = 'linear-gradient(90deg, #ffffff44 70%, #f93a67 100%), linear-gradient(90deg, #f93a67 0%, #ffffff 80%)';
+                backgroundImage = 'linear-gradient(90deg, #d4003344 70%, #710015 100%), linear-gradient(90deg, #710015 0%, #d40033 80%)';
                 break;
             case TabsEnum.WELLNESS:
             default:

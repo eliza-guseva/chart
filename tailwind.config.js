@@ -32,7 +32,7 @@ module.exports = {
             'btn-accent-grad': 'linear-gradient(90deg, #a36b4d, #c38975)',
             'btn-light-grad': 'linear-gradient(0deg, #404c5b, #606c7b)',
             'btn-dark-grad': 'linear-gradient(0deg, #1e1e1e, #3e3e3e)',
-            'bgoval': 'linear-gradient(0deg, #081117 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #324c5c, #0b131a 50%)',
+            'bgoval': 'linear-gradient(0deg, #212121 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #343434, #212121 50%)',
           }
     },
   },

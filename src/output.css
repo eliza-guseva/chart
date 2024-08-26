@@ -857,7 +857,7 @@ video {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background-image: linear-gradient(0deg, #081117 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #324c5c, #0b131a 50%);
+  background-image: linear-gradient(0deg, #212121 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #343434, #212121 50%);
   font-family: Barlow Condensed, sans-serif;
   font-size: calc(7px + 2vmin);
   --tw-text-opacity: 1;
