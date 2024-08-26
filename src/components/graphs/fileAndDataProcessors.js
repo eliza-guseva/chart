@@ -318,9 +318,10 @@ function getDataGroups(data, frequency, groupFunction) {
 
 
 export function aggregateData(data, frequency, keys, groupFunction, aggFn) {
+    if (data.length === 0) {
+        return [];
+    }
     const groupedData = getDataGroups(data, frequency, groupFunction);
-
-    // Aggregate data for each group
     const aggregatedData = Object.keys(groupedData).map((key) => {
         const group = groupedData[key];
         const aggregatedObj = {

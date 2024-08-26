@@ -163,8 +163,9 @@ const BrushTimeGraph = ({
                 console.log('aggrLevel not recognized');
         }
         
-
-        x1 = getDate(dataCopy[dataCopy.length - 1]);
+        if (dataCopy.length !== 0) {
+            x1 = getDate(dataCopy[dataCopy.length - 1]);
+        }
         setSelection(dataCopy);
         setSelectionDomain({ x0, x1, y0, y1 });
     };
