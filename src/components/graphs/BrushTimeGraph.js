@@ -59,6 +59,7 @@ const BrushTimeGraph = ({
     aggFn=getAvg,
     inverseBrush=false,
     SelectionStats=null,
+    svg_id='brushTimeGraph',
 }) => {
     // STATES AND INITIALIZATION
     const allKeys = getAllKeys(keys, brushKey);
@@ -260,7 +261,7 @@ const BrushTimeGraph = ({
                     </button>
                 </div>
             </div>
-            <svg className="bg-dark rounded-lg" width={svgWidth} height={svgHeight}>
+            <svg id={svg_id} className="bg-dark rounded-lg" width={svgWidth} height={svgHeight}>
                 {mainGraphComponent({
                     selection,
                     svgDimensions,

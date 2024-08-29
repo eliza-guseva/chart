@@ -26,12 +26,12 @@ module.exports = {
         },
         backgroundImage: {
             'btn-grad': 'linear-gradient(30deg, #9aa7b4, #707c8b)',
-            'btn-hover-grad': 'linear-gradient(90deg, #687682, #2b3945)',
-            'btn-boring-grad': 'linear-gradient(90deg, #2b3945, #111517)',
-            'btn-boring-rev-grad': 'linear-gradient(90deg, #111517, #2b3945)',
+            'btn-hover-grad': 'linear-gradient(90deg, #687682, #343434)',
+            'btn-boring-grad': 'linear-gradient(90deg, #343434, #212121)',
+            'btn-boring-rev-grad': 'linear-gradient(90deg, #212121, #343434)',
             'btn-accent-grad': 'linear-gradient(90deg, #a36b4d, #c38975)',
             'btn-light-grad': 'linear-gradient(0deg, #404c5b, #606c7b)',
-            'btn-dark-grad': 'linear-gradient(0deg, #1e1e1e, #3e3e3e)',
+            'btn-dark-grad': 'linear-gradient(0deg, #212121, #343434)',
             'bgoval': 'linear-gradient(0deg, #212121 0%, #ffffff00 60%), radial-gradient(100% 200% at 55% 12%, #343434, #212121 50%)',
           }
     },

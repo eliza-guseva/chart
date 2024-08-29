@@ -1,12 +1,14 @@
 import React from 'react';
 import { useMemo } from 'react';
-import { max } from 'd3-array';
+import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
 import {curveLinear, curveBasis} from '@visx/curve';
-import {LinePath, AreaClosed} from '@visx/shape';
+import {LinePath, AreaClosed, Bar} from '@visx/shape';
+import { localPoint } from '@visx/event';
+import { useTooltip,  defaultStyles} from '@visx/tooltip';
 import BrushTimeGraph from '../BrushTimeGraph';
 import { getDate, getAvg } from '../fileAndDataProcessors';
-import { getMainChartBottom } from '../graphHelpers';
+import { fmtTwoDatestr, getMainChartBottom, formatDateYearPretty } from '../graphHelpers';
 import { 
     StandardAxisLeft, 
     StandardAxisBottom, 
@@ -33,6 +35,34 @@ const keys = [
 const colors = ['#fff'];
 const brushKey = 'dailyTrainingLoadAcute';
 
+function ftmToolTip (d, point, xScale, aggrLevel) {
+    const x = point.x;
+    const date = xScale.invert(x)
+    let datestr = '';
+    let avg = '';
+    const thisDataPoint = min(d.filter((d) => {
+        return (getDate(d) >= date);
+    })) || d[d.length - 1];
+    if (aggrLevel === 'daily') {
+        datestr = formatDateYearPretty(date);
+    }
+    else {
+        const prevDataPoint = d[d.indexOf(thisDataPoint) - 1] || d[0];
+        datestr = fmtTwoDatestr(thisDataPoint.calendarDate, prevDataPoint.calendarDate);
+        avg = 'Avg '
+    }
+    return (
+        <div>
+            <p style={{color: '#ffffffbb'}} >{datestr}</p>
+            <p>{avg}Acute Load 💪: <strong>{thisDataPoint.dailyTrainingLoadAcute.toFixed(0)}</strong></p>
+            <p>{avg}Acute/Chronic: <strong>{thisDataPoint.dailyAcuteChronicWorkloadRatio.toFixed(1)}</strong></p>
+            <p>{avg}Optimal Range: <strong>{
+            (0.8 *thisDataPoint.dailyTrainingLoadChronic).toFixed(0)} 
+            - {thisDataPoint.maxAcuteLoad.toFixed(0)}</strong></p>
+        </div>
+    )
+}
+
 
 /**
  * Renders the main graph component for the Training Load time graph.
@@ -47,6 +77,9 @@ const TrainingLoadMainGraph = ({
     selection, 
     svgDimensions,
     xScale,  
+    tooltipInfo,
+    setTooltipInfo,
+    aggrLevel,
     ...props}) => {
         const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
         const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
@@ -61,6 +94,52 @@ const TrainingLoadMainGraph = ({
                 }),
             [yMax, selection, margin]
         );
+
+        const { 
+            tooltipData, 
+            tooltipLeft, 
+            tooltipTop, 
+            tooltipOpen, 
+            showTooltip, 
+            hideTooltip 
+        } = useTooltip();
+
+    const handleTooltip = (event, data) => {
+        const svg = document.getElementById('trainingLoad');
+        const point = localPoint(svg, event);
+        if (point) {
+            let { top, left } = svg.getBoundingClientRect();
+            top = top + window.scrollY;
+            left = left + window.scrollX;
+            setTooltipInfo([
+                {
+                    tooltipData: tooltipData,
+                    tooltipLeft: point.x + left,
+                    tooltipTop: top + yMax + margin.top - 24,
+                    loc_x: point.x,
+                    loc_y: point.y,
+                    style: {
+                        ...defaultStyles,
+                        backgroundColor: '#2d363fdd',
+                        color: '#fff',
+                        border: 'none',
+                        lineHeight: '1.2',
+                    },
+                }
+            ]);
+            showTooltip({
+                tooltipData: ftmToolTip(data, point, xScale, aggrLevel),
+                tooltipLeft: point.x + left,
+                tooltipTop: top + yMax + 24,
+            });
+        }
+    }
+
+    const handleMouseLeave = () => {
+        setTooltipInfo(['']); 
+        hideTooltip();
+    };
+
     return (<>
         <rect 
             x={margin.left} 
@@ -108,6 +187,18 @@ const TrainingLoadMainGraph = ({
             yMax={yMax}
             xScale={xScale}
         />
+        <Bar
+            x={margin.left}
+            y={margin.top}
+            width={xMax - margin.left}
+            height={yMax - margin.top}
+            fill='transparent'
+            onTouchStart={(event) => handleTooltip(event, selection)}
+            onTouchMove={(event) => handleTooltip(event, selection)}
+            onMouseMove={(event) => handleTooltip(event, selection)}
+            onMouseLeave={handleMouseLeave}
+            onTouchEnd={handleMouseLeave}
+        />
     </>)
 }
 
@@ -118,7 +209,6 @@ const TrainingLoadMainGraph = ({
  * @returns {JSX.Element} The rendered TrainingLoadTime component.
  */
 const TrainingLoadTime = ({ trainingLoadData }) => {
-    console.log('traingLoad', trainingLoadData.slice(105, 115));
     return (
         <BrushTimeGraph
             dailyData={trainingLoadData}
@@ -127,6 +217,7 @@ const TrainingLoadTime = ({ trainingLoadData }) => {
             mainGraphComponent={TrainingLoadMainGraph}
             brushStyle={brushStyle}
             graphTitle='Acute Training Load'
+            svg_id='trainingLoad'
             colors={colors}
             left_factor={1.4}
             isAllowAgg={true}

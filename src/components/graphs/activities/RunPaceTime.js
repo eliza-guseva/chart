@@ -121,7 +121,6 @@ const RunPaceMainGraph = ({
     );
 
     const monthly = aggregateData(selection, 'month', keys, selectDaysAgo, getMedian);
-    const monthlyMin = aggregateData(selection, 'month', keys, selectDaysAgo, getMin);
 
     // get max value of absolute selection.homolElGain_m
     const maxAbsHomolElGain = max(selection, (d) => Math.abs(d[

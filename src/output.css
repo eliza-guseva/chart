@@ -752,7 +752,7 @@ video {
 }
 
 .bg-btn-boring-rev-grad{
-  background-image: linear-gradient(90deg, #111517, #2b3945);
+  background-image: linear-gradient(90deg, #212121, #343434);
 }
 
 .p-4{
@@ -913,14 +913,14 @@ video {
 }
 
 .btnstd:hover{
-  background-image: linear-gradient(90deg, #687682, #2b3945);
+  background-image: linear-gradient(90deg, #687682, #343434);
   --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .btnboring{
-  background-image: linear-gradient(90deg, #2b3945, #111517);
+  background-image: linear-gradient(90deg, #343434, #212121);
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
   margin-top: 0.25rem;
@@ -941,7 +941,7 @@ video {
 }
 
 .btnboring:hover{
-  background-image: linear-gradient(90deg, #687682, #2b3945);
+  background-image: linear-gradient(90deg, #687682, #343434);
 }
 
 .btnaggrselect{
@@ -1172,7 +1172,7 @@ h1{
     &:hover {
       ul {
         visibility: visible;
-        background: linear-gradient(90deg, #2b3945, #17212a);
+        background: linear-gradient(90deg, #343434, #212121);
         opacity: 1;
         box-shadow: 0px 3px 5px 2px #b0b5c0;
         text-align: right;
