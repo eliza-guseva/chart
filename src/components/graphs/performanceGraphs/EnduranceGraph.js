@@ -100,6 +100,9 @@ const EnduranceMainGraph = ({
     } = useTooltip();
 
     const handleTooltip = (event, data) => {
+        if (data.length === 0) {
+            return;
+        }
         const { pointInSvg, svgTop, svgLeft } = locateEventLocalNAbs(event, 'enduranceScore');
         if (pointInSvg) {
             console.log('pointInSvg', pointInSvg);

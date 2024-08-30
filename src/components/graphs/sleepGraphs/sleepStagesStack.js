@@ -140,6 +140,9 @@ const SleepStackMainGraph = ({
     } = useTooltip();
 
     const handleTooltip = (event, data) => {
+        if (data.length === 0) {
+            return;
+        }
         const svg = event.currentTarget.ownerSVGElement;
         const point = localPoint(svg, event);
 
