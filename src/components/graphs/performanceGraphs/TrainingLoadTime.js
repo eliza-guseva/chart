@@ -4,7 +4,6 @@ import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
 import {curveLinear, curveBasis} from '@visx/curve';
 import {LinePath, AreaClosed, Bar} from '@visx/shape';
-import { localPoint } from '@visx/event';
 import { useTooltip,  defaultStyles} from '@visx/tooltip';
 import BrushTimeGraph from '../BrushTimeGraph';
 import { getDate, getAvg } from '../fileAndDataProcessors';
@@ -15,6 +14,7 @@ import {
     Grid,
     StatsDiv,
 } from '../GraphComponents';
+import { locateEventLocalNAbs } from '../tooltipHelpers';
 
 
 const brushStyle = {
@@ -105,19 +105,15 @@ const TrainingLoadMainGraph = ({
         } = useTooltip();
 
     const handleTooltip = (event, data) => {
-        const svg = document.getElementById('trainingLoad');
-        const point = localPoint(svg, event);
-        if (point) {
-            let { top, left } = svg.getBoundingClientRect();
-            top = top + window.scrollY;
-            left = left + window.scrollX;
+        const { pointInSvg, svgTop, svgLeft } = locateEventLocalNAbs(event, 'trainingLoad');
+        if (pointInSvg) {
             setTooltipInfo([
                 {
                     tooltipData: tooltipData,
-                    tooltipLeft: point.x + left,
-                    tooltipTop: top + yMax + margin.top - 24,
-                    loc_x: point.x,
-                    loc_y: point.y,
+                    tooltipLeft: pointInSvg.x + svgLeft,
+                    tooltipTop: svgTop + yMax + margin.top - 24,
+                    loc_x: pointInSvg.x,
+                    loc_y: pointInSvg.y,
                     style: {
                         ...defaultStyles,
                         backgroundColor: '#2d363fdd',
@@ -128,9 +124,9 @@ const TrainingLoadMainGraph = ({
                 }
             ]);
             showTooltip({
-                tooltipData: ftmToolTip(data, point, xScale, aggrLevel),
-                tooltipLeft: point.x + left,
-                tooltipTop: top + yMax + 24,
+                tooltipData: ftmToolTip(data, pointInSvg, xScale, aggrLevel),
+                tooltipLeft: pointInSvg.x + svgLeft,
+                tooltipTop: svgTop + yMax + 24,
             });
         }
     }

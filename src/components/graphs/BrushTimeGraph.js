@@ -22,11 +22,11 @@ import {
 import { 
     getBrushHeight, 
     getXMax, 
+    getMainChartBottom,
     getMargin,
     calculateSvgWidth,
     calculateSvgHeight,
     getIdxFromEnd,
-    fmtTwoDatestr,
 } from './graphHelpers';
 
 function getAllKeys(keys, brushKey) {
@@ -80,11 +80,14 @@ const BrushTimeGraph = ({
         }
 
     )
+    const initMargin = getMargin(600, left_factor);
     const [svgDimensions, setSvgDimensions] = useState(
         { 
             width: 600, 
             height: 600,
-            margin: getMargin(600, left_factor),
+            margin: initMargin,
+            xMax: getXMax(600, initMargin),
+            yMax: getMainChartBottom(initMargin, 600, 600),
         });
     const containerRef = useRef(null);
     const [tooltipInfo, setTooltipInfo] = useState([{
@@ -99,13 +102,16 @@ const BrushTimeGraph = ({
             const containerWidth = containerRef.current.offsetWidth;
             const newWidth = calculateSvgWidth(containerWidth);
             const newHeight = calculateSvgHeight(containerWidth);
+            const newMargin = getMargin(newWidth, left_factor);
 
             // Only update state if the new dimensions are different
             if (newWidth !== svgDimensions.width || newHeight !== svgDimensions.height) {
                 setSvgDimensions({ 
                     width: newWidth, 
                     height: newHeight,
-                    margin: getMargin(newWidth, left_factor),
+                    margin: newMargin,
+                    xMax: getXMax(newWidth, newMargin),
+                    yMax: getMainChartBottom(newMargin, newHeight, newWidth),
                 });
             }
             }
@@ -121,9 +127,7 @@ const BrushTimeGraph = ({
         };
     }, [svgDimensions]); // Dependency array includes svgDimensions to avoid unnecessary updates
 
-    const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
-
-    const xMax = getXMax(svgWidth, margin);
+    const { width: svgWidth, height: svgHeight, margin, xMax, yMax } = svgDimensions;
 
     // preparing brush
     const onBrushChange = (domain) => {
