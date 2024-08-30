@@ -79,6 +79,9 @@ function fmtSingleRunToolTip(d) {
 
 
 function fmtMonthlyToolTip(d, point, xScale) {
+    if (d.length === 0) {
+        return;
+    }
     const x = point.x;
     const date = xScale.invert(x)
     // d is an array of objects. find the one with the date less than date and max date
@@ -151,6 +154,7 @@ const RunPaceMainGraph = ({
             const { top, left } = svg.getBoundingClientRect();
             if (data['name'] === 'single') {
                 const datapoint = data['data'];
+                console.log('datapoint', datapoint);
                 setTooltipInfo(
                     [{
                         tooltipData: tooltipData,

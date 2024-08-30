@@ -45,6 +45,54 @@ function getX0Weekly(x1, x0) {
     return x0;
 }
 
+function getSvgDimensions(height, width, left_factor) {
+    const margin = getMargin(width, left_factor);
+    return {
+        width: width,
+        height: height,
+        margin: margin,
+        xMax: getXMax(width, margin),
+        yMax: getMainChartBottom(margin, height, width),
+    };
+}
+
+function getAggrLevelSelection(aggrLevel, dailyData, weeklyData, allKeys, selectFirstOf, aggFn, x0, x1) {
+    let aggregatedData;
+    let dataCopy;
+    switch (aggrLevel) {
+        case 'daily':
+            aggregatedData = dailyData;
+            dataCopy = aggregatedData.filter((d) => {
+                const x = getDate(d);
+                return x >= x0 && x <= x1;
+            });
+            break;
+        case 'weekly':
+            x0 = getX0Weekly(x1, x0);
+            aggregatedData = weeklyData;
+            dataCopy = aggregatedData.filter((d) => {
+                const x = getDate(d);
+                return x >= x0 && x <= x1;
+            });
+            break;
+        case 'monthly':
+            aggregatedData = aggregateData(
+                dailyData.filter((d) => {
+                    const x = getDate(d);
+                    return x <= x1;
+                }), 'month', allKeys, selectFirstOf, aggFn);
+            dataCopy = aggregatedData.filter((d) => {
+                const x = getDate(d);
+                return x >= x0 && x <= x1;
+            });
+            dataCopy[dataCopy.length - 1]['calendarDate'] = new Date(x1);
+            break;
+        default:
+            console.log('aggrLevel not recognized');
+    }
+    return { dataCopy, x0, x1 };
+}
+
 
 
 const BrushTimeGraph = ({ 
@@ -80,15 +128,8 @@ const BrushTimeGraph = ({
         }
 
     )
-    const initMargin = getMargin(600, left_factor);
     const [svgDimensions, setSvgDimensions] = useState(
-        { 
-            width: 600, 
-            height: 600,
-            margin: initMargin,
-            xMax: getXMax(600, initMargin),
-            yMax: getMainChartBottom(initMargin, 600, 600),
-        });
+        getSvgDimensions(400, 600, left_factor));
     const containerRef = useRef(null);
     const [tooltipInfo, setTooltipInfo] = useState([{
         tooltipData: null,
@@ -102,17 +143,12 @@ const BrushTimeGraph = ({
             const containerWidth = containerRef.current.offsetWidth;
             const newWidth = calculateSvgWidth(containerWidth);
             const newHeight = calculateSvgHeight(containerWidth);
-            const newMargin = getMargin(newWidth, left_factor);
 
             // Only update state if the new dimensions are different
             if (newWidth !== svgDimensions.width || newHeight !== svgDimensions.height) {
-                setSvgDimensions({ 
-                    width: newWidth, 
-                    height: newHeight,
-                    margin: newMargin,
-                    xMax: getXMax(newWidth, newMargin),
-                    yMax: getMainChartBottom(newMargin, newHeight, newWidth),
-                });
+                setSvgDimensions(
+                    getSvgDimensions(newHeight, newWidth, left_factor)
+                );
             }
             }
         };
@@ -133,40 +169,18 @@ const BrushTimeGraph = ({
     const onBrushChange = (domain) => {
         if (!domain) return;
         let { x0, x1, y0, y1 } = domain;
-        let aggregatedData;
         let dataCopy;
-        switch (aggrLevel) {
-            case 'daily':
-                aggregatedData = dailyData;
-                dataCopy = aggregatedData.filter((d) => {
-                    const x = getDate(d);
-                    return x >= x0 && x <= x1;
-                });
-                break;
-            case 'weekly':
-                x0 = getX0Weekly(x1, x0);
-                aggregatedData = weeklyData;
-                dataCopy = aggregatedData.filter((d) => {
-                    const x = getDate(d);
-                    return x >= x0 && x <= x1;
-                });
-                break;
-            case 'monthly':
-                console.log('x0', x0, 'x1', x1);
-                aggregatedData = aggregateData(
-                    dailyData.filter((d) => {
-                        const x = getDate(d);
-                        return x <= x1;
-                    }), 'month', allKeys, selectFirstOf, aggFn);
-                dataCopy = aggregatedData.filter((d) => {
-                    const x = getDate(d);
-                    return x >= x0 && x <= x1;
-                });
-                dataCopy[dataCopy.length - 1]['calendarDate'] = new Date(x1);
-                break;
-            default:
-                console.log('aggrLevel not recognized');
-        }
+        (
+            { dataCopy, x0, x1 } = getAggrLevelSelection(
+                aggrLevel, 
+                dailyData, 
+                weeklyData, 
+                allKeys, 
+                selectFirstOf, 
+                aggFn, 
+                x0, 
+                x1
+        ));
         
         if (dataCopy.length !== 0) {
             x1 = getDate(dataCopy[dataCopy.length - 1]);
