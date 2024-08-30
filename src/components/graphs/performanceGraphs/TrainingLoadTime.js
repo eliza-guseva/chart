@@ -107,6 +107,9 @@ const TrainingLoadMainGraph = ({
         } = useTooltip();
 
     const handleTooltip = (event, data) => {
+        if (data.length === 0) {
+            return;
+        }
         const { pointInSvg, svgTop, svgLeft } = locateEventLocalNAbs(event, 'trainingLoad');
         if (pointInSvg) {
             setTooltipInfo([
