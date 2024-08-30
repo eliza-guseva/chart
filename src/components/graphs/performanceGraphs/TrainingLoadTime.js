@@ -55,7 +55,9 @@ function ftmToolTip (d, point, xScale, aggrLevel) {
         <div>
             <p style={{color: '#ffffffbb'}} >{datestr}</p>
             <p>{avg}Acute Load 💪: <strong>{thisDataPoint.dailyTrainingLoadAcute.toFixed(0)}</strong></p>
-            <p>{avg}Acute/Chronic: <strong>{thisDataPoint.dailyAcuteChronicWorkloadRatio.toFixed(1)}</strong></p>
+            <p>{avg}Acute/Chronic: <strong>{
+            thisDataPoint.dailyAcuteChronicWorkloadRatio.toFixed(1)
+            }</strong></p>
             <p>{avg}Optimal Range: <strong>{
             (0.8 *thisDataPoint.dailyTrainingLoadChronic).toFixed(0)} 
             - {thisDataPoint.maxAcuteLoad.toFixed(0)}</strong></p>

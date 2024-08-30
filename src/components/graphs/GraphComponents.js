@@ -40,7 +40,9 @@ export const StandardAxisBottom = ({
             domain: xScale.domain(),
         });
         ticks = timeScale.ticks();
-        ticks.push(new Date(data[data.length - 1].calendarDate));
+        if (data.length > 0) {
+            ticks.push(new Date(data[data.length - 1].calendarDate));
+        }
     }
     return (<AxisBottom
         top={yMax}
@@ -291,13 +293,20 @@ export const SingleStat = ({
     )
 }
 
-export const StatsHeader = ({selection, statsTitle}) => (
-    <div className='flex gap-5'>
-        <div>{statsTitle}</div>
-        <div style={{color: '#ffffffbb'}}>{fmtTwoDatestr(selection[selection.length - 1].calendarDate, selection[0].calendarDate)} </div>
-        <hr style={{ borderTop: '1px solid #ffffffbb', margin: '0.25rem 0' }} />
-    </div>
-);
+export const StatsHeader = ({selection, statsTitle}) => {
+    if (selection.length > 0) {
+        return (
+        <div className='flex gap-5'>
+            <div>{statsTitle}</div>
+            <div style={{color: '#ffffffbb'}}>{} </div>
+            <hr style={{ borderTop: '1px solid #ffffffbb', margin: '0.25rem 0' }} />
+        </div>
+        )
+    }
+    else {
+        return <div></div>
+    }
+}
 
 export const StatsDiv = ({
     statsTitle,

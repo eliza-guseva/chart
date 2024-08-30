@@ -164,6 +164,15 @@ export function processTrainingLoadData(trainingLoadData) {
             element.dateStr = timeFormat('%Y-%m-%d')(element.calendarDate);
             return element;
         });
+    // if dailyAcuteChronicWorkloadRatio is null set to dailyTrainingLoadAcute / dailyTrainingLoadChronic
+    groupedData = groupedData.map(
+        (element) => {
+            if (element.dailyAcuteChronicWorkloadRatio == null) {
+                element.dailyAcuteChronicWorkloadRatio = element.dailyTrainingLoadAcute / element.dailyTrainingLoadChronic;
+            }
+            return element;
+        });
+
     // sort by calendarDate, which is unix timestamp
     return sortData(groupedData, 'calendarDate');
     }
