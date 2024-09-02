@@ -41,9 +41,6 @@ const TimeGradient = () => {
         to="#42e397" 
         vertical={false} />
 }
-
-
-
 const brushStyle = {
     fillColor: "#3cb8b4",
     accentColor: "#e8e6ff",

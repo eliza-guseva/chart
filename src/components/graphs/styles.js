@@ -15,3 +15,12 @@ export const brushStyle = {
         stroke: '#ffffff',
     },
 };
+
+export function getTitleStyle(margin) {
+    return {
+        fontSize: '1.3em',
+        fontWeight: 'bold',
+        zIndex: 10,
+        marginLeft: (margin.left + 4) + 'px',
+    };
+}

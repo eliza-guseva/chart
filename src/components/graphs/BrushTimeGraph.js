@@ -18,7 +18,6 @@ import {
 import { 
     BrushSubGraph, 
 } from './GraphComponents';
-
 import { 
     getBrushHeight, 
     getXMax, 
@@ -28,6 +27,9 @@ import {
     calculateSvgHeight,
     getIdxFromEnd,
 } from './graphHelpers';
+import { getTitleStyle } from './styles';
+
+
 
 function getAllKeys(keys, brushKey) {
     if (keys.includes(brushKey)) {
@@ -94,6 +96,54 @@ function getAggrLevelSelection(aggrLevel, dailyData, weeklyData, allKeys, select
 }
 
 
+const YVariableChooser = ({
+    graphTitle, 
+    margin,
+    isAllowChoice=false,
+    onChooseYVariable=null,
+}) => {
+    let titleStyle = getTitleStyle(margin);
+    if (!isAllowChoice) {
+        return (
+            <p style={titleStyle}>{graphTitle}</p>
+        );
+    }
+    else {
+        return (
+            <div>
+                {/* <button onClick={() => onChooseYVariable('distance')}>Distance</button> */}
+                <p style={titleStyle}>{graphTitle}</p>
+            </div>
+        );
+    }
+}
+
+
+const AggrButtons = ({ aggrLevel, onChooseAggrLevel, isAllowAgg }) => {
+    const styleAggrButtons = {
+        display: isAllowAgg ? 'flex' : 'none',
+        alignSelf: 'end',
+    };
+    return (
+        <div style={styleAggrButtons}>
+                    <button 
+                        className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}
+                        onClick={() => onChooseAggrLevel('daily')}
+                        >Daily
+                    </button>
+                    <button 
+                        className={aggrLevel === 'weekly' ? 'btnaggrselect' : 'btnaggr'}
+                        onClick={() => onChooseAggrLevel('weekly')}
+                        >Weekly
+                    </button>
+                    <button 
+                        className={aggrLevel === 'monthly' ? 'btnaggrselect' : 'btnaggr'}
+                        onClick={() => onChooseAggrLevel('monthly')}
+                        >Monthly
+                    </button>
+                </div>
+    );
+}
 
 const BrushTimeGraph = ({ 
     dailyData, 
@@ -244,40 +294,17 @@ const BrushTimeGraph = ({
         marginBottom: '-30px',
         zIndex: 10,
     };
-    let styleAggrButtons = {
-        display: isAllowAgg ? 'flex' : 'none',
-        alignSelf: 'end',
-    };
-
-    let titleStyle = {
-        fontSize: '1.3em',
-        fontWeight: 'bold',
-        zIndex: 10,
-        marginLeft: (margin.left + 4) + 'px',
-    };
 
     return (
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <div className='w-full flex flex-col items-center'>
             <div style={styleSvgHeader}>
-                <p style={titleStyle}>{graphTitle}</p>
-                <div style={styleAggrButtons}>
-                    <button 
-                        className={aggrLevel === 'daily' ? 'btnaggrselect' : 'btnaggr'}
-                        onClick={() => onChooseAggrLevel('daily')}
-                        >Daily
-                    </button>
-                    <button 
-                        className={aggrLevel === 'weekly' ? 'btnaggrselect' : 'btnaggr'}
-                        onClick={() => onChooseAggrLevel('weekly')}
-                        >Weekly
-                    </button>
-                    <button 
-                        className={aggrLevel === 'monthly' ? 'btnaggrselect' : 'btnaggr'}
-                        onClick={() => onChooseAggrLevel('monthly')}
-                        >Monthly
-                    </button>
-                </div>
+                <YVariableChooser graphTitle={graphTitle} margin={margin} />
+                <AggrButtons 
+                    aggrLevel={aggrLevel} 
+                    onChooseAggrLevel={onChooseAggrLevel} 
+                    isAllowAgg={isAllowAgg}
+                />
             </div>
             <svg id={svg_id} className="bg-dark rounded-lg" width={svgWidth} height={svgHeight}>
                 {mainGraphComponent({
@@ -287,6 +314,7 @@ const BrushTimeGraph = ({
                     tooltipInfo,
                     setTooltipInfo,
                     aggrLevel,
+                    brushKey,
                 })}
                 <BrushSubGraph
                     allData={dailyData}

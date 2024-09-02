@@ -83,9 +83,7 @@ const TrainingLoadMainGraph = ({
     setTooltipInfo,
     aggrLevel,
     ...props}) => {
-        const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
-        const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
-        const xMax = svgWidth - margin.right;
+        const { margin, xMax, yMax } = svgDimensions;
         const yLabel = 'Training Load';
         const yScale = useMemo(
             () =>
