@@ -1,5 +1,7 @@
 import { createContext, useState } from 'react';
 
+import { RunSecondaryMetricsEnum } from '../common/jsDB';
+
 // set up login context
 const RunSecondaryMetricContext = createContext(null);
 

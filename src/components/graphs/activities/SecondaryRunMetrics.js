@@ -14,6 +14,7 @@ import {
     StandardAxisLeft, 
     Grid 
 } from '../GraphComponents';
+import { RunSecondaryMetricsEnum } from '../../../common/jsDB';
 
 
 const brushStyle = {
@@ -25,51 +26,21 @@ const brushStyle = {
     },
 };
 
-const metricOptions = {
-    'avgDoubleCadence': {
-        'title': 'Cadence',
-        'unit': 'spm',
-        'format': '.0f',
-        'color': '#ff7f0e',
-    },
-    'avgGroundContactTime': {
-        'title': 'Ground Contact Time',
-        'unit': 'ms',
-        'format': '.0f',
-        'color': '#1f77b4',
-    },
-    'avgPower': {
-        'title': 'Power',
-        'unit': 'W',
-        'format': '.0f',
-        'color': '#2ca02c',
-    },
-    'avgStrideLength': {
-        'title': 'Stride Length',
-        'unit': 'cm',
-        'format': '.0f',
-        'color': '#d62728',
-    },
-    'avgVerticalOscillation': {
-        'title': 'Vertical Oscillation',
-        'unit': 'cm',
-        'format': '.1f',
-        'color': '#9467bd',
-    },
-    'avgVerticalRatio': {
-        'title': 'Vertical Ratio',
-        'unit': '%',
-        'format': '.2f',
-        'color': '#8c564b',
-    },
-    'vO2MaxValue': {
-        'title': 'VO2 Max',
-        'unit': 'ml/kg/min',
-        'format': '.0f',
-        'color': '#e377c2',
-    },
-}
 
+
+/**
+ * Renders the secondary run metrics main graph component.
+ *
+ * @param {Object} props - The component props.
+ * @param {Array} props.selection - Data between the dates selected by the brush.
+ * @param {Object} props.svgDimensions - The dimensions of the SVG container.
+ * @param {Function} props.xScale - The x-axis scale function.
+ * @param {Object} props.tooltipInfo - The tooltip information.
+ * @param {Function} props.setTooltipInfo - The function to set the tooltip information.
+ * @param {RunSecondaryMetricsEnum} props.metricEnum - The enumeration of the secondary run metrics.
+ * @param {string} props.aggrLevel - The aggregation level for the graph.
+ * @returns {JSX.Element} The rendered secondary run metrics main graph component.
+ */
 const SecondaryRunMetricsMainGraph = ({
     selection, 
     svgDimensions, 
@@ -81,7 +52,8 @@ const SecondaryRunMetricsMainGraph = ({
     ...props }) => 
 {
     const { margin, xMax, yMax } = svgDimensions;
-    const yLabel = metricOptions[brushKey].title;
+    const metricEnum = RunSecondaryMetricsEnum[brushKey];
+    const yLabel = metricEnum.title;
     const yScale = useMemo(
         () =>
             scaleLinear({
@@ -106,7 +78,7 @@ const SecondaryRunMetricsMainGraph = ({
             yScale={yScale}
             svgDimensions={svgDimensions}
             dx={(svgDimensions.width < 600) ? '0.7em' : '0.5em'}
-            tickFormat={metricOptions[brushKey].format}
+            tickFormat={metricEnum.format}
         />
         <StandardAxisBottom
             data={selection}
@@ -127,7 +99,7 @@ const SecondaryRunMetricsMainGraph = ({
             data={selection}
             x={(d) => xScale(d.calendarDate)}
             y={(d) => yScale(d[brushKey])}
-            stroke={metricOptions[brushKey].color}
+            stroke={metricEnum.color}
             strokeWidth={4}
             curve={curveLinear}
         />}
@@ -142,9 +114,9 @@ const SecondaryRunMetricsMainGraph = ({
                     left={x}
                     top={y}
                     size={40}
-                    fill={metricOptions[brushKey].color}
+                    fill={metricEnum.color}
                     fillOpacity={0.6}
-                    stroke={metricOptions[brushKey].color}
+                    stroke={metricEnum.color}
                     strokeWidth={1}
                 />
             );
@@ -157,7 +129,8 @@ const SecondaryRunMetricsMainGraph = ({
 
 const SecondaryRunMetrics = ({runningData}) => {
     runningData = sortData(runningData, 'calendarDate');
-    const brushKey = 'avgDoubleCadence';
+    const metric = RunSecondaryMetricsEnum.avgDoubleCadence
+    const brushKey = metric.brushKey;
     // keep only entries with the selected key present in the keys
     runningData = runningData.filter(
         (d) => d[brushKey] !== null && d[brushKey] !== undefined
@@ -165,9 +138,9 @@ const SecondaryRunMetrics = ({runningData}) => {
     console.log('runningData', runningData);
     
     const title = (
-        metricOptions[brushKey].title + 
+        metric.title + 
         ' (' + 
-        metricOptions[brushKey].unit +
+        metric.unit +
         ')' 
     );
     return (
@@ -178,7 +151,7 @@ const SecondaryRunMetrics = ({runningData}) => {
             mainGraphComponent={SecondaryRunMetricsMainGraph}
             brushStyle={brushStyle}
             graphTitle={title}
-            colors={[metricOptions[brushKey].color]}
+            colors={[metric.color]}
             left_factor={1.0}
             isAllowAgg={true}
         />
