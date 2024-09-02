@@ -5,7 +5,7 @@ import { max, min } from 'd3-array';
 import { curveLinear } from '@visx/curve';
 import { LinePath } from '@visx/shape';
 import { Group } from '@visx/group';
-import { GlyphStar, GlyphCircle, GlyphSquare } from '@visx/glyph';
+import { GlyphSquare } from '@visx/glyph';
 
 import { sortData } from '../fileAndDataProcessors';
 import BrushTimeGraph from '../BrushTimeGraph';
@@ -15,6 +15,8 @@ import {
     Grid 
 } from '../GraphComponents';
 import { RunSecondaryMetricsEnum } from '../../../common/jsDB';
+import { StatsDiv } from '../GraphComponents';
+import { sv } from 'date-fns/locale';
 
 
 const brushStyle = {
@@ -129,8 +131,8 @@ const SecondaryRunMetricsMainGraph = ({
 
 const SecondaryRunMetrics = ({runningData}) => {
     runningData = sortData(runningData, 'calendarDate');
-    const metric = RunSecondaryMetricsEnum.avgDoubleCadence
-    const brushKey = metric.brushKey;
+    const brushKey = 'avgDoubleCadence';
+    const metricObj = RunSecondaryMetricsEnum[brushKey];
     // keep only entries with the selected key present in the keys
     runningData = runningData.filter(
         (d) => d[brushKey] !== null && d[brushKey] !== undefined
@@ -138,9 +140,9 @@ const SecondaryRunMetrics = ({runningData}) => {
     console.log('runningData', runningData);
     
     const title = (
-        metric.title + 
+        metricObj.title + 
         ' (' + 
-        metric.unit +
+        metricObj.unit +
         ')' 
     );
     return (
@@ -151,11 +153,43 @@ const SecondaryRunMetrics = ({runningData}) => {
             mainGraphComponent={SecondaryRunMetricsMainGraph}
             brushStyle={brushStyle}
             graphTitle={title}
-            colors={[metric.color]}
+            colors={[metricObj.color]}
             left_factor={1.0}
             isAllowAgg={true}
+            choices={RunSecondaryMetricsEnum}
+            SelectionStats={SecondaryRunStats}
         />
     );
 }
+
+const SecondaryRunStats = ( {
+    selection,
+    svgDimensions,
+    metricKey,
+}) => {
+    const metricObj = RunSecondaryMetricsEnum[metricKey];
+    const data = selection.map((d) => d[metricKey]);
+    const stats = {
+        mean: data.reduce((acc, d) => acc + d, 0) / data.length,
+        min: min(data),
+        max: max(data),
+    };
+    return (
+        <StatsDiv
+            statsTitle={metricObj.title}
+            selection={selection}
+            svgDimensions={svgDimensions}
+            statsData={[stats.mean, stats.min, stats.max]}
+            // round to .1
+            fmtFuncs={
+                Array.from({length: 3}, () => Math.round)
+            }
+            units={[metricObj.unit, metricObj.unit, metricObj.unit]}
+            titles={['Mean', 'Min', 'Max']}
+            allColors={[metricObj.color, metricObj.color, metricObj.color]}
+        />
+    );
+}
+
 
 export default SecondaryRunMetrics;

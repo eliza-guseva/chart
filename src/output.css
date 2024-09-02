@@ -751,6 +751,11 @@ video {
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
+.bg-gray-800{
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
+
 .bg-btn-boring-rev-grad{
   background-image: linear-gradient(90deg, #212121, #343434);
 }

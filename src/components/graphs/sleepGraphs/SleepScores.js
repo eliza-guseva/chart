@@ -134,7 +134,6 @@ const SleepScores = ({sleepData}) => {
 const SleepScoresStats = ({
     selection,
     svgDimensions,
-
 }) => {
     const averages = keys.map((key) => getAvg(selection, key));
     const fmtFuncs = Array.from({length: keys.length}, () => Math.round);

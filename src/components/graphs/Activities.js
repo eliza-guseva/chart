@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RunPaceTime from './activities/RunPaceTime';
 import SecondaryRunMetrics from './activities/SecondaryRunMetrics';
-// import SideBar from '../SideBar';
+import { RunSecondaryMetricProvider } from '../../context/RunMetricVsTimeContext';
 
 
 /**
@@ -17,6 +17,7 @@ import SecondaryRunMetrics from './activities/SecondaryRunMetrics';
  */
 const Activities = ({activitiesData}) => {
     return (
+        <RunSecondaryMetricProvider>
         <div className='w-full flex'>
             {/* <SideBar sections={['section1', 'section2', 'section3']} /> */}
             <div className='w-full flex flex-col'>
@@ -28,6 +29,7 @@ const Activities = ({activitiesData}) => {
             <SecondaryRunMetrics runningData={activitiesData.running} />}
             </div>
         </div>
+        </RunSecondaryMetricProvider>
     );
 }
 

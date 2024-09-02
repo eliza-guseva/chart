@@ -1,20 +1,13 @@
 import { createContext, useState } from 'react';
 
-import { RunSecondaryMetricsEnum } from '../common/jsDB';
-
 // set up login context
 const RunSecondaryMetricContext = createContext(null);
 
 const RunSecondaryMetricProvider = ({ children }) => {
-    const [secondaryMetric, setSecondaryMetric] = useState('pace');
-
-    // Function to set secondary metric
-    const setSecondaryMetricValue = (value) => {
-        setSecondaryMetric(value);
-    };
+    const [secondaryMetric, setSecondaryMetric] = useState('avgDoubleCadence');
 
     // The value that will be passed to the context consumers
-    const value = { secondaryMetric, setSecondaryMetricValue };
+    const value = { secondaryMetric, setSecondaryMetric };
 
     return (
         <RunSecondaryMetricContext.Provider value={value}>
@@ -22,3 +15,5 @@ const RunSecondaryMetricProvider = ({ children }) => {
         </RunSecondaryMetricContext.Provider>
     );
 }
+
+export { RunSecondaryMetricProvider, RunSecondaryMetricContext };

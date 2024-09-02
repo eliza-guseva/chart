@@ -31,11 +31,11 @@ import { getTitleStyle } from './styles';
 
 
 
-function getAllKeys(keys, brushKey) {
-    if (keys.includes(brushKey)) {
+function getAllKeys(keys, metricKey) {
+    if (keys.includes(metricKey)) {
         return keys;
     }
-    return [...keys, brushKey];
+    return [...keys, metricKey];
 }
 
 function getX0Weekly(x1, x0) {
@@ -97,22 +97,33 @@ function getAggrLevelSelection(aggrLevel, dailyData, weeklyData, allKeys, select
 
 
 const YVariableChooser = ({
-    graphTitle, 
+    metricOrTitle, 
     margin,
-    isAllowChoice=false,
+    choices={}, // is enum of choices
     onChooseYVariable=null,
 }) => {
     let titleStyle = getTitleStyle(margin);
-    if (!isAllowChoice) {
+    if (Object.keys(choices).length === 0) {
         return (
-            <p style={titleStyle}>{graphTitle}</p>
+            <p style={titleStyle}>{metricOrTitle}</p>
         );
     }
     else {
+        const selectStyle = titleStyle;
+        selectStyle.backgroundColor = '#272727';
         return (
             <div>
-                {/* <button onClick={() => onChooseYVariable('distance')}>Distance</button> */}
-                <p style={titleStyle}>{graphTitle}</p>
+                <select 
+                style={selectStyle}
+                onChange={(e) => onChooseYVariable(e.target.value)}>
+                    {Object.keys(choices).map((key) => {
+                        return (
+                            <option 
+                            className='bg-dark :hover:bg-dark'
+                            key={key} value={key}>{choices[key].title}</option>
+                        );
+                    })}
+                </select>
             </div>
         );
     }
@@ -154,13 +165,14 @@ const BrushTimeGraph = ({
     graphTitle,
     left_factor=1.0,
     isAllowAgg=true,
+    choices={},
     aggFn=getAvg,
     inverseBrush=false,
     SelectionStats=null,
     svg_id='brushTimeGraph',
 }) => {
-    // STATES AND INITIALIZATION
-    const allKeys = getAllKeys(keys, brushKey);
+    const [metricKey, setMetricKey] = useState(brushKey);
+    const allKeys = getAllKeys(keys, metricKey);
     const weeklyData = aggregateData(dailyData, 'week', allKeys, selectDaysAgo, aggFn);
     const [aggrLevel, setAggrLevel] = useState('daily');
     const initIdxStart = getIdxFromEnd(dailyData, 75);
@@ -174,7 +186,7 @@ const BrushTimeGraph = ({
             x0: getDate(dailyData[initIdxStart]),
             x1: getDate(dailyData[initIdxEnd]),
             y0: 0,
-            y1: max(dailyData, (d) => d[brushKey]),
+            y1: max(dailyData, (d) => d[metricKey]),
         }
 
     )
@@ -262,9 +274,9 @@ const BrushTimeGraph = ({
         () =>
             scaleLinear({
             range: [getBrushHeight(svgHeight, margin), 0],
-            domain: (inverseBrush) ? [max(dailyData, (d) => d[brushKey]), 0] : [0, max(dailyData, (d) => d[brushKey])],
+            domain: (inverseBrush) ? [max(dailyData, (d) => d[metricKey]), 0] : [0, max(dailyData, (d) => d[metricKey])],
             }),
-        [dailyData, svgHeight, margin, brushKey, inverseBrush]
+        [dailyData, svgHeight, margin, metricKey, inverseBrush]
     );
 
     const initialBrushPosition = useMemo(
@@ -285,6 +297,15 @@ const BrushTimeGraph = ({
 
     }, [aggrLevel]);
 
+    const onChooseYVariable = (key) => {
+        setMetricKey(key);
+    }
+
+    useEffect(() => {
+        // use appropriate selection data based on metricKey
+        onBrushChange(selectionDomain)
+    }, [metricKey]);
+
     let styleSvgHeader = {
         display: 'flex',
         flexDirection: 'row',
@@ -299,7 +320,12 @@ const BrushTimeGraph = ({
     <div ref={containerRef} className='place-self-center w-full flex flex-col justify-center items-center pb-10'>
         <div className='w-full flex flex-col items-center'>
             <div style={styleSvgHeader}>
-                <YVariableChooser graphTitle={graphTitle} margin={margin} />
+                <YVariableChooser 
+                    metricOrTitle={graphTitle} 
+                    margin={margin}
+                    choices={choices}
+                    onChooseYVariable={onChooseYVariable}
+                />
                 <AggrButtons 
                     aggrLevel={aggrLevel} 
                     onChooseAggrLevel={onChooseAggrLevel} 
@@ -314,11 +340,11 @@ const BrushTimeGraph = ({
                     tooltipInfo,
                     setTooltipInfo,
                     aggrLevel,
-                    brushKey,
+                    brushKey: metricKey,
                 })}
                 <BrushSubGraph
                     allData={dailyData}
-                    brushColumn={brushKey}
+                    brushColumn={metricKey}
                     brushXScale={brushXScale}
                     brushYScale={brushYScale}
                     svgDimensions={svgDimensions}
@@ -352,6 +378,7 @@ const BrushTimeGraph = ({
                 selection={selection} 
                 allData={dailyData} 
                 svgDimensions={svgDimensions}
+                metricKey={metricKey}
                 />
             }
         </div>
