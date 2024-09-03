@@ -41,7 +41,7 @@ export const RunSecondaryMetricsEnum = Object.freeze({
         brushKey: 'avgVerticalRatio',
         title: 'Vertical Ratio',
         unit: '%',
-        format: '.2f',
+        format: '.1f',
         color: '#8c564b',
     },
     vO2MaxValue: {
@@ -50,5 +50,23 @@ export const RunSecondaryMetricsEnum = Object.freeze({
         unit: 'ml/kg/min',
         format: '.0f',
         color: '#e377c2',
+    },
+});
+
+
+export const RunSumsOptionsEnum = Object.freeze({
+    distance_km: {
+        brushKey: 'distance_km',
+        title: 'Distance',
+        unit: 'km',
+        format: '.0f',
+        color: '#1f77b4',
+    },
+    elevationGain_m: {
+        brushKey: 'elevationGain_m',
+        title: 'Elevation Gain',
+        unit: 'm',
+        format: '.0f',
+        color: '#ff7f0e',
     },
 });

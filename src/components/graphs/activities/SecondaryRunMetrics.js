@@ -16,17 +16,9 @@ import {
 } from '../GraphComponents';
 import { RunSecondaryMetricsEnum } from '../../../common/jsDB';
 import { StatsDiv } from '../GraphComponents';
-import { sv } from 'date-fns/locale';
 
 
-const brushStyle = {
-    fillColor: "#3cb8b4",
-    accentColor: "#e8e6ff",
-    selectedBoxStyle: {
-        fill: 'url(#brush_pattern)',
-        stroke: '#ffffff',
-    },
-};
+
 
 
 
@@ -145,6 +137,15 @@ const SecondaryRunMetrics = ({runningData}) => {
         metricObj.unit +
         ')' 
     );
+
+    const brushStyle = {
+        fillColor: "#888888",
+        accentColor: "#e8e6ff",
+        selectedBoxStyle: {
+            fill: 'url(#brush_pattern)',
+            stroke: '#ffffff',
+        },
+    };
     return (
         <BrushTimeGraph
             dailyData={runningData}
@@ -185,7 +186,7 @@ const SecondaryRunStats = ( {
                 Array.from({length: 3}, () => Math.round)
             }
             units={[metricObj.unit, metricObj.unit, metricObj.unit]}
-            titles={['Mean', 'Min', 'Max']}
+            titles={['Avg', 'Min', 'Max']}
             allColors={[metricObj.color, metricObj.color, metricObj.color]}
         />
     );

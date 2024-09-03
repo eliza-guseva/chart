@@ -75,6 +75,10 @@ export function getMedian(data, key) {
         : (sortedData[mid - 1] + sortedData[mid]) / 2
     );}
 
+export function getSum(data, key) {
+    return data.reduce((acc, d) => acc + d[key], 0);
+    }
+
 export function sortData(data, key) {
     return data.sort((a, b) => a[key] - b[key]);
     }
@@ -343,4 +347,44 @@ export function aggregateData(data, frequency, keys, groupFunction, aggFn) {
     });
 
     return aggregatedData;
+}
+
+
+function calculateRollingAverage(data, dateKey, valueKey, rollingDays) {
+    const rollingAverages = [];
+    let windowSum = 0;
+    let windowEnd = data.length - 1;
+
+    for (let i = data.length - 1; i >= 0; i--) {
+        const currentDate = moment(data[i][dateKey]);
+        const value = data[i][valueKey];
+
+        windowSum += value;
+
+        while (moment(data[windowEnd][dateKey]).diff(currentDate, 'days') >= rollingDays) {
+            windowSum -= data[windowEnd][valueKey];
+            windowEnd--;
+        }
+
+        const windowSize = windowEnd - i + 1;
+        const rollingAvg = windowSum / windowSize;
+
+        rollingAverages.unshift({
+            ...data[i],
+            [`${valueKey}_rollingAvg`]: rollingAvg,
+        });
+    }
+
+    return rollingAverages;
+}
+
+
+export function calculateRollingWeeklyAverage(data, dateKey, valueKey) {
+    const rollingDays = 7;  // 7 days for a weekly rolling average
+    return calculateRollingAverage(data, dateKey, valueKey, rollingDays);
+}
+
+export function calculateRollingMonthlyAverage(data, dateKey, valueKey) {
+    const rollingDays = 30;  // 30 days for a monthly rolling average
+    return calculateRollingAverage(data, dateKey, valueKey, rollingDays);
 }

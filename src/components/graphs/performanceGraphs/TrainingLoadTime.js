@@ -83,26 +83,26 @@ const TrainingLoadMainGraph = ({
     setTooltipInfo,
     aggrLevel,
     ...props}) => {
-        const { margin, xMax, yMax } = svgDimensions;
-        const yLabel = 'Training Load';
-        const yScale = useMemo(
-            () =>
-                scaleLinear({
-                range: [yMax, margin.top],
-                domain: [0, max(selection, (d) => d['maxAcuteLoad'])],
-                nice: true,
-                }),
-            [yMax, selection, margin]
-        );
+    const { margin, xMax, yMax } = svgDimensions;
+    const yLabel = 'Training Load';
+    const yScale = useMemo(
+        () =>
+            scaleLinear({
+            range: [yMax, margin.top],
+            domain: [0, max(selection, (d) => d['maxAcuteLoad'])],
+            nice: true,
+            }),
+        [yMax, selection, margin]
+    );
 
-        const { 
-            tooltipData, 
-            tooltipLeft, 
-            tooltipTop, 
-            tooltipOpen, 
-            showTooltip, 
-            hideTooltip 
-        } = useTooltip();
+    const { 
+        tooltipData, 
+        tooltipLeft, 
+        tooltipTop, 
+        tooltipOpen, 
+        showTooltip, 
+        hideTooltip 
+    } = useTooltip();
 
     const handleTooltip = (event, data) => {
         if (data.length === 0) {
