@@ -7,6 +7,7 @@ import {
     ENDURANCE_HEADER, 
     SLEEP_TAIL,
     TRAINING_LOAD_HEADER,
+    TRAINING_READINESS_HEADER,
     FITNESS_HEADER,
     ACTIVITIES_TAIL
 } from "../common/common";
@@ -160,6 +161,7 @@ const UnzipNPlot = () => {
             })
             .then(filesObject => {
                 setFilesObject(filesObject);
+                console.log(getSpecificFiles(filesObject, TRAINING_READINESS_HEADER));
 
                 setSelectFiles({
                     'sleep': getSpecificFiles(filesObject, WELLNESS_HEADER, SLEEP_TAIL),
@@ -168,6 +170,7 @@ const UnzipNPlot = () => {
                         'trainingLoad': getSpecificFiles(filesObject, TRAINING_LOAD_HEADER),
                     },
                     'activities': getSpecificFiles(filesObject, FITNESS_HEADER, ACTIVITIES_TAIL),
+                    'hrv': getSpecificFiles(filesObject, TRAINING_READINESS_HEADER),
                 });
                 setStatus(StatusEnum.LOADED);
             })

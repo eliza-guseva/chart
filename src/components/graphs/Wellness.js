@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SleepStagesStack from './sleepGraphs/sleepStagesStack';
-import SleepScores from './sleepGraphs/SleepScores';
+import SleepStagesStack from './wellness/sleepStagesStack';
+import SleepScores from './wellness/SleepScores';
 
 
 const Wellness = ({sleepData}) => {

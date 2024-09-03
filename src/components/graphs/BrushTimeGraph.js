@@ -110,7 +110,7 @@ const YVariableChooser = ({
     }
     else {
         const selectStyle = titleStyle;
-        selectStyle.backgroundColor = '#272727';
+        selectStyle.backgroundColor = '#292929';
         return (
             <div>
                 <select 

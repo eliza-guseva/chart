@@ -226,6 +226,15 @@ export function processActivitiesData(activitiesData) {
     return activitiesObj;  
 }
 
+export function processHRVFromTrainingReadiness(trainingReadinessData) {
+    console.log('trainingReadinessData', trainingReadinessData);
+    // remove days without hrv data
+    trainingReadinessData = trainingReadinessData.filter(
+        (element) => element.hrvWeeklyAverage != null);
+    // sort by calendarDate, which is unix timestamp
+    return sortData(trainingReadinessData, 'calendarDate');
+}
+
 // ** Aggregation functions ** //
 
 

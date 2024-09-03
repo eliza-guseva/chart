@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import Wellness from './graphs/Wellness';
 import Performance from './graphs/Performance';
 import Activities from './graphs/Activities';
+import HRV from './graphs/HRV';
 import { 
     parseFiles, 
     processSleepData, 
-    processActivitiesData 
+    processActivitiesData,
+    processHRVFromTrainingReadiness,
 } from './graphs/fileAndDataProcessors';
-import { he } from 'date-fns/locale';
 import { set } from 'date-fns';
 
 
@@ -81,6 +82,7 @@ const TheGraphs = ({selectFiles}) => {
     const [sleepData, setSleepData] = useState(null);
     const [performanceData, setPerformanceData] = useState(null);
     const [activitiesData, setActivitiesData] = useState(null);
+    const [hrvData, setHrvData] = useState(null);
     const [selectedTab, setSelectedTab] = useState(TabsEnum.WELLNESS);
     console.log('performanceData', performanceData);
 
@@ -117,13 +119,24 @@ const TheGraphs = ({selectFiles}) => {
         processData();
     }, [selectFiles]);
 
+    useEffect(() => {
+        const processData = async () => {
+            const data = await parseFiles(selectFiles, 'hrv');
+            const processedData = processHRVFromTrainingReadiness(data);
+            setHrvData(processedData);
+        };
+
+        processData();
+    }
+    , [selectFiles]);
+
 
     return (
         <div className='w-full'>
             <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
             {selectedTab === TabsEnum.WELLNESS && <Wellness sleepData={sleepData} />}
             {selectedTab === TabsEnum.PERFORMANCE && <Performance performanceData={performanceData} />}
-            {selectedTab === TabsEnum.HRV && <div>HRV</div>}
+            {selectedTab === TabsEnum.HRV && <HRV hrvData={hrvData} />}
             {selectedTab === TabsEnum.ACTIVITIES && <Activities activitiesData={activitiesData} />}
         </div>
     );
