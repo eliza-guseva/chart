@@ -2,19 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SleepStagesStack from './wellness/sleepStagesStack';
 import SleepScores from './wellness/SleepScores';
+import ActiveMinutes from './wellness/ActiveMinutes';
+import { processSleepData, processActiveMinutesData } from './fileAndDataProcessors';
 
 
-const Wellness = ({sleepData}) => {
+const Wellness = ({wellnessData}) => {
+    const sleepData = wellnessData['sleep'];
+    const activeMinutesData = wellnessData['activeMinutes'];
+    console.log('activeMinutesData', activeMinutesData);
+
     return (
         <div className='graphdiv'>
-            {(sleepData) && (sleepData.length > 0) && <SleepStagesStack sleepData={sleepData} />}
+            {activeMinutesData && <ActiveMinutes activeMinutesData={activeMinutesData} />}
+             {(sleepData) && (sleepData.length > 0) && <SleepStagesStack sleepData={sleepData} />}
             {(sleepData) && (sleepData.length > 0) && <SleepScores sleepData={sleepData} />}
         </div>
     );
 };
 
 Wellness.propTypes = {
-    sleepData: PropTypes.object,
+    wellnessData: PropTypes.object,
 };
 
 export default Wellness;

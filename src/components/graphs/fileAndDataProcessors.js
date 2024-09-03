@@ -133,7 +133,7 @@ export function processSleepData(sleepData) {
     }
 
 export function processEnduranceData(enduranceData) {
-    // sort by calendarDate, which is unix timestamp
+    
     return sortData(enduranceData, 'calendarDate');
     }
 
@@ -152,7 +152,6 @@ export function processTrainingLoadData(trainingLoadData) {
 
         return acc;
     }, {});
-    console.log('groupedData', groupedData);
     groupedData = Object.values(groupedData);
     // add maxAcuteLoad
     groupedData = groupedData.map(
@@ -177,7 +176,7 @@ export function processTrainingLoadData(trainingLoadData) {
             return element;
         });
 
-    // sort by calendarDate, which is unix timestamp
+    
     return sortData(groupedData, 'calendarDate');
     }
 
@@ -227,12 +226,70 @@ export function processActivitiesData(activitiesData) {
 }
 
 export function processHRVFromTrainingReadiness(trainingReadinessData) {
-    console.log('trainingReadinessData', trainingReadinessData);
     // remove days without hrv data
     trainingReadinessData = trainingReadinessData.filter(
         (element) => element.hrvWeeklyAverage != null);
-    // sort by calendarDate, which is unix timestamp
+    
     return sortData(trainingReadinessData, 'calendarDate');
+}
+
+function calculateWeeklyTotals(data) {
+    // Helper function to get the Monday of the week for a given date
+    function getMonday(d) {
+      d = new Date(d);
+      const day = d.getDay(); // Get the day (0 for Sunday, 1 for Monday, etc.)
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+      return new Date(d.setDate(diff));
+    }
+  
+    // Group data by week start date
+    const weeks = new Map();
+  
+    data.forEach((entry) => {
+      const date = new Date(entry.calendarDate);
+      const weekStart = getMonday(date).toISOString().split('T')[0]; // Use ISO string for unique week identifier
+      const calendarDate = new Date(getMonday(date).setDate(getMonday(date).getDate() + 6)).toISOString().split('T')[0];
+  
+      if (!weeks.has(weekStart)) {
+        weeks.set(weekStart, { 
+          moderateIntensityMinutes: 0, 
+          vigorousIntensityMinutes: 0, 
+          allIntensityMinutes: 0 
+        });
+      }
+  
+      // Accumulate the values
+      weeks.get(weekStart).moderateIntensityMinutes += entry.moderateIntensityMinutes || 0;
+      weeks.get(weekStart).vigorousIntensityMinutes += entry.vigorousIntensityMinutes || 0;
+      weeks.get(weekStart).allIntensityMinutes += entry.allIntensityMinutes || 0;
+      weeks.get(weekStart).calendarDate = new Date(calendarDate);
+    });
+  
+    // Convert the Map to an array
+    const result = Array.from(weeks.entries()).map(([weekStart, totals]) => ({
+      weekStart,
+      ...totals,
+    }));
+  
+    return result;
+  }
+
+export function processActiveMinutesData(activeMinutesData) {
+    activeMinutesData = activeMinutesData.map(
+        (element) => {
+            element.allIntensityMinutes = element.moderateIntensityMinutes + 2 * element.vigorousIntensityMinutes;
+            element.calendarDate = new Date(element.calendarDate);
+            return element;
+        }
+    )
+    activeMinutesData = calculateWeeklyTotals(activeMinutesData);
+    activeMinutesData = activeMinutesData.map(
+        (element) => {
+            element.doubleVigorousIntensityMinutes = 2 * element.vigorousIntensityMinutes;
+            return element;
+        }
+    )
+    return sortData(activeMinutesData, 'calendarDate');
 }
 
 // ** Aggregation functions ** //

@@ -4,11 +4,10 @@ import { HRVGraph } from './hrv/HrvStatus';
 const HRV = ({
     hrvData,
 }) => {
-    console.log('hrvData', hrvData);
     return (
     <div className='w-full flex'>
             <div className='w-full flex flex-col'>
-                <HRVGraph hrvData={hrvData} />
+                {(hrvData) && (hrvData.length > 0) && <HRVGraph hrvData={hrvData} />}
             </div>
         </div>
     )

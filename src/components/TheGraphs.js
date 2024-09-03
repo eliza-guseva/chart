@@ -9,6 +9,7 @@ import {
     processSleepData, 
     processActivitiesData,
     processHRVFromTrainingReadiness,
+    processActiveMinutesData,
 } from './graphs/fileAndDataProcessors';
 import { set } from 'date-fns';
 
@@ -78,19 +79,20 @@ const Tabs = ({selectedTab, setSelectedTab}) => {
 
 
 const TheGraphs = ({selectFiles}) => {
-    console.log('selectFiles', selectFiles);
-    const [sleepData, setSleepData] = useState(null);
+    const [wellnessData, setWellnessData] = useState(null);
     const [performanceData, setPerformanceData] = useState(null);
     const [activitiesData, setActivitiesData] = useState(null);
     const [hrvData, setHrvData] = useState(null);
     const [selectedTab, setSelectedTab] = useState(TabsEnum.WELLNESS);
-    console.log('performanceData', performanceData);
 
     useEffect(() => {
         const processData = async () => {
-            const data = await parseFiles(selectFiles, 'sleep');
-            const processedData = processSleepData(data);
-            setSleepData(processedData);
+            let data = {};
+            const sleepData = await parseFiles(selectFiles['wellness'], 'sleep');
+            data['sleep'] = processSleepData(sleepData);
+            const activeMinutesData = await parseFiles(selectFiles['wellness'], 'activeMinutes');
+            data['activeMinutes'] = processActiveMinutesData(activeMinutesData);
+            setWellnessData(data);
         };
 
         processData();
@@ -134,7 +136,7 @@ const TheGraphs = ({selectFiles}) => {
     return (
         <div className='w-full'>
             <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-            {selectedTab === TabsEnum.WELLNESS && <Wellness sleepData={sleepData} />}
+            {selectedTab === TabsEnum.WELLNESS && (wellnessData) && <Wellness wellnessData={wellnessData} />}
             {selectedTab === TabsEnum.PERFORMANCE && <Performance performanceData={performanceData} />}
             {selectedTab === TabsEnum.HRV && <HRV hrvData={hrvData} />}
             {selectedTab === TabsEnum.ACTIVITIES && <Activities activitiesData={activitiesData} />}

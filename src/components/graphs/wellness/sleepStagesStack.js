@@ -116,9 +116,7 @@ const SleepStackMainGraph = ({
     setTooltipInfo,
     aggrLevel,
 }) => {
-    const { width: svgWidth, height: svgHeight, margin } = svgDimensions;
-    const yMax = getMainChartBottom(margin, svgHeight, svgWidth);
-    const xMax = svgWidth - margin.right;
+    const { margin, xMax, yMax } = svgDimensions;
     const yLabel = 'Hours';
     const yScale = useMemo(
         () =>
@@ -234,7 +232,6 @@ const SleepStackMainGraph = ({
 
 
 const SleepStagesStack = ({ sleepData }) => {
-    console.log('sleepData', sleepData[sleepData.length - 1]);
     return (
         <BrushTimeGraph
             dailyData={sleepData}

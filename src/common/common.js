@@ -7,6 +7,7 @@ export const ENDURANCE_HEADER = 'DI_CONNECT/DI-Connect-Metrics/EnduranceScore'
 export const TRAINING_LOAD_HEADER = 'DI_CONNECT/DI-Connect-Metrics/MetricsAcuteTrainingLoad'
 export const FITNESS_HEADER = 'DI_CONNECT/DI-Connect-Fitness/'
 export const TRAINING_READINESS_HEADER = 'DI_CONNECT/DI-Connect-Metrics/TrainingReadinessDTO'
+export const ACTIVE_MINUTES_HEADER = 'DI_CONNECT/DI-Connect-Aggregator/UDSFile'
 
 // Tails
 export const SLEEP_TAIL = "sleepData.json"
