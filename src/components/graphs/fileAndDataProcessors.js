@@ -229,6 +229,12 @@ export function processHRVFromTrainingReadiness(trainingReadinessData) {
     // remove days without hrv data
     trainingReadinessData = trainingReadinessData.filter(
         (element) => element.hrvWeeklyAverage != null);
+
+    trainingReadinessData = trainingReadinessData.map(
+        (element) => {
+            element.calendarDate = new Date(element.calendarDate);
+            return element;
+        });
     
     return sortData(trainingReadinessData, 'calendarDate');
 }

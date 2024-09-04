@@ -291,3 +291,66 @@ export function getWeeklyTicks(data, xScale) {
     }
     return ticks;
 }
+
+
+export function getBarWidth(segmentData, aggrLevel, xScale) {
+    const date0 = segmentData[0].calendarDate;
+    const date1 = segmentData[1].calendarDate;
+    console.log('date0', date0);
+    let barWidth;
+    if (aggrLevel === 'daily') {
+        barWidth = xScale(date1) - xScale(date0);
+        console.log('xScale(date1)', xScale(date1));
+    }
+    else if (aggrLevel === 'weekly') {
+        barWidth = xScale(subDays(date1, 1)) - xScale(date0);
+    }
+    else {
+        barWidth = xScale(subDays(date1, 2)) - xScale(date0);
+    }
+    return barWidth;
+}
+
+export function getBarX(segmentData, aggrLevel, xScale) {
+    const date0 = segmentData[0].calendarDate;
+    let x;
+    if (aggrLevel === 'daily') {
+        x = xScale(date0);
+    }
+    else if (aggrLevel === 'weekly') {
+        x = xScale(addDays(date0, 1));
+    }
+    else {
+        x = xScale(addDays(date0, 2));
+    }
+    return x;
+}
+
+export function mergeColorWtWhite(color, isDoubleReduction) {
+    // Helper function to blend two colors
+    function blendWithWhite(color) {
+      const num = parseInt(color.slice(1), 16); // Convert hex to integer
+      const r = (num >> 16) + 255; // Extract Red component and add white (255)
+      const g = ((num >> 8) & 0x00ff) + 255; // Extract Green component and add white (255)
+      const b = (num & 0x0000ff) + 255; // Extract Blue component and add white (255)
+      
+      // Calculate the average for each component and clamp the values to 255
+      const blendedR = Math.floor(r / 2);
+      const blendedG = Math.floor(g / 2);
+      const blendedB = Math.floor(b / 2);
+  
+      // Convert blended values back to a hex string
+      return `#${((1 << 24) + (blendedR << 16) + (blendedG << 8) + blendedB).toString(16).slice(1)}`;
+    }
+  
+    // Blend once
+    let blended = blendWithWhite(color);
+    
+    // Optionally blend twice if double reduction is requested
+    if (isDoubleReduction) {
+      blended = blendWithWhite(blended);
+    }
+    
+    return blended;
+  }
+

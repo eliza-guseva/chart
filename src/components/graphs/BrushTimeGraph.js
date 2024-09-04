@@ -173,6 +173,7 @@ const BrushTimeGraph = ({
 }) => {
     const [metricKey, setMetricKey] = useState(brushKey);
     const allKeys = getAllKeys(keys, metricKey);
+    console.log(allKeys);
     const weeklyData = aggregateData(dailyData, 'week', allKeys, selectDaysAgo, aggFn);
     const [aggrLevel, setAggrLevel] = useState('daily');
     const initIdxStart = getIdxFromEnd(dailyData, 75);
