@@ -70,7 +70,8 @@ export const handleAnyTooltip = (
     aggrLevel,
     showTooltip,
     setTooltipInfo,
-    fmtToolTip
+    fmtToolTip,
+    brushKey=null,
 ) => {
     if (! isData(data)) {
         return;
@@ -95,7 +96,7 @@ export const handleAnyTooltip = (
             }
         ]);
         showTooltip({
-            tooltipData: fmtToolTip(data, pointInSvg, xScale, aggrLevel),
+            tooltipData: fmtToolTip(data, pointInSvg, xScale, aggrLevel, brushKey),
             tooltipLeft: pointInSvg.x + svgLeft,
             tooltipTop: svgTop + yMax + 24,
         });

@@ -46,3 +46,43 @@ return <>
         />
     </>;
 };
+
+export const MyBarStackVsDate = ({
+        selection,
+        xScale, 
+        yScale,
+        yMax,
+        keys, 
+        colors,
+        aggrLevel,
+        ...props
+    }) => {
+    return (
+        <>
+        {
+            selection.slice(1).map((d, i) => {
+            const segmentData = [selection[i], selection[i + 1]];
+            const barWidth = getBarWidth(segmentData, aggrLevel, xScale);
+            let cumulativeHeight = 0;
+            const stack = [];
+            for (let j = 0, len = keys.length; j < len; j++) {
+                const key = keys[j];
+                const value = d[key];
+                stack.push(
+                    <Bar
+                        key={`bar-${i}-${j}`}
+                        x={getBarX(segmentData, aggrLevel, xScale)}
+                        y={yScale(cumulativeHeight + value)}
+                        width={barWidth}
+                        height={yScale(cumulativeHeight) - yScale(cumulativeHeight + value)}
+                        fill={colors[j]}
+                    />
+                );
+                cumulativeHeight += value;
+            }
+
+            return <g key={`group-${i}`}>{stack}</g>;
+        })}
+        </>
+    );
+};

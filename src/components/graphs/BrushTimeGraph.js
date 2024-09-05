@@ -102,7 +102,7 @@ function getAggrLevelSelection(aggrLevel, dailyData, weeklyData, allKeys, select
 const YVariableChooser = ({
     metricOrTitle, 
     margin,
-    choices={}, // is enum of choices
+    choices={}, 
     onChooseYVariable=null,
 }) => {
     let titleStyle = getTitleStyle(margin);

@@ -70,3 +70,34 @@ export const RunSumsOptionsEnum = Object.freeze({
         color: '#ff7f0e',
     },
 });
+
+export const SleepScoresOptionsEnum = Object.freeze({
+    qualityScore: {
+        brushKey: 'qualityScore',
+        title: 'Overall & Quality',
+        unit: '',
+        format: '.0f',
+        color: '#5A8BB0',
+    },
+    recoveryScore: {
+        brushKey: 'recoveryScore',
+        title: 'Overall & Recovery',
+        unit: '',
+        format: '.0f',
+        color: '#7BAF5C',
+    },
+    restfulnessScore: {
+        brushKey: 'restfulnessScore',
+        title: 'Overall & Restfulness',
+        unit: '',
+        format: '.0f',
+        color: '#A47EBF',
+    },
+    durationScore: {
+        brushKey: 'durationScore',
+        title: 'Overall & Duration',
+        unit: '',
+        format: '.0f',
+        color: '#D09E55',
+    },
+});

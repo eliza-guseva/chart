@@ -4,7 +4,7 @@ import { max, min } from 'd3-array';
 import { scaleLinear } from '@visx/scale';
 import {curveStepBefore} from '@visx/curve';
 import {Bar, LinePath} from '@visx/shape';
-import { useTooltip, defaultStyles} from '@visx/tooltip';
+import { useTooltip} from '@visx/tooltip';
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
     MAIN_GRAPH_BCKG, 
@@ -14,7 +14,6 @@ import { getDate } from '../fileAndDataProcessors';
 import {
     getThisPeriodData,
     ToolTipBar,
-    locateEventLocalNAbs,
     handleAnyTooltip,
  } from '../tooltipHelpers';
 import { 
@@ -34,7 +33,6 @@ import {
 
 import {
     GARMIN_GREEN,
-    GARMIN_GOOD,
     GARMIN_FAIR,
     BRUSH_GREEN,
     getBrushStyle

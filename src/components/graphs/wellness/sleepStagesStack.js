@@ -5,9 +5,6 @@ import { scaleLinear } from '@visx/scale';
 import { max, min } from 'd3-array';
 import { useMemo } from 'react';
 import { useTooltip, defaultStyles } from '@visx/tooltip';
-import { localPoint } from '@visx/event';
-import { Bar } from '@visx/shape';
-import { addDays} from 'date-fns';
 
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
@@ -17,7 +14,6 @@ import {
 } from '../GraphComponents';
 import { MyAreaStackVsDate } from '../MainChartsMods';
 import {
-    formatDate,
     hours2TimeStr,
     LittleCircle,
     mergeColor,
@@ -28,9 +24,13 @@ import {
     getBrushStyle,
 } from '../styles';
 import {
-    getDate,
     getAvg
 } from '../fileAndDataProcessors';
+import {
+    handleAnyTooltip,
+    getThisPeriodData,
+    ToolTipBar,
+} from '../tooltipHelpers';
 
 
 const keys = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
@@ -41,58 +41,27 @@ const allColors = ['#fff', ...colors];
 const titles = ['Total', 'Deep', 'REM', 'Light', 'Awake'];
 
 
-const ToolTipDiv = ({d, point, xScale, aggrLevel}) => {
-    const x = point.x;
+function fmtToolTip (d, pointInSvg, xScale, aggrLevel) {
+    const x = pointInSvg.x;
     const date = xScale.invert(x);
-    let datestr;
-    let avgText = '';
-    const selectedPeriod = min(d.filter((d) => {
-        return (getDate(d) >= date);
-    })) || d[d.length - 1];
-    if (aggrLevel === 'daily') {
-        datestr = formatDate(date);
-
-    }
-    else {
-        avgText = 'Avg ';
-        const periodBeforeDt = addDays((d[d.indexOf(selectedPeriod) - 1] || d[0]).calendarDate, 1);
-        if (selectedPeriod['calendarDate'].getMonth() 
-            === periodBeforeDt.getMonth()) {
-            datestr = (
-                formatDate(periodBeforeDt)
-                + ' - ' + 
-                selectedPeriod['calendarDate'].getDate()
-            );
-        }
-        else {
-            datestr = (
-                formatDate(periodBeforeDt)
-                + ' - ' 
-                + formatDate(getDate(selectedPeriod))
-            );}
-    }
+    const {datestr, thisDataPoint} = getThisPeriodData(d, date, aggrLevel);
+    const avg = aggrLevel === 'daily' ? '' : 'Avg ';
 
     return (
         <div>
-        <p style={{color: '#ffffffbb'}}>{datestr}</p>
-        {allKeys.map((key, index) => (
-            <div key={key}>
-                {index === 0 ? (
-                    <>
-                        <p>
-                            <LittleCircle color={allColors[index]} />
-                            {avgText} {titles[index]}: <strong>{hours2TimeStr(selectedPeriod[key])}</strong>
-                        </p>
-                        <hr style={{ borderTop: '1px solid #ccc', margin: '0.25rem 0' }} />
-                    </>
-                ) : (
-                    <p>
-                        <LittleCircle color={allColors[index]} />
-                        {avgText} {titles[index]}: <strong>{hours2TimeStr(selectedPeriod[key])}</strong>
-                    </p>
-                )}
-            </div>
-        ))}
+        <p style={{color: '#ffffffbb', margin: '1px 0'}}>{datestr}</p>
+        <p><LittleCircle color='#ffffff'/>{avg}Total:{' '}
+            <strong>{hours2TimeStr(thisDataPoint.totalSleepHours)}</strong></p>
+            <hr style={{border: '1px solid #ffffffbb', margin: '2px 0'}} />
+        <p><LittleCircle color='#007bff'/>{avg}Deep:{' '}
+            <strong>{hours2TimeStr(thisDataPoint.deepSleepHours)}</strong></p>
+        <p><LittleCircle color='#ff44cc'/>{avg}REM:{' '}
+            <strong>{hours2TimeStr(thisDataPoint.remSleepHours)}</strong></p>
+        <p><LittleCircle color='#44aaff'/>{avg}Light:{' '}
+            <strong>{hours2TimeStr(thisDataPoint.lightSleepHours)}</strong></p>
+        <p><LittleCircle color='#ccbbee'/>{avg}Awake:{' '}
+            <strong>{hours2TimeStr(thisDataPoint.awakeSleepHours)}</strong></p>
+
     </div>
         );
 }
@@ -127,43 +96,20 @@ const SleepStackMainGraph = ({
         hideTooltip 
     } = useTooltip();
 
+    const svg_id = 'sleepStack';
     const handleTooltip = (event, data) => {
-        if (data.length === 0) {
-            return;
-        }
-        const svg = event.currentTarget.ownerSVGElement;
-        const point = localPoint(svg, event);
-
-        if (point) {
-            const { top, left } = svg.getBoundingClientRect();
-            const datapoint = data['data'];
-                setTooltipInfo([
-                    {
-                        tooltipData: tooltipData,
-                        tooltipLeft: point.x + left,
-                        tooltipTop: top + yMax + margin.top - 12,
-                        style: {
-                            ...defaultStyles,
-                            backgroundColor: '#2d363fdd',
-                            color: '#fff',
-                            border: 'none',
-                            lineHeight: '1.2',
-                        },
-                        loc_x: point.x,
-                        loc_y: point.y,
-                    }
-                ])
-                showTooltip({
-                    tooltipData: ToolTipDiv({
-                        d: selection,
-                        point: point,
-                        xScale: xScale,
-                        aggrLevel: aggrLevel,
-                    }),
-                    tooltipLeft: point.x + left,
-                    tooltipTop: top + yMax + 24,
-                });
-        }
+        handleAnyTooltip(
+            event, 
+            data, 
+            svg_id, 
+            svgDimensions, 
+            tooltipData,
+            xScale,
+            aggrLevel,
+            showTooltip,
+            setTooltipInfo,
+            fmtToolTip
+        );
     };
 
     const handleMouseLeave = () => {
@@ -206,17 +152,11 @@ const SleepStackMainGraph = ({
             svgDimensions={svgDimensions}
             dx={(svgDimensions.width < 600) ? '1.5em' : '0.5em'}
         />
-        <Bar
-            x={margin.left}
-            y={margin.top}
-            width={xMax - margin.left}
-            height={yMax - margin.top}
-            fill='transparent'
-            onTouchStart={(event) => handleTooltip(event, {'name': 'selection', 'data': selection})}
-            onTouchMove={(event) => handleTooltip(event, {'name': 'selection', 'data': selection})}
-            onMouseMove={(event) => handleTooltip(event, {'name': 'selection', 'data': selection})}
-            onMouseLeave={handleMouseLeave}
-            onTouchEnd={handleMouseLeave}
+        <ToolTipBar 
+            svgDimensions={svgDimensions}
+            selection={selection}
+            handleTooltip={handleTooltip}
+            handleMouseLeave={handleMouseLeave}
         />
     </>)}
 
@@ -233,6 +173,7 @@ const SleepStagesStack = ({ sleepData }) => {
             left_factor={1.0}
             isAllowAgg={true}
             SelectionStats={SleepStagesStats}
+            svg_id='sleepStack'
         />
     );
 };
