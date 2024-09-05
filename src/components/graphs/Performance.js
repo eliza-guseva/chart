@@ -9,7 +9,6 @@ import {
 const Performance = ({performanceData}) => {
     const endurance_data = processEnduranceData(performanceData['endurance']);
     const training_load_data = processTrainingLoadData(performanceData['trainingLoad']);
-    console.log('performanceData', performanceData);
     return (
         <div>
             {(endurance_data) && (endurance_data.length > 0) && <EnduranceGraph enduranceData={endurance_data} />}

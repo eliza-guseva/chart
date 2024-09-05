@@ -151,7 +151,6 @@ const RunPaceMainGraph = ({
             const { top, left } = svg.getBoundingClientRect();
             if (data['name'] === 'single') {
                 const datapoint = data['data'];
-                console.log('datapoint', datapoint);
                 setTooltipInfo(
                     [{
                         tooltipData: tooltipData,

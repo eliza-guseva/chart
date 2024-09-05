@@ -7,7 +7,7 @@ import { LinePath, BarGroup } from '@visx/shape';
 import { min, max } from 'd3-array';
 
 import BrushTimeGraph from '../BrushTimeGraph';
-import { brushStyle } from '../styles';
+import { getBrushStyle } from '../styles';
 import { getMainChartBottom } from '../graphHelpers';
 import { 
     Grid,
@@ -50,7 +50,6 @@ const SleepScoresMainGraph = ({selection,
                 nice: true,
                 }),
         );
-        console.log('selection', selection);
         return (<>
              <rect 
                 x={margin.left} 
@@ -122,7 +121,7 @@ const SleepScores = ({sleepData}) => {
             keys={keys}
             brushKey={brushKey}
             mainGraphComponent={SleepScoresMainGraph}
-            brushStyle={brushStyle}
+            brushStyle={getBrushStyle('#f6acc8')}
             graphTitle='Sleep Scores'
             left_factor={1.0}
             isAllowAgg={true}

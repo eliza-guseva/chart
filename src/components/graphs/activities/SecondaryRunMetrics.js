@@ -57,7 +57,6 @@ const SecondaryRunMetricsMainGraph = ({
             }),
         [yMax, selection, margin, brushKey]
     );
-    console.log('selection', selection.slice(0, 5));
     return (
         <>
         <rect 
@@ -129,7 +128,6 @@ const SecondaryRunMetrics = ({runningData}) => {
     runningData = runningData.filter(
         (d) => d[brushKey] !== null && d[brushKey] !== undefined
     );
-    console.log('runningData', runningData);
     
     const title = (
         metricObj.title + 

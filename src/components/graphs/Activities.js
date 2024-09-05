@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import RunPaceTime from './activities/RunPaceTime';
 import SecondaryRunMetrics from './activities/SecondaryRunMetrics';
 import RunSums from './activities/runSums';
+import { isData } from './graphHelpers';
 
 
 /**
@@ -18,17 +19,14 @@ import RunSums from './activities/runSums';
 const Activities = ({activitiesData}) => {
     return (
         <div className='w-full flex'>
-            {/* <SideBar sections={['section1', 'section2', 'section3']} /> */}
             <div className='w-full flex flex-col'>
-            {(activitiesData.running) &&
-            (activitiesData.running.length > 0) && 
-            <RunPaceTime runningData={activitiesData.running} />}
-            {(activitiesData.running) &&
-            (activitiesData.running.length > 0) &&
-            <SecondaryRunMetrics runningData={activitiesData.running} />}
-            {(activitiesData.running) &&
-            (activitiesData.running.length > 0) &&
-            <RunSums runningData={activitiesData.running} />}
+            {isData(activitiesData.running) && 
+            <>
+            <RunPaceTime runningData={activitiesData.running} />
+            <SecondaryRunMetrics runningData={activitiesData.running} />
+            <RunSums runningData={activitiesData.running} />
+            </>
+            }
             </div>
         </div>
     );

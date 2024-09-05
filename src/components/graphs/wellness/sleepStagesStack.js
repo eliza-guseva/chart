@@ -11,37 +11,27 @@ import { addDays} from 'date-fns';
 
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
-    MyAreaStackVsDate,  
     StandardAxisLeft,
     Grid,
     StatsDiv,
 } from '../GraphComponents';
+import { MyAreaStackVsDate } from '../MainChartsMods';
 import {
-    getMainChartBottom,
     formatDate,
     hours2TimeStr,
     LittleCircle,
-    fmtTwoDatestr,
+    mergeColor,
  } from '../graphHelpers';
 import { 
     MAIN_GRAPH_BCKG, 
     GRID_COLOR,
+    getBrushStyle,
 } from '../styles';
 import {
     getDate,
     getAvg
 } from '../fileAndDataProcessors';
-import { sl, sv } from 'date-fns/locale';
 
-
-const brushStyle = {
-    fillColor: "#4bb0ff",
-    accentColor: "#c8d6f2",
-    selectedBoxStyle: {
-        fill: 'url(#brush_pattern)',
-        stroke: '#ffffff',
-    },
-}
 
 const keys = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
 const colors = ['#007bff', '#ff44cc', '#44aaff', '#ccbbee'];
@@ -238,7 +228,7 @@ const SleepStagesStack = ({ sleepData }) => {
             keys={keys}
             brushKey={brushKey}
             mainGraphComponent={SleepStackMainGraph}
-            brushStyle={brushStyle}
+            brushStyle={getBrushStyle(mergeColor('#44aaff', '#888888'))}
             graphTitle='Sleep Stages'
             left_factor={1.0}
             isAllowAgg={true}

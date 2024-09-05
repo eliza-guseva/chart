@@ -77,7 +77,6 @@ const EnduranceMainGraph = ({
     setTooltipInfo,
     aggrLevel,
     ...props}) => {
-    console.log('svgDimensions', svgDimensions);
     const { margin, xMax, yMax } = svgDimensions;
     const yLabel = 'Endurance score';
     const yScale = useMemo(
@@ -105,7 +104,6 @@ const EnduranceMainGraph = ({
         }
         const { pointInSvg, svgTop, svgLeft } = locateEventLocalNAbs(event, 'enduranceScore');
         if (pointInSvg) {
-            console.log('pointInSvg', pointInSvg);
             setTooltipInfo([
                 {
                     tooltipData: tooltipData,

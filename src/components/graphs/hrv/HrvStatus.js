@@ -21,8 +21,15 @@ import {
     LittleCircle,
     getBarWidth,
     getBarX,
-    mergeColorWtWhite
+    mergeColor,
+    isData
  } from '../graphHelpers';
+ import {
+    GARMIN_GOOD,
+    GARMIN_FAIR,
+    GARMIN_POOR,
+    GARMIN_UNK,
+ } from '../styles';
 
 
 const brushStyle = {
@@ -39,10 +46,10 @@ const colors = ['#fff'];
 const brushKey = 'hrvWeeklyAverage';
 
 const hrvBands = [
-    {score: 70, color: '#16982f'},
-    {score: 40, color: '#da6f2e'},
-    {score: 10, color: '#d61321'},
-    {score: 0, color: '#888888'},
+    {score: 70, color: GARMIN_GOOD},
+    {score: 40, color: GARMIN_FAIR},
+    {score: 10, color: GARMIN_POOR},
+    {score: 0, color: GARMIN_UNK},
 ]
 
 function getHRVBandColor(score) {
@@ -52,7 +59,7 @@ function getHRVBandColor(score) {
         }
     }
 
-    return '#888888';
+    return GARMIN_UNK;
 }
 
 function ftmToolTip (d, point, xScale, aggrLevel) {
@@ -105,7 +112,7 @@ const HRVStatusMainGraph = ({
     } = useTooltip();
 
     const handleTooltip = (event, data) => {
-        if (data.length === 0) {
+        if (isData(data)) {
             return;
         }
         const { pointInSvg, svgTop, svgLeft } = locateEventLocalNAbs(event, 'hrvStatus');
@@ -155,10 +162,23 @@ const HRVStatusMainGraph = ({
             yMax={yMax}
             margin={margin}
         />
+        <StandardAxisLeft
+            label={yLabel}
+            yScale={yScale}
+            margin={margin}
+            svgDimensions={svgDimensions}
+            dx={(svgDimensions.width < 600) ? '0.0em' : '-0.5em'}
+        />
+        <StandardAxisBottom
+            data={selection}
+            yMax={yMax}
+            xScale={xScale}
+        />
+        {isData(selection) &&
+        <>
             {selection.slice(1).map((d, i) => {
                 const segmentData = [selection[i], selection[i + 1]]
                 const barWidth = getBarWidth(segmentData, aggrLevel, xScale);
-                // console.log('segmentData', segmentData);
                 return (<Bar
                     key={`bar-${i}`}
                     x={getBarX(segmentData, aggrLevel, xScale)}
@@ -174,14 +194,14 @@ const HRVStatusMainGraph = ({
             data={selection}
             x={d => xScale(getDate(d))}
             y={d => yScale(avgHrv)}
-            stroke={mergeColorWtWhite(getHRVBandColor(avgFactor), true)}
+            stroke={mergeColor(getHRVBandColor(avgFactor))}
             strokeWidth={4}
             />
         <text
             x={xScale(selection[selection.length - 1].calendarDate) - 2}
             y={yScale(avgHrv) - 10}
             fontSize={'0.95em'}
-            fill={mergeColorWtWhite(getHRVBandColor(avgFactor), true)}
+            fill={mergeColor(getHRVBandColor(avgFactor))}
             textAnchor='end'
             style={{ 
                 pointerEvents: "none", 
@@ -197,18 +217,8 @@ const HRVStatusMainGraph = ({
             handleTooltip={handleTooltip}
             handleMouseLeave={handleMouseLeave}
         />
-        <StandardAxisLeft
-            label={yLabel}
-            yScale={yScale}
-            margin={margin}
-            svgDimensions={svgDimensions}
-            dx={(svgDimensions.width < 600) ? '0.0em' : '-0.5em'}
-        />
-        <StandardAxisBottom
-            data={selection}
-            yMax={yMax}
-            xScale={xScale}
-        />
+        </>
+        }
         </>);
     };
 
@@ -264,10 +274,14 @@ const HRVStatusStats = ( {
         }
       );
       
-
-    const minColor = getHRVBandColor(selection.find((d) => d.calendarDate === stats.minIndex).hrvFactorPercent);
-    const maxColor = getHRVBandColor(selection.find((d) => d.calendarDate === stats.maxIndex).hrvFactorPercent);
-    const avgColor = getHRVBandColor(selection.reduce((acc, d) => acc + d.hrvFactorPercent, 0) / selection.length);
+    let minColor = '#888888';
+    let maxColor = '#888888';
+    let avgColor = '#888888';
+    if (isData(selection)) {
+        minColor = getHRVBandColor(selection.find((d) => d.calendarDate === stats.minIndex).hrvFactorPercent);
+        maxColor = getHRVBandColor(selection.find((d) => d.calendarDate === stats.maxIndex).hrvFactorPercent);
+        avgColor = getHRVBandColor(selection.reduce((acc, d) => acc + d.hrvFactorPercent, 0) / selection.length);
+    }
 
     return (
         <StatsDiv

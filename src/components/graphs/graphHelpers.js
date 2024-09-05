@@ -11,6 +11,8 @@ import {
     subDays
 } from 'date-fns';
 import { scaleTime } from '@visx/scale';
+import { locateEventLocalNAbs } from './tooltipHelpers';
+import { defaultStyles } from '@visx/tooltip';
 
 /**
  * Calculates the SVG width based on the container width.
@@ -252,6 +254,9 @@ const getallDoW = (startDate, endDate, dayNum) => {
 
 export function getMonthlyTicks(data, xScale) {
     let ticks;
+    if (! isData(data)) {
+        return [];
+    }
     const lastDate = new Date(data[data.length - 1].calendarDate)
     const firstDate = xScale.invert(xScale.range()[0]);
     const timeScale = scaleTime({
@@ -277,6 +282,9 @@ export function getMonthlyTicks(data, xScale) {
 
 export function getWeeklyTicks(data, xScale) {
     let ticks;
+    if (! isData(data)) {
+        return [];
+    }
     const lastDate = new Date(data[data.length - 1].calendarDate);
     const firstDate = xScale.invert(xScale.range()[0]);
     ticks = getallDoW(firstDate, lastDate, getDay(lastDate));
@@ -296,11 +304,9 @@ export function getWeeklyTicks(data, xScale) {
 export function getBarWidth(segmentData, aggrLevel, xScale) {
     const date0 = segmentData[0].calendarDate;
     const date1 = segmentData[1].calendarDate;
-    console.log('date0', date0);
     let barWidth;
     if (aggrLevel === 'daily') {
         barWidth = xScale(date1) - xScale(date0);
-        console.log('xScale(date1)', xScale(date1));
     }
     else if (aggrLevel === 'weekly') {
         barWidth = xScale(subDays(date1, 1)) - xScale(date0);
@@ -326,31 +332,44 @@ export function getBarX(segmentData, aggrLevel, xScale) {
     return x;
 }
 
-export function mergeColorWtWhite(color, isDoubleReduction) {
+export function mergeColor(color, blendColor = "#ffffff", isDoubleReduction = true) {
     // Helper function to blend two colors
-    function blendWithWhite(color) {
+    function blend(color, blendColor) {
       const num = parseInt(color.slice(1), 16); // Convert hex to integer
-      const r = (num >> 16) + 255; // Extract Red component and add white (255)
-      const g = ((num >> 8) & 0x00ff) + 255; // Extract Green component and add white (255)
-      const b = (num & 0x0000ff) + 255; // Extract Blue component and add white (255)
+      const blendNum = parseInt(blendColor.slice(1), 16); // Convert blend color to integer
       
-      // Calculate the average for each component and clamp the values to 255
-      const blendedR = Math.floor(r / 2);
-      const blendedG = Math.floor(g / 2);
-      const blendedB = Math.floor(b / 2);
-  
+      // Extract Red, Green, Blue components from the base color
+      const r = num >> 16;
+      const g = (num >> 8) & 0x00ff;
+      const b = num & 0x0000ff;
+      
+      // Extract Red, Green, Blue components from the blend color
+      const blendR = blendNum >> 16;
+      const blendG = (blendNum >> 8) & 0x00ff;
+      const blendB = blendNum & 0x0000ff;
+      
+      // Calculate the blended values
+      const blendedR = Math.floor((r + blendR) / 2);
+      const blendedG = Math.floor((g + blendG) / 2);
+      const blendedB = Math.floor((b + blendB) / 2);
+    
       // Convert blended values back to a hex string
       return `#${((1 << 24) + (blendedR << 16) + (blendedG << 8) + blendedB).toString(16).slice(1)}`;
     }
   
     // Blend once
-    let blended = blendWithWhite(color);
+    let blended = blend(color, blendColor);
     
     // Optionally blend twice if double reduction is requested
     if (isDoubleReduction) {
-      blended = blendWithWhite(blended);
+      blended = blend(blended, blendColor);
     }
     
     return blended;
   }
+
+
+export function isData(selection) {
+    return selection && selection.length > 0;
+}
 

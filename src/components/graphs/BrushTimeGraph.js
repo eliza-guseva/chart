@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import { scaleTime, scaleLinear } from '@visx/scale';
-import { extent } from 'd3-array';
+import { extent, min } from 'd3-array';
 import { max } from 'd3-array';
 import moment from 'moment';
 
@@ -26,6 +26,7 @@ import {
     calculateSvgWidth,
     calculateSvgHeight,
     getIdxFromEnd,
+    isData,
 } from './graphHelpers';
 import { getTitleStyle } from './styles';
 
@@ -87,7 +88,9 @@ function getAggrLevelSelection(aggrLevel, dailyData, weeklyData, allKeys, select
                 const x = getDate(d);
                 return x >= x0 && x <= x1;
             });
-            dataCopy[dataCopy.length - 1]['calendarDate'] = new Date(x1);
+            if (isData(dataCopy)) {
+                dataCopy[dataCopy.length - 1]['calendarDate'] = new Date(x1);
+            }
             break;
         default:
             console.log('aggrLevel not recognized');
@@ -173,10 +176,9 @@ const BrushTimeGraph = ({
 }) => {
     const [metricKey, setMetricKey] = useState(brushKey);
     const allKeys = getAllKeys(keys, metricKey);
-    console.log(allKeys);
     const weeklyData = aggregateData(dailyData, 'week', allKeys, selectDaysAgo, aggFn);
     const [aggrLevel, setAggrLevel] = useState('daily');
-    const initIdxStart = getIdxFromEnd(dailyData, 75);
+    const initIdxStart = getIdxFromEnd(dailyData, (min([dailyData.length, 75])));
     const initIdxEnd = getIdxFromEnd(dailyData, 1);
     const brushRef = useRef(null);
     const [selection, setSelection] = useState(

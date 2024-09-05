@@ -2,7 +2,8 @@ import { localPoint } from '@visx/event';
 import { Bar } from '@visx/shape';
 import { min } from 'd3-array';
 import { getDate } from './fileAndDataProcessors';
-import { fmtTwoDatestr, formatDateYearPretty } from './graphHelpers';
+import { fmtTwoDatestr, formatDateYearPretty, isData } from './graphHelpers';
+import { defaultStyles, useTooltip } from '@visx/tooltip';
 
 
 export function locateEventLocalNAbs(event, svgId) {
@@ -57,3 +58,47 @@ export function getThisPeriodData(dataArray, targetDate, aggrLevel) {
         thisDataPoint: thisDataPoint,
     }
 }
+
+
+export const handleAnyTooltip = (
+    event, 
+    data, 
+    svg_id, 
+    svgDimensions, 
+    tooltipData,
+    xScale,
+    aggrLevel,
+    showTooltip,
+    setTooltipInfo,
+    fmtToolTip
+) => {
+    if (! isData(data)) {
+        return;
+    }
+    const { margin, xMax, yMax } = svgDimensions;
+    const { pointInSvg, svgTop, svgLeft } = locateEventLocalNAbs(event, svg_id);
+    if (pointInSvg) {
+        setTooltipInfo([
+            {
+                tooltipData: tooltipData,
+                tooltipLeft: pointInSvg.x + svgLeft,
+                tooltipTop: svgTop + yMax + margin.top - 24,
+                loc_x: pointInSvg.x,
+                loc_y: pointInSvg.y,
+                style: {
+                    ...defaultStyles,
+                    backgroundColor: '#2d363fdd',
+                    color: '#fff',
+                    border: 'none',
+                    lineHeight: '1.2',
+                },
+            }
+        ]);
+        showTooltip({
+            tooltipData: fmtToolTip(data, pointInSvg, xScale, aggrLevel),
+            tooltipLeft: pointInSvg.x + svgLeft,
+            tooltipTop: svgTop + yMax + 24,
+        });
+    }}
+
+

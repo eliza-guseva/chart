@@ -9,7 +9,6 @@ import { processSleepData, processActiveMinutesData } from './fileAndDataProcess
 const Wellness = ({wellnessData}) => {
     const sleepData = wellnessData['sleep'];
     const activeMinutesData = wellnessData['activeMinutes'];
-    console.log('activeMinutesData', activeMinutesData);
 
     return (
         <div className='graphdiv'>
