@@ -103,10 +103,7 @@ const HRVStatusMainGraph = ({
     );
 
     const { 
-        tooltipData, 
-        tooltipLeft, 
-        tooltipTop, 
-        tooltipOpen, 
+        tooltipData,
         showTooltip, 
         hideTooltip 
     } = useTooltip();
