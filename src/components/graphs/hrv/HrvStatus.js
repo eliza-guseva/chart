@@ -167,7 +167,7 @@ const HRVStatusMainGraph = ({
             yScale={yScale}
             margin={margin}
             svgDimensions={svgDimensions}
-            dx={(svgDimensions.width < 600) ? '0.0em' : '-0.5em'}
+            dx={(svgDimensions.width < 600) ? '0.0em' : '0.5em'}
         />
         <StandardAxisBottom
             data={selection}
@@ -234,7 +234,7 @@ export const HRVGraph = ({ hrvData }) => {
             graphTitle='HRV Status'
             svg_id='hrvStatus'
             colors={colors}
-            left_factor={0.0}
+            left_factor={1.0}
             isAllowAgg={true}
             SelectionStats={HRVStatusStats}
         />

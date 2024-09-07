@@ -1,5 +1,5 @@
-import React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 import { scaleLinear } from '@visx/scale';
 import { curveBasis, curveStepBefore } from '@visx/curve';
@@ -82,9 +82,6 @@ const SleepScoresMainGraph = ({selection,
 
         const { 
             tooltipData, 
-            tooltipLeft, 
-            tooltipTop, 
-            tooltipOpen, 
             showTooltip, 
             hideTooltip 
         } = useTooltip();
@@ -179,6 +176,18 @@ const SleepScoresMainGraph = ({selection,
 
 }
 
+SleepScoresMainGraph.propTypes = {
+    selection: PropTypes.array.isRequired,
+    svgDimensions: PropTypes.shape({
+        margin: PropTypes.shape({
+            left: PropTypes.number.isRequired,
+            top: PropTypes.number.isRequired,
+        }).isRequired,
+        xMax: PropTypes.number.isRequired,
+        yMax: PropTypes.number.isRequired,
+    }).isRequired,
+    // Add other prop validations here
+};
 
 const SleepScores = ({sleepData}) => {
     sleepData = sleepData.map((d) => {
@@ -217,6 +226,20 @@ const SleepScores = ({sleepData}) => {
     );
 }
 
+SleepScores.propTypes = {
+    sleepData: PropTypes.arrayOf(PropTypes.shape({
+        calendarDate: PropTypes.string.isRequired,
+        sleepScores: PropTypes.object.isRequired,
+    })).isRequired,
+};
+
+/**
+ * Renders a component displaying sleep scores data.
+ * 
+ * @param {Object} props - The component props.
+ * @param {Array} props.sleepData - An array of sleep data objects.
+ * @returns {JSX.Element} A BrushTimeGraph component with sleep scores data.
+ */
 const SleepScoresStats = ({
     selection,
     svgDimensions,
