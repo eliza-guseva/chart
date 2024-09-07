@@ -5,6 +5,7 @@ import { scaleLinear } from '@visx/scale';
 import { max, min } from 'd3-array';
 import { useMemo } from 'react';
 import { useTooltip, defaultStyles } from '@visx/tooltip';
+import { Line } from '@visx/shape';
 
 import BrushTimeGraph from '../BrushTimeGraph';
 import { 
@@ -34,7 +35,7 @@ import {
 
 
 const keys = ['deepSleepHours', 'remSleepHours', 'lightSleepHours', 'awakeSleepHours'];
-const colors = ['#007bff', '#ff44cc', '#44aaff', '#ccbbee'];
+const colors = ['#0056b3', '#cc0099', '#0080ff', '#aa99cc'];
 const brushKey = 'totalSleepHours';
 const allKeys = ['totalSleepHours', ...keys];
 const allColors = ['#fff', ...colors];
@@ -47,23 +48,28 @@ function fmtToolTip (d, pointInSvg, xScale, aggrLevel) {
     const {datestr, thisDataPoint} = getThisPeriodData(d, date, aggrLevel);
     const avg = aggrLevel === 'daily' ? '' : 'Avg ';
 
+    const sleepStages = [
+        { key: 'totalSleepHours', label: 'Total', color: '#ffffff' },
+        { key: 'deepSleepHours', label: 'Deep', color: '#007bff' },
+        { key: 'remSleepHours', label: 'REM', color: '#ff44cc' },
+        { key: 'lightSleepHours', label: 'Light', color: '#44aaff' },
+        { key: 'awakeSleepHours', label: 'Awake', color: '#ccbbee' },
+    ];
+
     return (
         <div>
-        <p style={{color: '#ffffffbb', margin: '1px 0'}}>{datestr}</p>
-        <p><LittleCircle color='#ffffff'/>{avg}Total:{' '}
-            <strong>{hours2TimeStr(thisDataPoint.totalSleepHours)}</strong></p>
-            <hr style={{border: '1px solid #ffffffbb', margin: '2px 0'}} />
-        <p><LittleCircle color='#007bff'/>{avg}Deep:{' '}
-            <strong>{hours2TimeStr(thisDataPoint.deepSleepHours)}</strong></p>
-        <p><LittleCircle color='#ff44cc'/>{avg}REM:{' '}
-            <strong>{hours2TimeStr(thisDataPoint.remSleepHours)}</strong></p>
-        <p><LittleCircle color='#44aaff'/>{avg}Light:{' '}
-            <strong>{hours2TimeStr(thisDataPoint.lightSleepHours)}</strong></p>
-        <p><LittleCircle color='#ccbbee'/>{avg}Awake:{' '}
-            <strong>{hours2TimeStr(thisDataPoint.awakeSleepHours)}</strong></p>
-
-    </div>
-        );
+            <p style={{color: '#ffffffbb', margin: '1px 0'}}>{datestr}</p>
+            {sleepStages.map((stage, index) => (
+                <React.Fragment key={stage.key}>
+                    <p>
+                        <LittleCircle color={stage.color}/>
+                        {avg}{stage.label}: <strong>{hours2TimeStr(thisDataPoint[stage.key])}</strong>
+                    </p>
+                    {index === 0 && <hr style={{border: '1px solid #ffffffbb', margin: '2px 0'}} />}
+                </React.Fragment>
+            ))}
+        </div>
+    );
 }
 
 
@@ -117,6 +123,28 @@ const SleepStackMainGraph = ({
         hideTooltip(); // Hide the tooltip
     };
 
+    // Calculate averages for each sleep stage
+    const averages = useMemo(() => {
+        return keys.reduce((acc, key) => {
+            acc[key] = getAvg(selection, key);
+            return acc;
+        }, {});
+    }, [selection]);
+
+    // Calculate cumulative averages for stacking
+    const cumulativeAverages = useMemo(() => {
+        let cumulative = 0;
+        return keys.map(key => {
+            cumulative += averages[key];
+            return cumulative;
+        });
+    }, [averages]);
+
+    // Calculate total average sleep time
+    const totalAverage = useMemo(() => 
+        keys.reduce((total, key) => total + averages[key], 0),
+    [averages]);
+
     return (<>
         <rect 
             x={margin.left} 
@@ -135,6 +163,40 @@ const SleepStackMainGraph = ({
             aggrLevel: aggrLevel,
             curve: curveStepBefore,
         })}
+        {/* Add average lines */}
+        {keys.map((key, index) => (
+            <Line
+                key={`avg-line-${key}`}
+                from={{ x: margin.left, y: yScale(cumulativeAverages[index]) }}
+                to={{ x: xMax, y: yScale(cumulativeAverages[index]) }}
+                stroke={mergeColor(colors[index], '#ffffff', false)}
+                strokeWidth={4}
+            />
+        ))}
+        {/* Replace the existing average value labels with this new implementation */}
+        <g>
+            {keys.map((key, index) => {
+                const yPosition = yScale(cumulativeAverages[index]);
+                const xPosition = xMax - 10; // Adjust this value to move labels left or right
+                const verticalOffset = index === keys.length - 2 ? 1 : -4; 
+                const dominantBaseline = index === keys.length - 2 ? 'hanging' : 'text-top';
+
+                return (
+                    <text
+                        key={`avg-text-${key}`}
+                        x={xPosition}
+                        y={yPosition + verticalOffset}
+                        fontSize={'0.95em'}
+                        fill={'#ffffff'}
+                        textAnchor="end"
+                        dominantBaseline={dominantBaseline}
+                    >
+                        {`${titles[index + 1]}: ${hours2TimeStr(averages[key])} (${((averages[key] / totalAverage) * 100).toFixed(1)}%)`}
+                    </text>
+                );
+            })}
+        </g>
+
         <Grid
             rows={true}
             cols={false}
@@ -168,7 +230,7 @@ const SleepStagesStack = ({ sleepData }) => {
             keys={keys}
             brushKey={brushKey}
             mainGraphComponent={SleepStackMainGraph}
-            brushStyle={getBrushStyle(mergeColor('#44aaff', '#888888'))}
+            brushStyle={getBrushStyle(mergeColor('#0056b3', '#ffffff', false))}
             graphTitle='Sleep Stages'
             left_factor={1.0}
             isAllowAgg={true}
