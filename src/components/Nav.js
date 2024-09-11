@@ -98,7 +98,7 @@ const Logo = () => {
         <Link to="/" className="header logo">
         <div className="header logo">
             <div>
-                <h3 className="font-nixie text-accent text-lg md:text-2xl -mb-2">Local</h3>
+                <h3 className="font-nixie text-accent text-lg md:text-2xl -mb-2">Your</h3>
             </div>
             <div className="text-4xl font-nixie font-extrabold md:text-6xl">
                 Charts

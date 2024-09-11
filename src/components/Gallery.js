@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react';
 import SleepStagesStack from './graphs/wellness/sleepStagesStack';
 import SleepScores from './graphs/wellness/SleepScores';
 
-
+function DivVisible(divObject) {
+    return (
+        divObject.top < window.innerHeight
+         && divObject.bottom > 0
+         && divObject.top + divObject.height / 6 < window.innerHeight
+         && divObject.top + divObject.height * 5 / 6 > 0
+        );
+}
 
 
 const Gallery = () => {
     const [sleepData, setSleepData] = useState(null);
-    const [isStagesVisible, setStagesVisible] = useState(false);
+    const [isStagesVisible, setStagesVisible] = useState(true);
     const [isScoresVisible, setScoresVisible] = useState(false);
 
     useEffect(() => {
@@ -27,18 +34,8 @@ const Gallery = () => {
                 const stagesRect = stagesSection.getBoundingClientRect();
                 const scoresRect = scoresSection.getBoundingClientRect();
 
-                const stagesVisible = (
-                    stagesRect.top < window.innerHeight
-                     && stagesRect.bottom > 0
-                     && stagesRect.top + stagesRect.height / 6 < window.innerHeight
-                     && stagesRect.top + stagesRect.height * 5 / 6 > 0
-                    );
-                const scoresVisible = (
-                    scoresRect.top < window.innerHeight
-                    && scoresRect.bottom > 0
-                    && scoresRect.top + scoresRect.height / 6 < window.innerHeight
-                    && scoresRect.top + scoresRect.height * 5 / 6 > 0
-                );
+                const stagesVisible = DivVisible(stagesRect);
+                const scoresVisible = DivVisible(scoresRect);
                 // Set state directly based on conditions
                 setStagesVisible(stagesVisible);
                 setScoresVisible(scoresVisible);
@@ -49,11 +46,11 @@ const Gallery = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    useEffect(() => {
-        // Debugging: Log state changes
-        console.log('isStagesVisible:', isStagesVisible);
-        console.log('isScoresVisible:', isScoresVisible);
-    }, [isStagesVisible, isScoresVisible]); 
+    // useEffect(() => {
+    //     // Debugging: Log state changes
+    //     // console.log('isStagesVisible:', isStagesVisible);
+    //     // console.log('isScoresVisible:', isScoresVisible);
+    // }, [isStagesVisible, isScoresVisible]); 
 
 
     // CSS styles defined within the component
