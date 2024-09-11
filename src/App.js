@@ -3,11 +3,10 @@ import './output.css';
 
 import {Login } from './components/Login';
 import Nav from './components/Nav';
-import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import Contact from './components/Contact';
 import { UnzipNPlot } from './components/UnzipNPlot';
-import TheGraphs from './components/TheGraphs';
+import Gallery from './components/Gallery';
 
 import { LoginProvider } from './context/LoginContext';
 
@@ -25,7 +24,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/" element={<UnzipNPlot />} />
+          <Route path="/mydata" element={<UnzipNPlot />} />
+          <Route path="/" element={<Gallery />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </div>

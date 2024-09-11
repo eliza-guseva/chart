@@ -169,7 +169,7 @@ const SleepStackMainGraph = ({
                 key={`avg-line-${key}`}
                 from={{ x: margin.left, y: yScale(cumulativeAverages[index]) }}
                 to={{ x: xMax, y: yScale(cumulativeAverages[index]) }}
-                stroke={mergeColor(colors[index], '#ffffff', false)}
+                stroke={mergeColor(colors[index], '#ccccff', false)}
                 strokeWidth={4}
             />
         ))}
