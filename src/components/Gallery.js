@@ -6,8 +6,7 @@ function DivVisible(divObject) {
     return (
         divObject.top < window.innerHeight
          && divObject.bottom > 0
-         && divObject.top + divObject.height / 6 < window.innerHeight
-         && divObject.top + divObject.height * 5 / 6 > 0
+         && divObject.top + divObject.height / 10 < window.innerHeight
         );
 }
 
@@ -46,20 +45,13 @@ const Gallery = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // useEffect(() => {
-    //     // Debugging: Log state changes
-    //     // console.log('isStagesVisible:', isStagesVisible);
-    //     // console.log('isScoresVisible:', isScoresVisible);
-    // }, [isStagesVisible, isScoresVisible]); 
-
 
     // CSS styles defined within the component
     const slideInFromRight = {
         transform: isStagesVisible ? 'translateX(0)' : 'translateX(100%)',
         transition: 'transform 0.5s ease-in-out',
-        width: '100%', // Ensure full width
-        height: '100%', // Ensure full height
-        // position: 'absolute', // Positioned absolutely within relative parent
+        width: '100%', // Ensure full width otherwise might turn 0
+        height: '100%', // Ensure full height otherwise might turn 0
         top: 0,
         right: 0,
     };
