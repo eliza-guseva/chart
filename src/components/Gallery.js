@@ -94,6 +94,19 @@ const Gallery = () => {
 
     return (
         <>
+            <div className="text-center text-xl font-nixie font-extrabold mt-10 mb-10 sm:w-4/5">
+                <p>What if it was possible to securily get the data
+                that health apps gather about you, but aren't always sharing?</p>
+                <p>What could you learn?</p>
+                <p>What could you do?</p>
+            </div>
+            <div className='text-left text-sm mb-10'>
+                <p>Data below is sample data, based on a Garmin user data.
+                    If you are a Garmin user, you can download your data from
+                <strong> <a href="https://www.garmin.com/en-US/account/datamanagement/"> here</a>.</strong>
+
+                </p>
+            </div>
             <div id="stages-section" style={containerStyle}>
                 <div style={stagesStyle}>
                     {sleepData ? (

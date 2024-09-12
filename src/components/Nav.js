@@ -87,7 +87,7 @@ const Menus = () => {
         <div className="navigation">
             <ul className="nav menu">
             <NavMenu isOpen={openMenu === 'nav'} toggleDropdown={() => toggleDropdown('nav')} />
-            <UserMenu isOpen={openMenu === 'user'} toggleDropdown={() => toggleDropdown('user')} />
+            {/* <UserMenu isOpen={openMenu === 'user'} toggleDropdown={() => toggleDropdown('user')} /> */}
             </ul>
         </div>
     )
@@ -95,12 +95,12 @@ const Menus = () => {
 
 const Logo = () => {
     return (
-        <Link to="/" className="header logo">
+        <Link to="/" className="header logo absolute left-0 ml-5">
         <div className="header logo">
             <div>
-                <h3 className="font-nixie text-accent text-lg md:text-2xl -mb-2">Your</h3>
+                <h3 className="font-nixie text-accent text-lg md:text-xl -mb-2">Your</h3>
             </div>
-            <div className="text-4xl font-nixie font-extrabold md:text-6xl">
+            <div className="text-4xl font-nixie font-extrabold md:text-4xl">
                 Charts
             </div>
         </div>
@@ -110,9 +110,14 @@ const Logo = () => {
 
 const Slogan = () => {
     return (
-        <div className="hidden md:flex items-end justify-center">
-        <Link to="/" className="hidden md:flex items-end justify-center text-xl font-mmd gap-4">
-            <div>SEE</div><div>·</div><div>YOUR</div><div>·</div><div>DATA</div>
+        <div className="hidden sm:flex justify-center items-center">
+        <Link to="/" 
+        className="hidden sm:flex text-sm font-mmd gap-1 absolute ">
+            <><div>GET</div><div>·</div>
+            <div>MORE</div><div>·</div>
+            <div>FROM</div><div>·</div>
+            <div>YOUR</div><div>·</div>
+            <div>DATA</div></>
         </Link>
         </div>
     );
@@ -121,10 +126,10 @@ const Slogan = () => {
 
 const Nav = () => {
     return (
-        <div className="header container w-full md:w-4/5">
+        <div className="w-full flex flex-row justify-center items-center mb-10 pt-10">
             <Logo />
             <Slogan />
-            <Menus />
+            <Menus /> 
         </div>
 )};
 

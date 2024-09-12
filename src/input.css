@@ -206,7 +206,7 @@ h1 {
   .navigation {
       position: absolute;
       display: flex;
-      top: 2em;
+      /* top: 2em; */
       right: 1em;
   
   }
