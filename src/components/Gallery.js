@@ -6,7 +6,7 @@ import { HRVGraph } from './graphs/hrv/HrvStatus';
 function DivVisible(divObject) {
     return (
         divObject.top < window.innerHeight
-         && divObject.bottom > 0
+        //  && divObject.bottom > 0
          && divObject.top + divObject.height / 10 < window.innerHeight
         );
 }
@@ -14,7 +14,7 @@ function DivVisible(divObject) {
 function SlideInFromRight(isXVisible) {
     return {
         transform: isXVisible ? 'translateX(0)' : 'translateX(100%)',
-        transition: 'transform 0.5s ease-in-out',
+        transition: 'transform 0.7s ease-in-out',
         width: '100%',
         height: '100%',
         top: 0,
@@ -25,11 +25,23 @@ function SlideInFromRight(isXVisible) {
 function SlideInFromLeft(isXVisible) {
     return {
         transform: isXVisible ? 'translateX(0)' : 'translateX(-100%)',
-        transition: 'transform 0.5s ease-in-out',
+        transition: 'transform 0.7s ease-in-out',
         width: '100%',
         height: '100%',
         top: 0,
         left: 0,
+    };
+}
+
+function containerStyle(isXVisible) {
+    return {
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundColor: isXVisible ? '#00000022' : 'transparent',
+        margin: '2rem',
+        borderRadius: '0.5rem',
+        paddingRight: '1rem',
+        width: '70%',
     };
 }
 
@@ -86,28 +98,25 @@ const Gallery = () => {
     const scoresStyle = SlideInFromLeft(isScoresVisible);
     const hrvStyle = SlideInFromRight(isHrvVisible);
 
-
-    const containerStyle = {
-        position: 'relative',
-        overflow: 'hidden',
-    };
-
     return (
-        <>
+        <div className='flex flex-col items-center justify-center w-full'>
             <div className="text-center text-xl font-nixie font-extrabold mt-10 mb-10 sm:w-4/5">
                 <p>What if it was possible to securily get the data
                 that health apps gather about you, but aren't always sharing?</p>
                 <p>What could you learn?</p>
                 <p>What could you do?</p>
             </div>
-            <div className='text-left text-sm mb-10'>
+            <div className='text-center text-md mb-10 sm:w-4/5'>
                 <p>Data below is sample data, based on a Garmin user data.
                     If you are a Garmin user, you can download your data from
-                <strong> <a href="https://www.garmin.com/en-US/account/datamanagement/"> here</a>.</strong>
-
+                <strong> <a href="https://www.garmin.com/en-US/account/datamanagement/"> Garmin Website </a></strong>
+                and see a detailed view of your wellness and performance data.
                 </p>
             </div>
-            <div id="stages-section" style={containerStyle}>
+            <div id="stages-section" style={containerStyle(isStagesVisible)}>
+                <p className='m-2'>Do you want to know if darknenning your room at night improves your deep sleep?</p>
+                <p className='m-2'>You can see the full history of your sleep stages. </p>
+                <p className='m-2 text-sm'>Hint: You lower small graph to adjust the time period. </p>
                 <div style={stagesStyle}>
                     {sleepData ? (
                         <SleepStagesStack sleepData={sleepData} />
@@ -116,7 +125,7 @@ const Gallery = () => {
                     )}
                 </div>
             </div>
-            <div id="scores-section" style={containerStyle}>
+            <div id="scores-section" style={containerStyle(isScoresVisible)}>
                 <div style={scoresStyle}>
                     {sleepData ? (
                         <SleepScores sleepData={sleepData} />
@@ -125,7 +134,7 @@ const Gallery = () => {
                     )}
                 </div>
             </div>
-            <div id="hrv-section" style={containerStyle}>
+            <div id="hrv-section" style={containerStyle(isHrvVisible)}>
                 <div style={hrvStyle}>
                     {hrvData ? (
                         <HRVGraph hrvData={hrvData} />
@@ -135,7 +144,7 @@ const Gallery = () => {
                 </div>
 
             </div>
-        </>
+        </div>
     );
 };
 

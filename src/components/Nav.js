@@ -31,11 +31,14 @@ const NavMenu = ({ isOpen, toggleDropdown }) => {
         src="/menu.png" alt="Navigation Menu"/>
         <ul className={`nav menu ${isOpen ? 'show' : ''}`}>
         <li>
-            {genLink("/", "Parse Garmin data", isOpen, toggleDropdown)}
+            {genLink("/", "Gallery", isOpen, toggleDropdown)}
         </li>
         <li>
-            {genLink("/contact", "Contact", isOpen, toggleDropdown)}
+            {genLink("/mydata", "Parse Garmin data", isOpen, toggleDropdown)}
         </li>
+        {/* <li>
+            {genLink("/contact", "Contact", isOpen, toggleDropdown)}
+        </li> */}
         </ul>
     </li>)}
 
@@ -112,7 +115,7 @@ const Slogan = () => {
     return (
         <div className="hidden sm:flex justify-center items-center">
         <Link to="/" 
-        className="hidden sm:flex text-sm font-mmd gap-1 absolute ">
+        className="hidden sm:flex text-md font-mmd gap-1 absolute ">
             <><div>GET</div><div>·</div>
             <div>MORE</div><div>·</div>
             <div>FROM</div><div>·</div>
