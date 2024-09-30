@@ -110,7 +110,8 @@ const Gallery = () => {
                 <p>Data below is sample data, based on a Garmin user data.
                     If you are a Garmin user, you can download your data from
                 <strong> <a href="https://www.garmin.com/en-US/account/datamanagement/"> Garmin Website </a></strong>
-                and see a detailed view of your wellness and performance data.
+                and see a detailed view of your wellness and performance data
+                <strong> <a href="/mydata"> HERE</a></strong>.
                 </p>
             </div>
             <div id="stages-section" style={containerStyle(isStagesVisible)}>
